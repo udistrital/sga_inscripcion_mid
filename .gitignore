@@ -18,6 +18,3 @@ swagger/lib/
 sga_mid.exe
 go.mod
 go.sum
-.env.local
-
-commentsRouter__*
