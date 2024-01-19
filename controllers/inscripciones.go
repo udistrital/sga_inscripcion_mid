@@ -8,10 +8,10 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/models"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
-	"sga_mid_inscripcion/models"
-	"sga_mid_inscripcion/utils"
 )
 
 type InscripcionesController struct {
