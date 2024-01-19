@@ -14,6 +14,7 @@ en los módulos del SGA cliente.
 
 ### Variables de Entorno
 ```shell
+
 CONSULTAR_RECIBO_JBPM_SERVICE: [Servicio API RECIBO]
 DESCUENTO_ACADEMICO_SERVICE: [Servicio API DESCUENTO ACADEMICO]
 EVENTOS_SERVICE: [Servicio API EVENTOS]
