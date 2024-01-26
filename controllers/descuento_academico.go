@@ -7,7 +7,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/formatdata"
 	"github.com/udistrital/utils_oas/request"
-	"sga_mid_inscripcion/models"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // DescuentoController ...

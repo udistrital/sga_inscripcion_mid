@@ -11,7 +11,7 @@ import (
 	"github.com/phpdave11/gofpdf"
 	"github.com/phpdave11/gofpdf/contrib/barcode"
 	"github.com/udistrital/utils_oas/request"
-	"sga_mid_inscripcion/utils"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"strings"
 	"time"
 )

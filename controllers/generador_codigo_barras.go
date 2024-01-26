@@ -8,7 +8,7 @@ import (
 	"github.com/boombuler/barcode/code128"
 	"image/png"
 	"os"
-	"sga_mid_inscripcion/models"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // GeneradorCodigoBarrasController ...
