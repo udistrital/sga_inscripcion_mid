@@ -93,6 +93,8 @@ func VerificarRecibos(personaId string, periodoId string) ( resultadoAuxResponse
 			}
 
 			resultado["Inscripciones"] = resultadoAux
+		} else if (fmt.Sprintf("%v", Inscripciones[0]) == "map[]"){
+			fmt.Println("Nueva inscripción")
 		} else {
 			return resultado, "404"
 			// errorGetAll = true
