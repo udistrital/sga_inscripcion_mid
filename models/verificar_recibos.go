@@ -65,22 +65,10 @@ func VerificarRecibos(personaId string, periodoId string) ( resultadoAuxResponse
 									resultado["Inscripciones"] = resultadoAux
 								} else {
 									return resultado, "404"
-									// errorGetAll = true
-									// alertas = append(alertas, "No data found")
-									// alerta.Code = "404"
-									// alerta.Type = "error"
-									// alerta.Body = alertas
-									// c.Data["json"] = map[string]interface{}{"Response": alerta}
 								}
 							}
 						} else {
 							return resultado, "400"
-							// errorGetAll = true
-							// alertas = append(alertas, errRecibo.Error())
-							// alerta.Code = "400"
-							// alerta.Type = "error"
-							// alerta.Body = alertas
-							// c.Data["json"] = map[string]interface{}{"Response": alerta}
 						}
 					}
 				}
@@ -94,24 +82,14 @@ func VerificarRecibos(personaId string, periodoId string) ( resultadoAuxResponse
 
 			resultado["Inscripciones"] = resultadoAux
 		} else if (fmt.Sprintf("%v", Inscripciones[0]) == "map[]"){
+
 			fmt.Println("Nueva inscripción")
+
 		} else {
 			return resultado, "404"
-			// errorGetAll = true
-			// alertas = append(alertas, "No data found")
-			// alerta.Code = "404"
-			// alerta.Type = "error"
-			// alerta.Body = alertas
-			// c.Data["json"] = map[string]interface{}{"Response": alerta}
 		}
 	}else {
 		return resultado, "400"
-		// errorGetAll = true
-		// alertas = append(alertas, errInscripcion.Error())
-		// alerta.Code = "400"
-		// alerta.Type = "error"
-		// alerta.Body = alertas
-		// c.Data["json"] = map[string]interface{}{"Response": alerta}
 	}
 
 	return resultado, Error
