@@ -8,10 +8,10 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
-	"github.com/udistrital/utils_oas/request"
-	"github.com/udistrital/utils_oas/time_bogota"
 	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/sga_mid_inscripcion/utils"
+	"github.com/udistrital/utils_oas/request"
+	"github.com/udistrital/utils_oas/time_bogota"
 )
 
 type InscripcionesController struct {
@@ -47,117 +47,27 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 
 	persona_id := c.Ctx.Input.Param(":persona_id")
 	id_periodo := c.Ctx.Input.Param(":id_periodo")
-	// var Inscripciones []map[string]interface{}
-	// var ReciboXML map[string]interface{}
-	// var resultadoAux []map[string]interface{}
-	//var resultado = make(map[string]interface{})
-	// var Estado string
 	var alerta models.Alert
-	//var errorGetAll bool
 	alertas := []interface{}{"Response:"}
 
 	recibosResultado, err := models.VerificarRecibos(persona_id, id_periodo)
 
-	fmt.Println("ERROR" + err)
-
-	// //Se consultan todas las inscripciones relacionadas a ese tercero
-	// errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PersonaId:"+persona_id+",PeriodoId:"+id_periodo, &Inscripciones)
-	// if errInscripcion == nil {
-	// 	if Inscripciones != nil && fmt.Sprintf("%v", Inscripciones[0]) != "map[]" {
-	// 		fmt.Print(Inscripciones)
-	// 		// Ciclo for que recorre todas las inscripciones del tercero
-	// 		resultadoAux = make([]map[string]interface{}, len(Inscripciones))
-	// 		for i := 0; i < len(Inscripciones); i++ {
-	// 			if Inscripciones[i]["TipoInscripcionId"].(map[string]interface{})["Nombre"] == "Transferencia interna" || Inscripciones[i]["TipoInscripcionId"].(map[string]interface{})["Nombre"] == "Transferencia externa" || Inscripciones[i]["TipoInscripcionId"].(map[string]interface{})["Nombre"] == "Reingreso" {
-	// 				Inscripciones = append(Inscripciones[:i], Inscripciones[i+1:]...)
-	// 				i = i - 1
-	// 			} else {
-	// 				ReciboInscripcion := fmt.Sprintf("%v", Inscripciones[i]["ReciboInscripcion"])
-	// 				if ReciboInscripcion != "0/<nil>" {
-	// 					errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+ReciboInscripcion, &ReciboXML)
-	// 					if errRecibo == nil {
-	// 						if ReciboXML != nil && fmt.Sprintf("%v", ReciboXML) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", ReciboXML) != "map[]" {
-	// 							//Fecha límite de pago extraordinario
-	// 							FechaLimite := ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["fecha_extraordinario"].(string)
-	// 							EstadoRecibo := ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["estado"].(string)
-	// 							PagoRecibo := ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["pago"].(string)
-	// 							//Verificación si el recibo de pago se encuentra activo y pago
-	// 							if EstadoRecibo == "A" && PagoRecibo == "S" {
-	// 								Estado = "Pago"
-	// 							} else {
-	// 								//Verifica si el recibo está vencido o no
-	// 								ATiempo, err := models.VerificarFechaLimite(FechaLimite)
-	// 								if err == nil {
-	// 									if ATiempo {
-	// 										Estado = "Pendiente pago"
-	// 									} else {
-	// 										Estado = "Vencido"
-	// 									}
-	// 								} else {
-	// 									Estado = "Vencido"
-	// 								}
-	// 							}
-
-	// 							resultadoAux[i] = map[string]interface{}{
-	// 								"Id":                  Inscripciones[i]["Id"],
-	// 								"ProgramaAcademicoId": Inscripciones[i]["ProgramaAcademicoId"],
-	// 								"ReciboInscripcion":   Inscripciones[i]["ReciboInscripcion"],
-	// 								"FechaCreacion":       Inscripciones[i]["FechaCreacion"],
-	// 								"Estado":              Estado,
-	// 								"EstadoInscripcion":   Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
-	// 							}
-	// 						} else {
-	// 							if fmt.Sprintf("%v", resultadoAux) != "map[]" {
-	// 								resultado["Inscripciones"] = resultadoAux
-	// 							} else {
-	// 								errorGetAll = true
-	// 								alertas = append(alertas, "No data found")
-	// 								alerta.Code = "404"
-	// 								alerta.Type = "error"
-	// 								alerta.Body = alertas
-	// 								c.Data["json"] = map[string]interface{}{"Response": alerta}
-	// 							}
-	// 						}
-	// 					} else {
-	// 						errorGetAll = true
-	// 						alertas = append(alertas, errRecibo.Error())
-	// 						alerta.Code = "400"
-	// 						alerta.Type = "error"
-	// 						alerta.Body = alertas
-	// 						c.Data["json"] = map[string]interface{}{"Response": alerta}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-
-	// 		for i := 0; i < len(resultadoAux); i++ {
-	// 			if resultadoAux[i] == nil {
-	// 				resultadoAux = append(resultadoAux[:i], resultadoAux[i+1:]...)
-	// 			}
-	// 		}
-
-	// 		resultado["Inscripciones"] = resultadoAux
-	// 	} else {
-	// 		errorGetAll = true
-	// 		alertas = append(alertas, "No data found")
-	// 		alerta.Code = "404"
-	// 		alerta.Type = "error"
-	// 		alerta.Body = alertas
-	// 		c.Data["json"] = map[string]interface{}{"Response": alerta}
-	// 	}
-	// } else {
-	// 	errorGetAll = true
-	// 	alertas = append(alertas, errInscripcion.Error())
-	// 	alerta.Code = "400"
-	// 	alerta.Type = "error"
-	// 	alerta.Body = alertas
-	// 	c.Data["json"] = map[string]interface{}{"Response": alerta}
-	// }
-
-	if (err == "") {
+	if err == "" {
 		alertas = append(alertas, recibosResultado)
 		alerta.Code = "200"
 		alerta.Type = "OK"
+		alerta.Body = alertas
+		c.Data["json"] = map[string]interface{}{"Response": alerta}
+	} else if err == "400" {
+		alertas = append(alertas, "Bad request")
+		alerta.Code = "400"
+		alerta.Type = "error"
+		alerta.Body = alertas
+		c.Data["json"] = map[string]interface{}{"Response": alerta}
+	} else {
+		alertas = append(alertas, "No data found")
+		alerta.Code = "404"
+		alerta.Type = "error"
 		alerta.Body = alertas
 		c.Data["json"] = map[string]interface{}{"Response": alerta}
 	}
@@ -1331,6 +1241,46 @@ func (c *InscripcionesController) PostGenerarInscripcion() {
 			TipoParametro = "13"
 		} else if SolicitudInscripcion["Nivel"].(float64) == 2 {
 			TipoParametro = "12"
+		}
+
+		persona_id := fmt.Sprintf("%d", int(SolicitudInscripcion["PersonaId"].(float64)))
+		id_periodo := fmt.Sprintf("%d", int(SolicitudInscripcion["PeriodoId"].(float64)))
+		id_programa_academico := fmt.Sprintf("%d", int(SolicitudInscripcion["ProgramaAcademicoId"].(float64)))
+
+		recibosResultado, err := models.VerificarRecibos(persona_id, id_periodo)
+
+		if err == "" {
+			fmt.Println("Succes")
+			fmt.Println(recibosResultado)
+			fmt.Print("Lenght:")
+			if inscripciones, ok := recibosResultado["Inscripciones"]; ok {
+				// Convertir la variable de tipo interface{} a un slice de mapas
+				inscripcionesMap, ok := inscripciones.([]map[string]interface{})
+				if(len(inscripcionesMap) > 0 && ok){
+					for i := 0; i < len(inscripcionesMap); i++ {
+						id_programa_inscripciones := fmt.Sprintf("%d", int(inscripcionesMap[i]["ProgramaAcademicoId"].(float64)))
+						estado_recibo_inscripciones := inscripcionesMap[i]["Estado"].(string)
+						if(id_programa_inscripciones == id_programa_academico && estado_recibo_inscripciones == "Vencido"){
+							fmt.Println("true")
+						}else {
+							fmt.Println("id: " + id_programa_academico + "Estado: " + estado_recibo_inscripciones)
+						}
+					}
+				}
+
+			} else {
+				fmt.Println("La clave 'Inscripciones' no existe en el mapa.")
+			}
+		} else if err == "400" {
+			respuesta.Code = "400"
+			respuesta.Type = "error"
+			respuesta.Body = "Bad request"
+			c.Data["json"] = map[string]interface{}{"Response": "Bad request"}
+		} else {
+			respuesta.Code = "404"
+			respuesta.Type = "error"
+			respuesta.Body = "No data found"
+			c.Data["json"] = map[string]interface{}{"Response": "No data found"}
 		}
 
 		errInscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &inscripcionRealizada, inscripcion)
