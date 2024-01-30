@@ -8,10 +8,10 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/models"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
-	"sga_mid_inscripcion/models"
-	"sga_mid_inscripcion/utils"
 )
 
 type InscripcionesController struct {
@@ -41,7 +41,7 @@ func (c *InscripcionesController) URLMapping() {
 // @Param	persona_id	path	int	true	"Id del tercero"
 // @Param	id_periodo	path	int	true	"Id del ultimo periodo"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 404 not found resource
 // @router /estado_recibos/:persona_id/:id_periodo [get]
 func (c *InscripcionesController) GetEstadoInscripcion() {
 
@@ -52,9 +52,7 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 	var resultadoAux []map[string]interface{}
 	var resultado = make(map[string]interface{})
 	var Estado string
-	var alerta models.Alert
 	var errorGetAll bool
-	alertas := []interface{}{"Response:"}
 
 	//Se consultan todas las inscripciones relacionadas a ese tercero
 	errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PersonaId:"+persona_id+",PeriodoId:"+id_periodo, &Inscripciones)
@@ -106,20 +104,18 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 									resultado["Inscripciones"] = resultadoAux
 								} else {
 									errorGetAll = true
-									alertas = append(alertas, "No data found")
-									alerta.Code = "404"
-									alerta.Type = "error"
-									alerta.Body = alertas
-									c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+									logs.Error("No data found")
+									c.Data["message"] = "Error service GetEstadoInscripcion: " + "No data found"
+									c.Abort("404")
 								}
 							}
 						} else {
 							errorGetAll = true
-							alertas = append(alertas, errRecibo.Error())
-							alerta.Code = "400"
-							alerta.Type = "error"
-							alerta.Body = alertas
-							c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+							logs.Error(errRecibo)
+							c.Data["message"] = "Error service GetEstadoInscripcion: " + errRecibo.Error()
+							c.Abort("400")
 						}
 					}
 				}
@@ -134,27 +130,21 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 			resultado["Inscripciones"] = resultadoAux
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, "No data found")
-			alerta.Code = "404"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+			logs.Error("No data found")
+			c.Data["message"] = "Error service GetEstadoInscripcion: " + "No data found"
+			c.Abort("404")
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errInscripcion.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errInscripcion)
+		c.Data["message"] = "Error service GetEstadoInscripcion: " + errInscripcion.Error()
+		c.Abort("400")
 	}
 
 	if !errorGetAll {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 
 	c.ServeJSON()
@@ -165,7 +155,7 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 // @Description Agregar Información Familiar
 // @Param   body        body    {}  true        "body Agregar PostInformacionFamiliar content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /post_informacion_familiar [post]
 func (c *InscripcionesController) PostInformacionFamiliar() {
 
@@ -173,8 +163,8 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 	var TerceroFamiliarPost map[string]interface{}
 	var FamiliarParentescoPost map[string]interface{}
 	var InfoContactoPost map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
+	// var alerta models.Alert
+	// alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &InformacionFamiliar); err == nil {
 		InfoFamiliarAux := InformacionFamiliar["Familiares"].([]interface{})
 		//InfoTercero := InformacionFamiliar["Tercero_Familiar"]
@@ -216,10 +206,10 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 								errInfoContacto := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &InfoContactoPost, infoContacto)
 								if errInfoContacto == nil && fmt.Sprintf("%v", InfoContactoPost) != "map[]" && InfoContactoPost["Id"] != nil {
 									if InfoContactoPost["Status"] != 400 {
-										c.Data["json"] = TerceroFamiliarPost
+										c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": TerceroFamiliarPost}
 									} else {
 										logs.Error(errFamiliarParentesco)
-										c.Data["system"] = TerceroFamiliarPost
+										c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 										c.Abort("400")
 									}
 								} else {
@@ -229,7 +219,7 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 									//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero_familiar/%.f", FamiliarParentescoPost["Id"]), "DELETE", &resultado2, nil)
 									models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero_familiar/%.f", FamiliarParentescoPost["Id"]))
 									logs.Error(errFamiliarParentesco)
-									c.Data["system"] = TerceroFamiliarPost
+									c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 									c.Abort("400")
 								}
 							}
@@ -238,7 +228,7 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 							//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]), "DELETE", &resultado2, nil)
 							models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]))
 							logs.Error(errFamiliarParentesco)
-							c.Data["system"] = TerceroFamiliarPost
+							c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 							c.Abort("400")
 						}
 					} else {
@@ -246,7 +236,7 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 						//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]), "DELETE", &resultado2, nil)
 						models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]))
 						logs.Error(errFamiliarParentesco)
-						c.Data["system"] = TerceroFamiliarPost
+						c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 						c.Abort("400")
 					}
 
@@ -255,25 +245,20 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 					//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]), "DELETE", &resultado2, nil)
 					models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", TerceroFamiliarPost["Id"]))
 					logs.Error(errTerceroFamiliar)
-					c.Data["system"] = TerceroFamiliarPost
+					c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 					c.Abort("400")
 				}
 			} else {
 				logs.Error(errTerceroFamiliar)
-				c.Data["system"] = TerceroFamiliarPost
+				c.Data["message"] = "Error service PostInformacionFamiliar: " + TerceroFamiliarPost["body"].(string)
 				c.Abort("400")
 			}
 		}
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostInformacionFamiliar: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -282,38 +267,28 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 // @Description Agregar Reintegro
 // @Param   body        body    {}  true        "body Agregar Reintegro content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /post_reintegro [post]
 func (c *InscripcionesController) PostReintegro() {
 
 	var Reintegro map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &Reintegro); err == nil {
 
 		var resultadoReintegro map[string]interface{}
 		errReintegro := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"tr_inscripcion/reintegro", "POST", &resultadoReintegro, Reintegro)
 		if resultadoReintegro["Type"] == "error" || errReintegro != nil || resultadoReintegro["Status"] == "404" || resultadoReintegro["Message"] != nil {
-			alertas = append(alertas, resultadoReintegro)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoReintegro)
+			c.Data["message"] = "Error service PostReintegro: " + resultadoReintegro["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Reintegrro registrado")
-			alertas = append(alertas, Reintegro)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": Reintegro}
 		}
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostReintegro: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -322,38 +297,28 @@ func (c *InscripcionesController) PostReintegro() {
 // @Description Agregar Transferencia
 // @Param   body        body    {}  true        "body Agregar Transferencia content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /post_transferencia [post]
 func (c *InscripcionesController) PostTransferencia() {
 
 	var Transferencia map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &Transferencia); err == nil {
 
 		var resultadoTransferencia map[string]interface{}
 		errTransferencia := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"tr_inscripcion/transferencia", "POST", &resultadoTransferencia, Transferencia)
 		if resultadoTransferencia["Type"] == "error" || errTransferencia != nil || resultadoTransferencia["Status"] == "404" || resultadoTransferencia["Message"] != nil {
-			alertas = append(alertas, resultadoTransferencia)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoTransferencia)
+			c.Data["message"] = "Error service PostTransferencia: " + resultadoTransferencia["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Transferencia registrada")
-			alertas = append(alertas, Transferencia)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": Transferencia}
 		}
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostTransferencia: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -367,8 +332,6 @@ func (c *InscripcionesController) PostTransferencia() {
 func (c *InscripcionesController) PostInfoIcfesColegio() {
 
 	var InfoIcfesColegio map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &InfoIcfesColegio); err == nil {
 
 		var InscripcionPregrado = InfoIcfesColegio["InscripcionPregrado"].(map[string]interface{})
@@ -384,12 +347,9 @@ func (c *InscripcionesController) PostInfoIcfesColegio() {
 			var resultadoInfoComeplementaria map[string]interface{}
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Message"] != nil {
-				alertas = append(alertas, resultadoInfoComeplementaria)
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				logs.Error(resultadoInfoComeplementaria)
+				c.Data["message"] = "Error service PostInfoIcfesColegio: " + resultadoInfoComeplementaria["Message"].(string)
+				c.Abort("400")
 			} else {
 				fmt.Println("Info complementaria registrada", dato["InfoComplementariaId"])
 				// alertas = append(alertas, Transferencia)
@@ -399,15 +359,12 @@ func (c *InscripcionesController) PostInfoIcfesColegio() {
 		var resultadoInscripcionPregrado map[string]interface{}
 		errInscripcionPregrado := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion_pregrado", "POST", &resultadoInscripcionPregrado, InscripcionPregrado)
 		if resultadoInscripcionPregrado["Type"] == "error" || errInscripcionPregrado != nil || resultadoInscripcionPregrado["Status"] == "404" || resultadoInscripcionPregrado["Message"] != nil {
-			alertas = append(alertas, resultadoInscripcionPregrado)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoInscripcionPregrado)
+			c.Data["message"] = "Error service PostInfoIcfesColegio: " + resultadoInscripcionPregrado["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Inscripcion registrada")
-			alertas = append(alertas, InfoIcfesColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InfoIcfesColegio}
 		}
 
 		// Registro de colegio a tercero
@@ -430,33 +387,22 @@ func (c *InscripcionesController) PostInfoIcfesColegio() {
 		if errRegistroColegio == nil && fmt.Sprintf("%v", resultadoRegistroColegio["System"]) != "map[]" && resultadoRegistroColegio["Id"] != nil {
 			if resultadoRegistroColegio["Status"] != 400 {
 				fmt.Println("Colegio registrado")
-				alertas = append(alertas, InfoIcfesColegio)
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InfoIcfesColegio}
 			} else {
-				alertas = append(alertas, resultadoRegistroColegio)
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				logs.Error(resultadoRegistroColegio)
+				c.Data["message"] = "Error service PostInfoIcfesColegio: " + resultadoRegistroColegio["Message"].(string)
+				c.Abort("400")
 			}
 		} else {
-			alertas = append(alertas, resultadoRegistroColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoRegistroColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegio: " + resultadoRegistroColegio["Message"].(string)
+			c.Abort("400")
 		}
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostInfoIcfesColegio: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -465,13 +411,13 @@ func (c *InscripcionesController) PostInfoIcfesColegio() {
 // @Description Agregar Preinscripcion
 // @Param   body        body    {}  true        "body Agregar Preinscripcion content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /post_preinscripcion [post]
 func (c *InscripcionesController) PostPreinscripcion() {
 
 	var Infopreinscripcion map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
+	// var alerta models.Alert
+	// alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &Infopreinscripcion); err == nil {
 
 		var InfoPreinscripcionTodas = Infopreinscripcion["DatosPreinscripcion"].([]interface{})
@@ -481,28 +427,20 @@ func (c *InscripcionesController) PostPreinscripcion() {
 			var resultadoPreinscripcion map[string]interface{}
 			errPreinscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &resultadoPreinscripcion, dato)
 			if resultadoPreinscripcion["Type"] == "error" || errPreinscripcion != nil || resultadoPreinscripcion["Status"] == "404" || resultadoPreinscripcion["Message"] != nil {
-				alertas = append(alertas, resultadoPreinscripcion)
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				logs.Error(resultadoPreinscripcion)
+				c.Data["message"] = "Error service PostPreinscripcion: " + resultadoPreinscripcion["Message"].(string)
+				c.Abort("400")
 			} else {
 				fmt.Println("Preinscripcion registrada", dato)
-				alertas = append(alertas, InfoPreinscripcionTodas)
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InfoPreinscripcionTodas}
 			}
 		}
 
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostPreinscripcion: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -511,14 +449,12 @@ func (c *InscripcionesController) PostPreinscripcion() {
 // @Description Agregar InfoIcfesColegio
 // @Param   body        body    {}  true        "body Agregar InfoIcfesColegio content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /post_info_icfes_colegio_nuevo [post]
 func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 
 	var InfoIcfesColegio map[string]interface{}
-	var alerta models.Alert
 	var IdColegio float64
-	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &InfoIcfesColegio); err == nil {
 
 		var InscripcionPregrado = InfoIcfesColegio["InscripcionPregrado"].(map[string]interface{})
@@ -533,15 +469,12 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoRegistroColegio map[string]interface{}
 		errRegistroColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"tercero", "POST", &resultadoRegistroColegio, InformacionColegio)
 		if resultadoRegistroColegio["Type"] == "error" || errRegistroColegio != nil || resultadoRegistroColegio["Status"] == "404" || resultadoRegistroColegio["Message"] != nil {
-			alertas = append(alertas, resultadoRegistroColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoRegistroColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoRegistroColegio["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Colegio registrado")
-			alertas = append(alertas, resultadoRegistroColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoRegistroColegio}
 			IdColegio = resultadoRegistroColegio["Id"].(float64)
 			fmt.Println(IdColegio)
 		}
@@ -555,15 +488,12 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoDirecionColegio map[string]interface{}
 		errRegistroDirecionColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoDirecionColegio, DireccionColegioPost)
 		if resultadoDirecionColegio["Type"] == "error" || errRegistroDirecionColegio != nil || resultadoDirecionColegio["Status"] == "404" || resultadoDirecionColegio["Message"] != nil {
-			alertas = append(alertas, resultadoDirecionColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoDirecionColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoDirecionColegio["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Direccion Colegio registrado")
-			alertas = append(alertas, resultadoDirecionColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoDirecionColegio}
 
 		}
 		UbicacionColegioPost := map[string]interface{}{
@@ -575,15 +505,12 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoUbicacionColegio map[string]interface{}
 		errRegistroUbicacionColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoUbicacionColegio, UbicacionColegioPost)
 		if resultadoUbicacionColegio["Type"] == "error" || errRegistroUbicacionColegio != nil || resultadoUbicacionColegio["Status"] == "404" || resultadoUbicacionColegio["Message"] != nil {
-			alertas = append(alertas, resultadoUbicacionColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoUbicacionColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoUbicacionColegio["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Ubicacion Colegio registrado")
-			alertas = append(alertas, resultadoUbicacionColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoUbicacionColegio}
 
 		}
 		tipoColegioPost := map[string]interface{}{
@@ -595,15 +522,12 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoTipoColegio map[string]interface{}
 		errRegistroTipoColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"tercero_tipo_tercero", "POST", &resultadoTipoColegio, tipoColegioPost)
 		if resultadoTipoColegio["Type"] == "error" || errRegistroTipoColegio != nil || resultadoTipoColegio["Status"] == "404" || resultadoTipoColegio["Message"] != nil {
-			alertas = append(alertas, resultadoTipoColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoTipoColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoTipoColegio["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("TipoColegio registrado")
-			alertas = append(alertas, resultadoTipoColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoTipoColegio}
 
 		}
 
@@ -616,15 +540,12 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoVerificarColegio map[string]interface{}
 		errRegistroVerificarColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"tercero_tipo_tercero", "POST", &resultadoVerificarColegio, VerificarColegioPost)
 		if resultadoVerificarColegio["Type"] == "error" || errRegistroVerificarColegio != nil || resultadoVerificarColegio["Status"] == "404" || resultadoVerificarColegio["Message"] != nil {
-			alertas = append(alertas, resultadoVerificarColegio)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoVerificarColegio)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoVerificarColegio["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Verificar registrado")
-			alertas = append(alertas, resultadoVerificarColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoVerificarColegio}
 
 		}
 		// Registro de colegio a tercero
@@ -649,34 +570,25 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		if errRegistroColegioTercero == nil && fmt.Sprintf("%v", resultadoRegistroColegioTercero["System"]) != "map[]" && resultadoRegistroColegioTercero["Id"] != nil {
 			if resultadoRegistroColegioTercero["Status"] != 400 {
 				fmt.Println("Colegio Tercero registrado")
-				alertas = append(alertas, InfoIcfesColegio)
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InfoIcfesColegio}
 			} else {
-				alertas = append(alertas, resultadoRegistroColegioTercero)
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				logs.Error(resultadoRegistroColegioTercero)
+				c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoRegistroColegioTercero["Message"].(string)
+				c.Abort("400")
 			}
 		} else {
-			alertas = append(alertas, resultadoRegistroColegioTercero)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoRegistroColegioTercero)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoRegistroColegioTercero["Message"].(string)
+			c.Abort("400")
 		}
 
 		var resultadoInfoComeplementaria map[string]interface{}
 
 		errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, InfoComplementariaTercero)
 		if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Message"] != nil {
-			alertas = append(alertas, resultadoInfoComeplementaria)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoInfoComeplementaria)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoInfoComeplementaria["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Info complementaria registrada", InfoComplementariaTercero)
 			// alertas = append(alertas, Transferencia)
@@ -685,27 +597,19 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 		var resultadoInscripcionPregrado map[string]interface{}
 		errInscripcionPregrado := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion_pregrado", "POST", &resultadoInscripcionPregrado, InscripcionPregrado)
 		if resultadoInscripcionPregrado["Type"] == "error" || errInscripcionPregrado != nil || resultadoInscripcionPregrado["Status"] == "404" || resultadoInscripcionPregrado["Message"] != nil {
-			alertas = append(alertas, resultadoInscripcionPregrado)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
-			c.ServeJSON()
+			logs.Error(resultadoInscripcionPregrado)
+			c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + resultadoInscripcionPregrado["Message"].(string)
+			c.Abort("400")
 		} else {
 			fmt.Println("Inscripcion registrada")
-			alertas = append(alertas, InfoIcfesColegio)
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InfoIcfesColegio}
 		}
 
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostInfoIcfesColegioNuevo: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -714,13 +618,11 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 // @Description Agregar InfoComplementariaUniversidad
 // @Param   body        body    {}  true        "body Agregar InfoComplementariaUniversidad content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /info_complementaria_universidad [post]
 func (c *InscripcionesController) PostInfoComplementariaUniversidad() {
 
 	var InfoComplementariaUniversidad map[string]interface{}
-	var alerta models.Alert
-	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &InfoComplementariaUniversidad); err == nil {
 
 		var InfoComplementariaTercero = InfoComplementariaUniversidad["InfoComplementariaTercero"].([]interface{})
@@ -733,12 +635,9 @@ func (c *InscripcionesController) PostInfoComplementariaUniversidad() {
 			var resultadoInfoComeplementaria map[string]interface{}
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Message"] != nil {
-				alertas = append(alertas, resultadoInfoComeplementaria)
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				logs.Error(resultadoInfoComeplementaria)
+				c.Data["message"] = "Error service PostInfoComplementariaUniversidad: " + resultadoInfoComeplementaria["Message"].(string)
+				c.Abort("400")
 			} else {
 				fmt.Println("Info complementaria registrada", dato["InfoComplementariaId"])
 				// alertas = append(alertas, Transferencia)
@@ -746,15 +645,10 @@ func (c *InscripcionesController) PostInfoComplementariaUniversidad() {
 		}
 
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
-		c.Data["json"] = alerta
-		c.ServeJSON()
+		logs.Error(err)
+		c.Data["message"] = "Error service PostInfoComplementariaUniversidad: " + err.Error()
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -799,14 +693,14 @@ func (c *InscripcionesController) ConsultarProyectosEventos() {
 							} else {
 								logs.Error(ProyectosAcademicosConEvento)
 								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								c.Data["system"] = erreproyectos
+								c.Data["message"] = "Error service ConsultarProyectosEventos: " + erreproyectos.Error()
 								c.Abort("404")
 							}
 						}
 					} else {
 						logs.Error(ProyectosAcademicosConEvento)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = erreproyectos
+						c.Data["message"] = "Error service ConsultarProyectosEventos: " + erreproyectos.Error()
 						c.Abort("404")
 					}
 
@@ -815,7 +709,7 @@ func (c *InscripcionesController) ConsultarProyectosEventos() {
 				}
 			}
 			resultado = Proyectos_academicos_Get
-			c.Data["json"] = resultado
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 
 		} else {
 			if EventosInscripcion[0]["Message"] == "Not found resource" {
@@ -823,14 +717,14 @@ func (c *InscripcionesController) ConsultarProyectosEventos() {
 			} else {
 				logs.Error(EventosInscripcion)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = erreVentos
+				c.Data["message"] = "Error service ConsultarProyectosEventos: " + erreVentos.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(EventosInscripcion)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = erreVentos
+		c.Data["message"] = "Error service ConsultarProyectosEventos: " + erreVentos.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -841,13 +735,11 @@ func (c *InscripcionesController) ConsultarProyectosEventos() {
 // @Description Agregar PostInfoComplementariaTercero
 // @Param   body        body    {}  true        "body Agregar PostInfoComplementariaTercero content"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /info_complementaria_tercero [post]
 func (c *InscripcionesController) PostInfoComplementariaTercero() {
 	var InfoComplementaria map[string]interface{}
 
-	var alerta models.Alert
-	alertas := []interface{}{}
 	var algoFallo bool = false
 
 	var inactivePosts []map[string]interface{}
@@ -867,10 +759,9 @@ func (c *InscripcionesController) PostInfoComplementariaTercero() {
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Status"] == "400" || resultadoInfoComeplementaria["Message"] != nil {
 				algoFallo = true
-				alertas = append(alertas, errInfoComplementaria.Error())
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = alertas
+				logs.Error(errInfoComplementaria)
+				c.Data["message"] = "Error service PostInfoComplementariaTercero: " + errInfoComplementaria.Error()
+				c.Abort("400")
 			} else {
 				respuestas = append(respuestas, resultadoInfoComeplementaria)
 				inactivePosts = append(inactivePosts, resultadoInfoComeplementaria)
@@ -880,22 +771,17 @@ func (c *InscripcionesController) PostInfoComplementariaTercero() {
 			}
 		}
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-		alerta.Body = alertas
+		logs.Error(err)
+		c.Data["message"] = "Error service PostInfoComplementariaTercero: " + err.Error()
+		c.Abort("400")
 	}
 
 	if !algoFallo {
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = respuestas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": respuestas}
 	} else {
 		for _, disable := range inactivePosts {
 			models.SetInactivo("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero/" + fmt.Sprintf("%.f", disable["Id"].(float64)))
 		}
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
 	}
 
 	c.ServeJSON()
@@ -914,8 +800,8 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 	resultado := map[string]interface{}{}
 	// var resultado map[string]interface{}
 	var errorGetAll bool
-	var alerta models.Alert
-	alertas := []interface{}{}
+	// var alerta models.Alert
+	// alertas := []interface{}{}
 
 	// 41 = estrato
 	IdEstrato, _ := models.IdInfoCompTercero("9", "ESTRATO")
@@ -934,27 +820,24 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 		} else {
 			if resultadoEstrato[0]["Message"] == "Not found resource" {
 				errorGetAll = true
-				alertas = append(alertas, "Not found resource")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("Not found resource")
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + "Not found resource"
+				c.Abort("404")
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, errEstratoResidencia)
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error(errEstratoResidencia)
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errEstratoResidencia.Error()
+				c.Abort("404")
 			}
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errEstratoResidencia)
-		alerta.Code = "404"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errEstratoResidencia)
+		c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errEstratoResidencia.Error()
+		c.Abort("404")
 	}
 
 	// 55 = codigo postal
@@ -974,27 +857,24 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 		} else {
 			if resultadoCodigoPostal[0]["Message"] == "Not found resource" {
 				errorGetAll = true
-				alertas = append(alertas, "Not found resource")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("Not found resource")
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + "Not found resource"
+				c.Abort("404")
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, errCodigoPostal)
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error(errCodigoPostal)
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errCodigoPostal.Error()
+				c.Abort("404")
 			}
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errCodigoPostal)
-		alerta.Code = "404"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errCodigoPostal)
+		c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errCodigoPostal.Error()
+		c.Abort("404")
 	}
 
 	// 51 = telefono
@@ -1016,28 +896,24 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 		} else {
 			if resultadoTelefono[0]["Message"] == "Not found resource" {
 				errorGetAll = true
-				alertas = append(alertas, "Not found resource")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("Not found resource")
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + "Not found resource"
+				c.Abort("404")
 			} else {
 				errorGetAll = true
-				errorGetAll = true
-				alertas = append(alertas, errTelefono)
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error(errTelefono)
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errTelefono.Error()
+				c.Abort("404")
 			}
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errTelefono)
-		alerta.Code = "404"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errTelefono)
+		c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errTelefono.Error()
+		c.Abort("404")
 	}
 
 	// 54 = direccion
@@ -1064,26 +940,24 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 		} else {
 			if resultadoDireccion[0]["Message"] == "Not found resource" {
 				errorGetAll = true
-				alertas = append(alertas, "Not found resource")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("Not found resource")
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + "Not found resource"
+				c.Abort("404")
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, errDireccion)
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
+
+				logs.Error(errDireccion)
+				c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errDireccion.Error()
+				c.Abort("404")
 			}
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errDireccion)
-		alerta.Code = "404"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errDireccion)
+		c.Data["message"] = "Error service GetInfoComplementariaTercero: " + errDireccion.Error()
+		c.Abort("404")
 	}
 
 	// Correo registro
@@ -1167,11 +1041,7 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 	}
 
 	if !errorGetAll {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 
 	c.ServeJSON()
@@ -1187,8 +1057,6 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 func (c *InscripcionesController) ActualizarInfoContacto() {
 	var InfoContacto map[string]interface{}
 
-	var alerta models.Alert
-	alertas := []interface{}{}
 	var algoFallo bool = false
 
 	var revertPuts []map[string]interface{}
@@ -1219,17 +1087,17 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 						respuestas = append(respuestas, resp)
 					} else {
 						algoFallo = true
-						alertas = append(alertas, errPutInfoComp.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
-						alerta.Body = alertas
+
+						logs.Error(errPutInfoComp)
+						c.Data["message"] = "Error service ActualizarInfoContacto: " + errPutInfoComp.Error()
+						c.Abort("400")
 					}
 				} else {
 					algoFallo = true
-					alertas = append(alertas, "No data found")
-					alerta.Code = "404"
-					alerta.Type = "error"
-					alerta.Body = alertas
+
+					logs.Error("No data found")
+					c.Data["message"] = "Error service ActualizarInfoContacto: " + "No data found"
+					c.Abort("404")
 				}
 			} else {
 				var resp map[string]interface{}
@@ -1239,10 +1107,10 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 					inactivePosts = append(inactivePosts, resp)
 				} else {
 					algoFallo = true
-					alertas = append(alertas, errPostInfoComp.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
+
+					logs.Error(errPostInfoComp)
+					c.Data["message"] = "Error service ActualizarInfoContacto: " + errPostInfoComp.Error()
+					c.Abort("400")
 				}
 			}
 			if algoFallo {
@@ -1251,17 +1119,14 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 		}
 	} else {
 		algoFallo = true
-		alertas = append(alertas, err.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
+
+		logs.Error(err)
+		c.Data["message"] = "Error service ActualizarInfoContacto: " + err.Error()
+		c.Abort("400")
 	}
 
 	if !algoFallo {
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = respuestas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": respuestas}
 	} else {
 		for _, revert := range revertPuts {
 			var resp map[string]interface{}
@@ -1270,7 +1135,6 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 		for _, disable := range inactivePosts {
 			models.SetInactivo("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero/" + fmt.Sprintf("%.f", disable["Id"].(float64)))
 		}
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
 	}
 
 	c.ServeJSON()
@@ -1281,10 +1145,10 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 // @Description Registra una nueva inscripción con su respectivo recibo de pago
 // @Param	body	body 	{}	true		"body for información de suministrada por el usuario par la inscripción"
 // @Success 200 {}
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /generar_inscripcion [post]
 func (c *InscripcionesController) PostGenerarInscripcion() {
-	var respuesta models.Alert
+	// var respuesta models.Alert
 	var SolicitudInscripcion map[string]interface{}
 	var TipoParametro string
 	var parametro map[string]interface{}
@@ -1353,9 +1217,7 @@ func (c *InscripcionesController) PostGenerarInscripcion() {
 						var inscripcionUpdate map[string]interface{}
 						errInscripcionUpdate := request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "PUT", &inscripcionUpdate, inscripcionRealizada)
 						if errInscripcionUpdate == nil {
-							respuesta.Type = "success"
-							respuesta.Code = "200"
-							respuesta.Body = inscripcionUpdate
+							c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": inscripcionUpdate}
 
 							fecha_actual := time.Now()
 							dataEmail := map[string]interface{}{
@@ -1368,52 +1230,44 @@ func (c *InscripcionesController) PostGenerarInscripcion() {
 							utils.SendNotificationInscripcionSolicitud(dataEmail, objTransaccion["correo"].(string))
 						} else {
 							logs.Error(errInscripcionUpdate)
-							respuesta.Type = "error"
-							respuesta.Code = "400"
-							respuesta.Body = errInscripcionUpdate.Error()
+							c.Data["message"] = "Error service PostGenerarInscripcion: " + errInscripcionUpdate.Error()
+							c.Abort("400")
 						}
 					} else {
 						//var resDelete string
 						//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
 						models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
 						logs.Error(errRecibo)
-						respuesta.Type = "error"
-						respuesta.Code = "400"
-						respuesta.Body = errRecibo.Error()
+						c.Data["message"] = "Error service PostGenerarInscripcion: " + errRecibo.Error()
+						c.Abort("400")
 					}
 				} else {
 					//var resDelete string
 					//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
 					models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
 					logs.Error(errJson)
-					respuesta.Type = "error"
-					respuesta.Code = "403"
-					respuesta.Body = errJson.Error()
+					c.Data["message"] = "Error service PostGenerarInscripcion: " + errJson.Error()
+					c.Abort("403")
 				}
 			} else {
 				//var resDelete string
 				//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
 				models.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
 				logs.Error(errParam)
-				respuesta.Type = "error"
-				respuesta.Code = "400"
-				respuesta.Body = errParam.Error()
+				c.Data["message"] = "Error service PostGenerarInscripcion: " + errParam.Error()
+				c.Abort("400")
 			}
 
 		} else {
 			logs.Error(errInscripcion)
-			respuesta.Type = "success"
-			respuesta.Code = "204"
-			//respuesta.Body = errInscripcion.Error()
+			c.Data["message"] = "Error service PostGenerarInscripcion: " + errInscripcion.Error()
+			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		respuesta.Type = "error"
-		respuesta.Code = "403"
-		respuesta.Body = err.Error()
+		c.Data["message"] = "Error service PostGenerarInscripcion: " + err.Error()
+		c.Abort("403")
 	}
-
-	c.Data["json"] = respuesta
 	c.ServeJSON()
 
 }

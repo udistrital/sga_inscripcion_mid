@@ -6,14 +6,15 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/phpdave11/gofpdf"
 	"github.com/phpdave11/gofpdf/contrib/barcode"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
-	"sga_mid_inscripcion/utils"
-	"strings"
-	"time"
 )
 
 type GenerarReciboController struct {
@@ -44,8 +45,9 @@ func (c *GenerarReciboController) PostGenerarEstudianteRecibo() {
 		pdf := GenerarEstudianteRecibo(data)
 
 		if pdf.Err() {
-			logs.Error("Failed creating PDF report: %s\n", pdf.Error())
-			c.Data["json"] = map[string]interface{}{"Code": "400", "Body": pdf.Error(), "Type": "error"}
+			logs.Error("Failed creating PDF report: %s\n", pdf)
+			c.Data["message"] = "Error service PostGenerarEstudianteRecibo: " + pdf.Error()
+			c.Abort("400")
 		}
 
 		if pdf.Ok() {
@@ -55,7 +57,7 @@ func (c *GenerarReciboController) PostGenerarEstudianteRecibo() {
 
 	} else {
 		logs.Error(parseErr)
-		c.Data["json"] = map[string]interface{}{"Code": "400", "Body": parseErr.Error(), "Type": "error"}
+		c.Data["message"] = "Error service PostGenerarEstudianteRecibo: " + parseErr.Error()
 		c.Abort("400")
 	}
 
@@ -79,8 +81,9 @@ func (c *GenerarReciboController) PostGenerarRecibo() {
 		pdf := GenerarReciboAspirante(data)
 
 		if pdf.Err() {
-			logs.Error("Failed creating PDF report: %s\n", pdf.Error())
-			c.Data["json"] = map[string]interface{}{"Code": "400", "Body": pdf.Error(), "Type": "error"}
+			logs.Error("Failed creating PDF report: %s\n", pdf)
+			c.Data["message"] = "Error service PostGenerarRecibo: " + pdf.Error()
+			c.Abort("400")
 		}
 
 		if pdf.Ok() {
@@ -90,7 +93,7 @@ func (c *GenerarReciboController) PostGenerarRecibo() {
 
 	} else {
 		logs.Error(parseErr)
-		c.Data["json"] = map[string]interface{}{"Code": "400", "Body": parseErr.Error(), "Type": "error"}
+		c.Data["message"] = "Error service PostGenerarRecibo: " + parseErr.Error()
 		c.Abort("400")
 	}
 
@@ -139,8 +142,9 @@ func (c *GenerarReciboController) PostGenerarComprobanteInscripcion() {
 					pdf := generarComprobanteInscripcion(data)
 
 					if pdf.Err() {
-						logs.Error("Failed creating PDF voucher: %s\n", pdf.Error())
-						c.Data["json"] = map[string]interface{}{"Code": "400", "Body": pdf.Error(), "Type": "error"}
+						logs.Error("Failed creating PDF voucher: %s\n", pdf)
+						c.Data["message"] = "Error service PostGenerarComprobanteInscripcion: " + pdf.Error()
+						c.Abort("400")
 					}
 
 					if pdf.Ok() {
@@ -167,22 +171,22 @@ func (c *GenerarReciboController) PostGenerarComprobanteInscripcion() {
 
 				} else {
 					logs.Error("reciboCollection seems empty", ReciboXML)
-					c.Data["json"] = map[string]interface{}{"Code": "400", "Body": "reciboCollection seems empty", "Type": "error"}
+					c.Data["message"] = "Error service PostGenerarComprobanteInscripcion: " + "reciboCollection seems empty"
 					c.Abort("400")
 				}
 			} else {
 				logs.Error(errRecibo)
-				c.Data["json"] = map[string]interface{}{"Code": "400", "Body": errRecibo.Error(), "Type": "error"}
+				c.Data["message"] = "Error service PostGenerarComprobanteInscripcion: " + errRecibo.Error()
 				c.Abort("400")
 			}
 		} else {
 			logs.Error("ReciboInscripcionId seems empty")
-			c.Data["json"] = map[string]interface{}{"Code": "400", "Body": "ReciboInscripcionId seems empty", "Type": "error"}
+			c.Data["message"] = "Error service PostGenerarComprobanteInscripcion: " + "reciboCollection seems empty"
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(parseErr)
-		c.Data["json"] = map[string]interface{}{"Code": "400", "Body": parseErr.Error(), "Type": "error"}
+		c.Data["message"] = "Error service PostGenerarComprobanteInscripcion: " + parseErr.Error()
 		c.Abort("400")
 	}
 

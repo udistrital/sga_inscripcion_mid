@@ -3,12 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/boombuler/barcode"
-	"github.com/boombuler/barcode/code128"
 	"image/png"
 	"os"
-	"sga_mid_inscripcion/models"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/boombuler/barcode"
+	"github.com/boombuler/barcode/code128"
 )
 
 // GeneradorCodigoBarrasController ...
@@ -30,11 +31,10 @@ func (c *GeneradorCodigoBarrasController) URLMapping() {
 // @router / [post]
 func (c *GeneradorCodigoBarrasController) GenerarCodigoBarras() {
 	var InformacionCodigo map[string]interface{}
-	var alerta models.Alert
-	alertas := append([]interface{}{"Response:"})
+	//var alerta models.Alert
+	//alertas := append([]interface{}{"Response:"})
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &InformacionCodigo); err == nil {
 		fmt.Println(InformacionCodigo["Prueba"])
-		alertas = append(alertas, InformacionCodigo)
 
 		CodigoRecibido := InformacionCodigo["Prueba"].(string)
 		fmt.Println("Generando code128 barcode para : ", CodigoRecibido)
@@ -57,13 +57,12 @@ func (c *GeneradorCodigoBarrasController) GenerarCodigoBarras() {
 
 		fmt.Println("Code128 code generated and saved to Codigo_generado.png")
 
-	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-	}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": InformacionCodigo}
 
-	alerta.Body = alertas
-	c.Data["json"] = alerta
+	} else {
+		logs.Error(err)
+		c.Data["message"] = "Error service GenerarCodigoBarras: " + err.Error()
+		c.Abort("400")
+	}
 	c.ServeJSON()
 }

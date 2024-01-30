@@ -3,13 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"strconv"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/request"
-	"reflect"
-	"sga_mid_inscripcion/models"
-	"strconv"
-	"strings"
 )
 
 // ExperienciaLaboralController ...
@@ -67,13 +67,13 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 					c.Data["json"] = nil
 				} else {
 					logs.Error(resultadoInfoComplementaria)
-					c.Data["system"] = resultadoInfoComplementaria
+					c.Data["message"] = "Error service PostExperienciaLaboral: " + resultadoInfoComplementaria[0]["Body"].(string)
 					c.Abort("404")
 				}
 			}
 		} else {
 			logs.Error(errIdInfo)
-			c.Data["system"] = errIdInfo
+			c.Data["message"] = "Error service PostExperienciaLaboral: " + errIdInfo.Error()
 			c.Abort("404")
 		}
 		intVar, _ := strconv.Atoi(idInfoExperencia)
@@ -100,21 +100,21 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 			if ExperienciaLaboralPost["Status"] != 400 {
 				respuesta["FormacionAcademica"] = ExperienciaLaboralPost
 				//formatdata.JsonPrint(respuesta)
-				c.Data["json"] = respuesta
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": respuesta}
 			} else {
 				logs.Error(ExperienciaLaboralPost)
-				c.Data["system"] = ExperienciaLaboralPost
+				c.Data["message"] = "Error service PostExperienciaLaboral: " + ExperienciaLaboralPost["Body"].(string)
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errExperiencia)
-			c.Data["system"] = errExperiencia
+			c.Data["message"] = "Error service PostExperienciaLaboral: " + errExperiencia.Error()
 			c.Abort("400")
 		}
 
 	} else {
 		logs.Error(err)
-		c.Data["system"] = ExperienciaLaboral
+		c.Data["message"] = "Error service PostExperienciaLaboral: " + ExperienciaLaboral["Body"].(string)
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -296,29 +296,26 @@ func (c *ExperienciaLaboralController) GetInformacionEmpresa() {
 						//c.Abort("404")
 					}
 
-					c.Data["json"] = respuesta
+					c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": respuesta}
 
 				} else {
 					logs.Error(empresaTercero["Status"])
-					c.Data["json"] = map[string]interface{}{"Code": "400", "Body": empresaTercero["Status"], "Type": "error"}
-					c.Data["system"] = empresaTercero
+					c.Data["message"] = "Error service GetInformacionEmpresa: " + empresaTercero["Body"].(string)
 					c.Abort("404")
 				}
 			} else {
 				logs.Error(errUniversidad)
-				c.Data["json"] = map[string]interface{}{"Code": "400", "Body": errUniversidad.Error(), "Type": "error"}
-				c.Data["system"] = empresaTercero
+				c.Data["message"] = "Error service GetInformacionEmpresa: " + empresaTercero["Body"].(string)
 				c.Abort("404")
 			}
 		} else {
-			c.Data["json"] = map[string]interface{}{"Code": "400", "Body": empresa, "Type": "error"}
-			c.Data["system"] = empresa
+			logs.Error(empresa)
+			c.Data["message"] = "Error service GetInformacionEmpresa: " + empresa[0]["Body"].(string)
 			c.Abort("404")
 		}
 	} else {
 		logs.Error(errNit)
-		c.Data["json"] = map[string]interface{}{"Code": "400", "Body": errNit.Error(), "Type": "error"}
-		c.Data["system"] = empresa
+		c.Data["message"] = "Error service GetInformacionEmpresa: " + errNit.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -337,9 +334,7 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 	var resultado []map[string]interface{}
 	resultado = make([]map[string]interface{}, 0)
 	var empresaTercero map[string]interface{}
-	var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{"Data:"})
 
 	var Data []map[string]interface{}
 
@@ -412,11 +407,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 												}
 											} else {
 												errorGetAll = true
-												alertas = append(alertas, errDireccion.Error())
-												alerta.Code = "400"
-												alerta.Type = "error"
-												alerta.Body = alertas
-												c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+												logs.Error(errDireccion)
+												c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errDireccion.Error()
+												c.Abort("400")
 											}
 
 											// GET para traer el telefono de la empresa (info_complementaria 51)
@@ -435,11 +429,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 												}
 											} else {
 												errorGetAll = true
-												alertas = append(alertas, errTelefono.Error())
-												alerta.Code = "400"
-												alerta.Type = "error"
-												alerta.Body = alertas
-												c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+												logs.Error(errTelefono)
+												c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errTelefono.Error()
+												c.Abort("400")
 											}
 
 											// GET para traer el correo de la empresa (info_complementaria 53)
@@ -458,11 +451,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 												}
 											} else {
 												errorGetAll = true
-												alertas = append(alertas, errCorreo.Error())
-												alerta.Code = "400"
-												alerta.Type = "error"
-												alerta.Body = alertas
-												c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+												logs.Error(errCorreo)
+												c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errCorreo.Error()
+												c.Abort("400")
 											}
 
 											// GET para traer la organizacion de la empresa (info_complementaria 110)
@@ -480,11 +472,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 												}
 											} else {
 												errorGetAll = true
-												alertas = append(alertas, errorganizacion.Error())
-												alerta.Code = "400"
-												alerta.Type = "error"
-												alerta.Body = alertas
-												c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+												logs.Error(errorganizacion)
+												c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errorganizacion.Error()
+												c.Abort("400")
 											}
 
 										} else {
@@ -496,11 +487,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 										}
 									} else {
 										errorGetAll = true
-										alertas = append(alertas, errLugar.Error())
-										alerta.Code = "400"
-										alerta.Type = "error"
-										alerta.Body = alertas
-										c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+										logs.Error(errLugar)
+										c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errLugar.Error()
+										c.Abort("400")
 									}
 								} else {
 									resultadoAux["NombreCompleto"] = nil
@@ -512,11 +502,10 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 								}
 							} else {
 								errorGetAll = true
-								alertas = append(alertas, errEmpresa.Error())
-								alerta.Code = "400"
-								alerta.Type = "error"
-								alerta.Body = alertas
-								c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+								logs.Error(errEmpresa)
+								c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errEmpresa.Error()
+								c.Abort("400")
 							}
 						} else {
 							resultadoAux["NombreEmpresa"] = nil
@@ -528,47 +517,38 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 						}
 					} else {
 						errorGetAll = true
-						alertas = append(alertas, errDatosIdentificacion.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
-						alerta.Body = alertas
-						c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+						logs.Error(errDatosIdentificacion)
+						c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + errDatosIdentificacion.Error()
+						c.Abort("400")
 					}
 
 					resultado = append(resultado, resultadoAux)
 				} else {
 					errorGetAll = true
-					alertas = append(alertas, "No data found")
-					alerta.Code = "404"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+					logs.Error("No data found")
+					c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + "No data found"
+					c.Abort("404")
 				}
 			}
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, "No data found")
-			alerta.Code = "404"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+			logs.Error("No data found")
+			c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + "No data found"
+			c.Abort("404")
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, "No data found")
-		alerta.Code = "404"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+		logs.Error("No data found")
+		c.Data["message"] = "Error service GetExperienciaLaboralByTercero: " + "No data found"
+		c.Abort("404")
 	}
 
 	if !errorGetAll {
-		c.Data["json"] = resultado
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 	c.ServeJSON()
 }
@@ -588,9 +568,7 @@ func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 	var Experiencia map[string]interface{}
 	var resultado map[string]interface{}
 	resultado = make(map[string]interface{})
-	var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{"Data:"})
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &Experiencia); err == nil {
 		InfoComplementariaTercero := Experiencia["InfoComplementariaTercero"].([]interface{})[0]
@@ -627,20 +605,17 @@ func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 				resultado = Put
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, "No data found")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("No data found")
+				c.Data["message"] = "Error service PutExperienciaLaboral: " + "No data found"
+				c.Abort("404")
 			}
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, errPut.Error())
-			alerta.Code = "400"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Response": alerta}
 
+			logs.Error(errPut)
+			c.Data["message"] = "Error service PutExperienciaLaboral: " + errPut.Error()
+			c.Abort("400")
 		}
 
 	} else {
@@ -650,12 +625,7 @@ func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 	}
 
 	if !errorGetAll {
-		c.Data["json"] = resultado
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 	c.ServeJSON()
 }
@@ -693,14 +663,14 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 					} else {
 						logs.Error(soporte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = errSoporte
+						c.Data["message"] = "Error service GetExperienciaLaboral: " + errSoporte.Error()
 						c.Abort("404")
 					}
 				}
 			} else {
 				logs.Error(soporte)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errSoporte
+				c.Data["message"] = "Error service GetExperienciaLaboral: " + errSoporte.Error()
 				c.Abort("404")
 			}
 
@@ -726,19 +696,19 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 					} else {
 						logs.Error(organizacion)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = errOrganizacion
+						c.Data["message"] = "Error service GetExperienciaLaboral: " + errOrganizacion.Error()
 						c.Abort("404")
 					}
 				}
 			} else {
 				logs.Error(organizacion)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errOrganizacion
+				c.Data["message"] = "Error service GetExperienciaLaboral: " + errOrganizacion.Error()
 				c.Abort("404")
 			}
 
 			resultado = experiencia[0]
-			c.Data["json"] = resultado
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 
 		} else {
 			if experiencia[0]["Message"] == "Not found resource" {
@@ -746,14 +716,14 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 			} else {
 				logs.Error(experiencia)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errExperiencia
+				c.Data["message"] = "Error service GetExperienciaLaboral: " + errExperiencia.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(experiencia)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = errExperiencia
+		c.Data["message"] = "Error service GetExperienciaLaboral: " + errExperiencia.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -772,9 +742,7 @@ func (c *ExperienciaLaboralController) DeleteExperienciaLaboral() {
 	var Put map[string]interface{}
 	var resultado map[string]interface{}
 	resultado = make(map[string]interface{})
-	var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{"Data:"})
 
 	errData := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?query=Id:"+Id, &Data)
 	if errData == nil {
@@ -787,37 +755,29 @@ func (c *ExperienciaLaboralController) DeleteExperienciaLaboral() {
 					resultado = Put
 				} else {
 					errorGetAll = true
-					alertas = append(alertas, "No data found")
-					alerta.Code = "404"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+					logs.Error("No data found")
+					c.Data["message"] = "Error service DeleteExperienciaLaboral: " + "No data found"
+					c.Abort("404")
 				}
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, errPut.Error())
-				alerta.Code = "400"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
 
+				logs.Error(errPut)
+				c.Data["message"] = "Error service DeleteExperienciaLaboral: " + errPut.Error()
+				c.Abort("400")
 			}
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errData.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+		logs.Error(errData)
+		c.Data["message"] = "Error service DeleteExperienciaLaboral: " + errData.Error()
+		c.Abort("400")
 	}
 
 	if !errorGetAll {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 
 	c.ServeJSON()
