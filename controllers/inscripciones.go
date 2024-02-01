@@ -11,8 +11,6 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/sga_mid_inscripcion/utils"
-
-	//"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
 )

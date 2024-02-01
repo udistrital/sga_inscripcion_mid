@@ -3,6 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"image/png"
+	"os"
+
 	"github.com/astaxie/beego"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/code128"

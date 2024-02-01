@@ -3,12 +3,15 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-	"github.com/udistrital/utils_oas/request"
-	"github.com/udistrital/sga_mid_inscripcion/models"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/models"
+	"github.com/udistrital/utils_oas/request"
+	"regexp"
+
 )
 
 // FormacionController ...
@@ -130,12 +133,13 @@ func (c *FormacionController) GetInfoUniversidad() {
 	var universidadTercero map[string]interface{}
 	var respuesta map[string]interface{}
 	respuesta = make(map[string]interface{})
-	endpoit := "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + idStr
 
-	if strings.Contains(idStr, "-") {
-		var auxId = strings.Split(idStr, "-")
-		endpoit = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + auxId[0] + ",DigitoVerificacion:" + auxId[1]
-	}
+	re := regexp.MustCompile("[^0-9-]")
+    idStr = re.ReplaceAllString(idStr, "")
+	partes := strings.Split(idStr, "-")
+    numeroNit := partes[0]
+	
+	endpoit := "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + numeroNit
 
 	//GET que asocia el nit con la universidad
 	errNit := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+endpoit, &universidad)
