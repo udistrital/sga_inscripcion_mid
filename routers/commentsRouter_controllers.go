@@ -6,8 +6,7 @@ import (
 )
 
 func init() {
-
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "PostDescuentoAcademico",
             Router: "/",
@@ -16,7 +15,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoAcademico",
             Router: "/",
@@ -25,7 +24,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "PutDescuentoAcademico",
             Router: "/:id",
@@ -34,7 +33,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoAcademicoByPersona",
             Router: "/:persona_id",
@@ -43,7 +42,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoAcademicoByDependenciaID",
             Router: "/descuentoAcademicoByID/:dependencia_id",
@@ -52,7 +51,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:DescuentoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoByPersonaPeriodoDependencia",
             Router: "/descuentopersonaperiododependencia/",
@@ -60,8 +59,8 @@ func init() {
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
-
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+                                                                                                                       
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "PostExperienciaLaboral",
             Router: "/",
@@ -70,7 +69,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "PutExperienciaLaboral",
             Router: "/:id",
@@ -79,7 +78,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "GetExperienciaLaboral",
             Router: "/:id",
@@ -88,7 +87,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "DeleteExperienciaLaboral",
             Router: "/:id",
@@ -97,7 +96,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "GetExperienciaLaboralByTercero",
             Router: "/by_tercero/",
@@ -106,7 +105,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "GetInformacionEmpresa",
             Router: "/informacion_empresa/",
@@ -115,7 +114,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "PostFormacionAcademica",
             Router: "/",
@@ -124,7 +123,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "PutFormacionAcademica",
             Router: "/",
@@ -133,7 +132,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetFormacionAcademicaByTercero",
             Router: "/",
@@ -142,7 +141,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "DeleteFormacionAcademica",
             Router: "/:id",
@@ -151,7 +150,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetFormacionAcademica",
             Router: "/info_complementaria/",
@@ -160,7 +159,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetInfoUniversidad",
             Router: "/info_universidad/",
@@ -169,7 +168,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetInfoUniversidadByNombre",
             Router: "/info_universidad_nombre",
@@ -178,7 +177,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:FormacionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "PostTercero",
             Router: "/post_tercero",
@@ -187,7 +186,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GeneradorCodigoBarrasController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GeneradorCodigoBarrasController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GeneradorCodigoBarrasController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GeneradorCodigoBarrasController"],
         beego.ControllerComments{
             Method: "GenerarCodigoBarras",
             Router: "/",
@@ -196,7 +195,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"],
         beego.ControllerComments{
             Method: "PostGenerarRecibo",
             Router: "/",
@@ -205,7 +204,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"],
         beego.ControllerComments{
             Method: "PostGenerarComprobanteInscripcion",
             Router: "/comprobante_inscripcion/",
@@ -214,7 +213,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:GenerarReciboController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:GenerarReciboController"],
         beego.ControllerComments{
             Method: "PostGenerarEstudianteRecibo",
             Router: "/recibo_estudiante/",
@@ -223,7 +222,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "ConsultarProyectosEventos",
             Router: "/consultar_proyectos_eventos/:evento_padre_id",
@@ -232,7 +231,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "GetEstadoInscripcion",
             Router: "/estado_recibos/:persona_id/:id_periodo",
@@ -241,7 +240,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostGenerarInscripcion",
             Router: "/generar_inscripcion",
@@ -250,7 +249,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostInfoComplementariaTercero",
             Router: "/info_complementaria_tercero",
@@ -259,7 +258,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "GetInfoComplementariaTercero",
             Router: "/info_complementaria_tercero/:persona_id",
@@ -268,7 +267,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostInfoComplementariaUniversidad",
             Router: "/info_complementaria_universidad",
@@ -277,7 +276,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "ActualizarInfoContacto",
             Router: "/info_contacto",
@@ -286,7 +285,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostInfoIcfesColegio",
             Router: "/post_info_icfes_colegio",
@@ -295,7 +294,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostInfoIcfesColegioNuevo",
             Router: "/post_info_icfes_colegio_nuevo",
@@ -304,7 +303,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostInformacionFamiliar",
             Router: "/post_informacion_familiar",
@@ -313,7 +312,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostPreinscripcion",
             Router: "/post_preinscripcion",
@@ -322,7 +321,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostReintegro",
             Router: "/post_reintegro",
@@ -331,7 +330,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:InscripcionesController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "PostTransferencia",
             Router: "/post_transferencia",
@@ -340,7 +339,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "PostProduccionAcademica",
             Router: "/",
@@ -349,7 +348,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "GetAllProduccionAcademica",
             Router: "/",
@@ -358,16 +357,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
-        beego.ControllerComments{
-            Method: "PutProduccionAcademica",
-            Router: "/:id",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "DeleteProduccionAcademica",
             Router: "/:id",
@@ -376,7 +366,16 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+        beego.ControllerComments{
+            Method: "PutProduccionAcademica",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "GetProduccionAcademica",
             Router: "/:tercero",
@@ -385,7 +384,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "PutEstadoAutorProduccionAcademica",
             Router: "/estado_autor_produccion/:id",
@@ -394,7 +393,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "GetOneProduccionAcademica",
             Router: "/get_one/:id",
@@ -403,7 +402,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
             Method: "GetIdProduccionAcademica",
             Router: "/pr_academica/:tercero",
@@ -412,7 +411,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"],
         beego.ControllerComments{
             Method: "PutResultadoSolicitud",
             Router: "/:id",
@@ -421,7 +420,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"],
         beego.ControllerComments{
             Method: "PostAlertSolicitudProduccion",
             Router: "/:tercero/:tipo_produccion",
@@ -430,7 +429,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:SolicitudProduccionController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:SolicitudProduccionController"],
         beego.ControllerComments{
             Method: "PostSolicitudEvaluacionCoincidencia",
             Router: "/coincidencia/:id_solicitud/:id_coincidencia/:id_tercero",
@@ -439,7 +438,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "PostSolicitud",
             Router: "/",
@@ -448,7 +447,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "PutInfoSolicitud",
             Router: "/:id",
@@ -457,7 +456,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "PutInscripcion",
             Router: "/actualizar_estado/:id",
@@ -466,7 +465,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetConsultarParametros",
             Router: "/consultar_parametros/:id_calendario/:persona_id",
@@ -475,7 +474,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetConsultarPeriodo",
             Router: "/consultar_periodo/",
@@ -484,7 +483,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetEstadoInscripcion",
             Router: "/estado_recibos/:persona_id",
@@ -493,7 +492,8 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetEstados",
             Router: "/estados",
@@ -502,7 +502,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetInscripcion",
             Router: "/inscripcion/:id",
@@ -511,6 +511,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
     beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "PutSolicitud",
@@ -520,7 +521,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
+    beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetSolicitudesInscripcion",
             Router: "/solicitudes/",

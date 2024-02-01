@@ -3,10 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"sga_mid_inscripcion/models"
-	"strconv"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // SolicitudProduccionController ...
