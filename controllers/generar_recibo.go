@@ -15,6 +15,9 @@ import (
 	"github.com/phpdave11/gofpdf/contrib/barcode"
 	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
+	"strings"
+	"time"
 )
 
 type GenerarReciboController struct {

@@ -6,6 +6,7 @@ import (
 )
 
 func init() {
+
     beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "PostDescuentoAcademico",
@@ -59,7 +60,7 @@ func init() {
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
-                                                                                                                       
+
     beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "PostExperienciaLaboral",
@@ -492,7 +493,6 @@ func init() {
             Filters: nil,
             Params: nil})
 
-
     beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "GetEstados",
@@ -512,7 +512,6 @@ func init() {
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
-    beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"] = append(beego.GlobalControllerRouter["sga_mid_inscripcion/controllers:Transferencia_reingresoController"],
         beego.ControllerComments{
             Method: "PutSolicitud",
             Router: "/respuesta_solicitud/:id",

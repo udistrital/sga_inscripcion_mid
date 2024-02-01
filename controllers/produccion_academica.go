@@ -9,6 +9,7 @@ import (
 	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // ProduccionAcademicaController ...
