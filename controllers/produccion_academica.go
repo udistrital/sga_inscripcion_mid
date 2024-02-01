@@ -3,11 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
-	"sga_mid_inscripcion/models"
 )
 
 // ProduccionAcademicaController ...
@@ -86,20 +87,20 @@ func (c *ProduccionAcademicaController) PostProduccionAcademica() {
 		if errProduccion == nil && fmt.Sprintf("%v", resultadoProduccionAcademica["System"]) != "map[]" && resultadoProduccionAcademica["ProduccionAcademica"] != nil {
 			if resultadoProduccionAcademica["Status"] != 400 {
 				resultado = resultadoProduccionAcademica
-				c.Data["json"] = resultado
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 			} else {
 				logs.Error(errProduccion)
-				c.Data["system"] = resultadoProduccionAcademica
+				c.Data["message"] = "Error service PostProduccionAcademica: " + resultadoProduccionAcademica["Body"].(string)
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errProduccion)
-			c.Data["system"] = resultadoProduccionAcademica
+			c.Data["message"] = "Error service PostProduccionAcademica: " + resultadoProduccionAcademica["Body"].(string)
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PostProduccionAcademica: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -134,21 +135,21 @@ func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 		if errAutor == nil && fmt.Sprintf("%v", resultadoAutor["System"]) != "map[]" && resultadoAutor["Id"] != nil {
 			if resultadoAutor["Status"] != 400 {
 				resultado = AutorProduccionAcademica
-				c.Data["json"] = resultado
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 			} else {
 				logs.Error(errAutor)
-				c.Data["system"] = resultadoAutor
+				c.Data["message"] = "Error service PutEstadoAutorProduccionAcademica: " + resultadoAutor["Body"].(string)
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errAutor)
-			c.Data["system"] = resultadoAutor
+			c.Data["message"] = "Error service PutEstadoAutorProduccionAcademica: " + resultadoAutor["Body"].(string)
 			c.Abort("400")
 		}
 
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PutEstadoAutorProduccionAcademica: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -202,20 +203,20 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 		if errProduccion == nil && fmt.Sprintf("%v", resultadoProduccionAcademica["System"]) != "map[]" {
 			if resultadoProduccionAcademica["Status"] != 400 {
 				resultado = produccionAcademica
-				c.Data["json"] = resultado
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 			} else {
 				logs.Error(errProduccion)
-				c.Data["system"] = resultadoProduccionAcademica
+				c.Data["message"] = "Error service PutProduccionAcademica: " + resultadoProduccionAcademica["Body"].(string)
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errProduccion)
-			c.Data["system"] = resultadoProduccionAcademica
+			c.Data["message"] = "Error service PutProduccionAcademica: " + resultadoProduccionAcademica["Body"].(string)
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PutProduccionAcademica: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -236,10 +237,10 @@ func (c *ProduccionAcademicaController) GetOneProduccionAcademica() {
 	var resultadoGetProduccion []interface{}
 	if resultado, err := models.GetOneProduccionAcademica(idProduccion); err == nil {
 		resultadoGetProduccion = resultado
-		c.Data["json"] = resultadoGetProduccion
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultadoGetProduccion}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = resultadoGetProduccion
+		c.Data["message"] = "Error service GetOneProduccionAcademica: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -278,31 +279,31 @@ func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
 								c.Data["json"] = nil
 							} else {
 								logs.Error(autorProduccion)
-								c.Data["system"] = errAutor
+								c.Data["message"] = "Error service GetAllProduccionAcademica: " + errAutor.Error()
 								c.Abort("404")
 							}
 						}
 					} else {
 						logs.Error(autorProduccion)
-						c.Data["system"] = errAutor
+						c.Data["message"] = "Error service GetAllProduccionAcademica: " + errAutor.Error()
 						c.Abort("404")
 					}
 				}
 			}
 			resultado = producciones
-			c.Data["json"] = resultado
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 		} else {
 			if producciones[0]["Message"] == "Not found resource" {
 				c.Data["json"] = nil
 			} else {
 				logs.Error(producciones)
-				c.Data["system"] = errProduccion
+				c.Data["message"] = "Error service GetAllProduccionAcademica: " + errProduccion.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(producciones)
-		c.Data["system"] = errProduccion
+		c.Data["message"] = "Error service GetAllProduccionAcademica: " + errProduccion.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -320,9 +321,9 @@ func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 	idTercero := c.Ctx.Input.Param(":tercero")
 	var resultado []map[string]interface{}
 	var producciones []map[string]interface{}
-	var alerta models.Alert
+	//var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{})
+	//alertas := append([]interface{}{})
 
 	errProduccion := request.GetJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"tr_produccion_academica/"+idTercero, &producciones)
 	fmt.Println("//////////// ProduccionAcademicaService() Err: ", errProduccion, "Resp: ", producciones)
@@ -346,53 +347,41 @@ func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 								autor["Nombre"] = autorProduccion["NombreCompleto"].(string)
 							} else {
 								errorGetAll = true
-								alertas = append(alertas, "No data found")
-								alerta.Code = "404"
-								alerta.Type = "error"
-								alerta.Body = alertas
-								c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+								logs.Error("No data found")
+								c.Data["message"] = "Error service GetIdProduccionAcademica: " + "No data found"
+								c.Abort("404")
 							}
 						} else {
 							errorGetAll = true
-							alertas = append(alertas, errAutor.Error())
-							alerta.Code = "400"
-							alerta.Type = "error"
-							alerta.Body = alertas
-							c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+							logs.Error(errAutor)
+							c.Data["message"] = "Error service GetIdProduccionAcademica: " + errAutor.Error()
+							c.Abort("400")
 						}
 					}
 				}
 				resultado = producciones
 			} else {
 				errorGetAll = true
-				alertas = append(alertas, "No data found")
-				alerta.Code = "404"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+				logs.Error("No data found")
+				c.Data["message"] = "Error service GetIdProduccionAcademica: " + "No data found"
+				c.Abort("404")
 			}
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, errProduccion.Error())
-			alerta.Code = "400"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Response": alerta}
+
+			logs.Error(errProduccion)
+			c.Data["message"] = "Error service GetIdProduccionAcademica: " + errProduccion.Error()
+			c.Abort("400")
 		}
 	} else {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 
 	if !errorGetAll {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Response": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 	c.ServeJSON()
 }
@@ -435,31 +424,31 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 								c.Data["json"] = nil
 							} else {
 								logs.Error(autorProduccion)
-								c.Data["system"] = errAutor
+								c.Data["message"] = "Error service GetProduccionAcademica: " + errAutor.Error()
 								c.Abort("404")
 							}
 						}
 					} else {
 						logs.Error(autorProduccion)
-						c.Data["system"] = errAutor
+						c.Data["message"] = "Error service GetProduccionAcademica: " + errAutor.Error()
 						c.Abort("404")
 					}
 				}
 			}
 			resultado = producciones
-			c.Data["json"] = resultado
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 		} else {
 			if producciones[0]["Message"] == "Not found resource" {
 				c.Data["json"] = nil
 			} else {
 				logs.Error(producciones)
-				c.Data["system"] = errProduccion
+				c.Data["message"] = "Error service GetProduccionAcademica: " + errProduccion.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(producciones)
-		c.Data["system"] = errProduccion
+		c.Data["message"] = "Error service GetProduccionAcademica: " + errProduccion.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -481,10 +470,10 @@ func (c *ProduccionAcademicaController) DeleteProduccionAcademica() {
 	//borradoOk := models.SetInactivo("http://" + beego.AppConfig.String("ProduccionAcademicaService") + "/tr_produccion_academica/" + idStr)
 
 	if errDelete == nil {
-		c.Data["json"] = map[string]interface{}{"ProduccionAcademica": idStr}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": idStr}
 	} else {
 		logs.Error("Failed deleting tr_produccion_academica/" + idStr)
-		c.Data["system"] = "Failed deleting tr_produccion_academica/" + idStr
+		c.Data["message"] = "Error service DeleteProduccionAcademica: " + idStr.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()

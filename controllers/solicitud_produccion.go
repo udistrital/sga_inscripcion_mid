@@ -3,10 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"sga_mid_inscripcion/models"
-	"strconv"
+	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // SolicitudProduccionController ...
@@ -47,25 +48,25 @@ func (c *SolicitudProduccionController) PostAlertSolicitudProduccion() {
 				fmt.Println(idStr)
 				if resultadoPutSolicitudDocente, errPut := models.PutSolicitudDocente(SolicitudProduccionPut, idStr); errPut == nil {
 					resultado = resultadoPutSolicitudDocente
-					c.Data["json"] = resultado
+					c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 				} else {
 					logs.Error(errPut)
-					c.Data["system"] = resultado
+					c.Data["message"] = "Error service PostAlertSolicitudProduccion: " + errPut.Error()
 					c.Abort("400")
 				}
 			} else {
 				logs.Error(errCoincidence)
-				c.Data["system"] = resultado
+				c.Data["message"] = "Error service PostAlertSolicitudProduccion: " + errCoincidence.Error()
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errAlert)
-			c.Data["system"] = resultado
+			c.Data["message"] = "Error service PostAlertSolicitudProduccion: " + errAlert.Error()
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PostAlertSolicitudProduccion: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -85,15 +86,15 @@ func (c *SolicitudProduccionController) PutResultadoSolicitud() {
 	var SolicitudProduccion map[string]interface{}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &SolicitudProduccion); err == nil {
 		if SolicitudProduccionResult, errPuntaje := models.GenerateResult(SolicitudProduccion); errPuntaje == nil {
-			c.Data["json"] = SolicitudProduccionResult
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": SolicitudProduccionResult}
 		} else {
 			logs.Error(SolicitudProduccionResult)
-			c.Data["system"] = errPuntaje
+			c.Data["message"] = "Error service PutResultadoSolicitud: " + errPuntaje.Error()
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PutResultadoSolicitud: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -122,16 +123,16 @@ func (c *SolicitudProduccionController) PostSolicitudEvaluacionCoincidencia() {
 		if SolicitudProduccionClone, errClone := models.GenerateEvaluationsCloning(SolicitudProduccion, idSolicitud, idSolicitudCoincidencia, idTercero); errClone == nil {
 			if len(SolicitudProduccionClone) > 0 {
 				resultado = SolicitudProduccion
-				c.Data["json"] = resultado
+				c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 			}
 		} else {
 			logs.Error(errClone)
-			c.Data["system"] = resultado
+			c.Data["message"] = "Error service PostSolicitudEvaluacionCoincidencia: " + errClone.Error()
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PostSolicitudEvaluacionCoincidencia: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()

@@ -3,11 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/formatdata"
 	"github.com/udistrital/utils_oas/request"
-	"sga_mid_inscripcion/models"
 )
 
 // DescuentoController ...
@@ -81,7 +81,7 @@ func (c *DescuentoController) PostDescuentoAcademico() {
 						if soporte["Status"] != 400 {
 							resultado = map[string]interface{}{"Id": solicitudPost["Id"], "PersonaId": solicitudPost["PersonaId"], "Estado": solicitudPost["Estado"], "PeriodoId": solicitudPost["PeriodoId"], "DescuentosDependenciaId": solicitudPost["DescuentosDependenciaId"]}
 							resultado["DocumentoId"] = soporte["DocumentoId"]
-							c.Data["json"] = resultado
+							c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 
 						} else {
 							//resultado solicitud de descuento
@@ -89,37 +89,37 @@ func (c *DescuentoController) PostDescuentoAcademico() {
 							request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento/%.f", solicitudPost["Id"]), "DELETE", &resultado2, nil)
 							logs.Error(errSoporte)
 							//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-							c.Data["system"] = soporte
+							c.Data["message"] = "Error service PostDescuentoAcademico: " + soporte["Body"].(string)
 							c.Abort("400")
 						}
 					} else {
 						logs.Error(errSoporte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = soporte
+						c.Data["message"] = "Error service PostDescuentoAcademico: " + soporte["Body"].(string)
 						c.Abort("400")
 					}
 				} else {
 					logs.Error(errSolicitud)
 					//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-					c.Data["system"] = solicitudPost
+					c.Data["message"] = "Error service PostDescuentoAcademico: " + solicitudPost["Body"].(string)
 					c.Abort("400")
 				}
 			} else {
 				logs.Error(errSolicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = solicitudPost
+				c.Data["message"] = "Error service PostDescuentoAcademico: " + solicitudPost["Body"].(string)
 				c.Abort("400")
 			}
 		} else {
 			logs.Error(errDescuentosDependencia)
 			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = errDescuentosDependencia
+			c.Data["message"] = "Error service PostDescuentoAcademico: " + errDescuentosDependencia.Error()
 			c.Abort("400")
 		}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PostDescuentoAcademico: " + err.Error()
 		c.Abort("400")
 	}
 
@@ -156,17 +156,18 @@ func (c *DescuentoController) PutDescuentoAcademico() {
 				if errSoportePut == nil && fmt.Sprintf("%v", soportePut["System"]) != "map[]" && soportePut["Id"] != nil {
 					if soportePut["Status"] != 400 {
 						resultado = solicitud
-						c.Data["json"] = resultado
+						c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
+
 					} else {
 						logs.Error(errSoportePut)
 						//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = soportePut
+						c.Data["message"] = "Error service PutDescuentoAcademico: " + soportePut["Body"].(string)
 						c.Abort("400")
 					}
 				} else {
 					logs.Error(errSoportePut)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					c.Data["system"] = soportePut
+					c.Data["message"] = "Error service PutDescuentoAcademico: " + soportePut["Body"].(string)
 					c.Abort("400")
 				}
 
@@ -176,20 +177,20 @@ func (c *DescuentoController) PutDescuentoAcademico() {
 				} else {
 					logs.Error(soporte)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					c.Data["system"] = errSoporte
+					c.Data["message"] = "Error service PutDescuentoAcademico: " + errSoporte.Error()
 					c.Abort("404")
 				}
 			}
 		} else {
 			logs.Error(soporte)
 			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = errSoporte
+			c.Data["message"] = "Error service PutDescuentoAcademico: " + errSoporte.Error()
 			c.Abort("404")
 		}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
+		c.Data["message"] = "Error service PutDescuentoAcademico: " + err.Error()
 		c.Abort("400")
 	}
 	c.ServeJSON()
@@ -240,21 +241,21 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 								if soporte[0]["Status"] != 404 {
 									//fmt.Println("el resultado de los documentos es: ", resultado4)
 									resultado["DocumentoId"] = soporte[0]["DocumentoId"]
-									c.Data["json"] = resultado
+									c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 								} else {
 									if soporte[0]["Message"] == "Not found resource" {
 										c.Data["json"] = nil
 									} else {
 										logs.Error(soporte)
 										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-										c.Data["system"] = errSoporte
+										c.Data["message"] = "Error service GetDescuentoAcademico: " + errSoporte.Error()
 										c.Abort("404")
 									}
 								}
 							} else {
 								logs.Error(soporte)
 								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								c.Data["system"] = errSoporte
+								c.Data["message"] = "Error service GetDescuentoAcademico: " + errSoporte.Error()
 								c.Abort("404")
 							}
 						} else {
@@ -263,14 +264,14 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 							} else {
 								logs.Error(tipo)
 								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								c.Data["system"] = errTipo
+								c.Data["message"] = "Error service GetDescuentoAcademico: " + errTipo.Error()
 								c.Abort("404")
 							}
 						}
 					} else {
 						logs.Error(tipo)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = errTipo
+						c.Data["message"] = "Error service GetDescuentoAcademico: " + errTipo.Error()
 						c.Abort("404")
 					}
 				} else {
@@ -279,14 +280,14 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 					} else {
 						logs.Error(descuento)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = errDescuento
+						c.Data["message"] = "Error service GetDescuentoAcademico: " + errDescuento.Error()
 						c.Abort("404")
 					}
 				}
 			} else {
 				logs.Error(descuento)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errDescuento
+				c.Data["message"] = "Error service GetDescuentoAcademico: " + errDescuento.Error()
 				c.Abort("404")
 			}
 		} else {
@@ -295,14 +296,14 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errSolicitud
+				c.Data["message"] = "Error service GetDescuentoAcademico: " + errSolicitud.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(solicitud)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = errSolicitud
+		c.Data["message"] = "Error service GetDescuentoAcademico: " + errSolicitud.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -322,9 +323,9 @@ func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 	var resultados []map[string]interface{}
 	//resultado solicitud descuento
 	var solicitud []map[string]interface{}
-	var alerta models.Alert
+	//var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{"Data:"})
+	//alertas := append([]interface{}{"Data:"})
 
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idStr, &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
@@ -337,35 +338,28 @@ func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 					resultados = append(resultados, tipoDescuento)
 				} else {
 					errorGetAll = true
-					alertas = append(alertas, errDescuento.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+					logs.Error(errDescuento)
+					c.Data["message"] = "Error service GetDescuentoAcademicoByDependenciaID: " + errDescuento.Error()
+					c.Abort("400")
 				}
 			}
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, "No data found")
-			alerta.Code = "404"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+			logs.Error("No data found")
+			c.Data["message"] = "Error service GetDescuentoAcademicoByDependenciaID: " + "No data found"
+			c.Abort("404")
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errSolicitud.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+		logs.Error(errSolicitud)
+		c.Data["message"] = "Error service GetDescuentoAcademicoByDependenciaID: " + errSolicitud.Error()
+		c.Abort("400")
 	}
 	if !errorGetAll {
-		alertas = append(alertas, resultados)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultados}
 	}
 
 	c.ServeJSON()
@@ -420,14 +414,14 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 										} else {
 											logs.Error(soporte)
 											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-											c.Data["system"] = errSoporte
+											c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errSoporte.Error()
 											c.Abort("404")
 										}
 									}
 								} else {
 									logs.Error(soporte)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									c.Data["system"] = errSoporte
+									c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errSoporte.Error()
 									c.Abort("404")
 								}
 							} else {
@@ -436,14 +430,14 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 								} else {
 									logs.Error(tipo)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									c.Data["system"] = errTipo
+									c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errTipo.Error()
 									c.Abort("404")
 								}
 							}
 						} else {
 							logs.Error(tipo)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							c.Data["system"] = errTipo
+							c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errTipo.Error()
 							c.Abort("404")
 						}
 					} else {
@@ -452,33 +446,33 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 						} else {
 							logs.Error(descuento)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							c.Data["system"] = errDescuento
+							c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errDescuento.Error()
 							c.Abort("404")
 						}
 					}
 				} else {
 					logs.Error(descuento)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					c.Data["system"] = errDescuento
+					c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errDescuento.Error()
 					c.Abort("404")
 				}
 			}
 			resultado = solicitud
-			c.Data["json"] = resultado
+			c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 		} else {
 			if solicitud[0]["Message"] == "Not found resource" {
 				c.Data["json"] = nil
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errSolicitud
+				c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errSolicitud.Error()
 				c.Abort("404")
 			}
 		}
 	} else {
 		logs.Error(solicitud)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = errSolicitud
+		c.Data["message"] = "Error service GetDescuentoAcademicoByPersona: " + errSolicitud.Error()
 		c.Abort("404")
 	}
 	c.ServeJSON()
@@ -502,9 +496,9 @@ func (c *DescuentoController) GetDescuentoByPersonaPeriodoDependencia() {
 	var resultado []map[string]interface{}
 	//resultado solicitud descuento
 	var solicitud []map[string]interface{}
-	var alerta models.Alert
+	//var alerta models.Alert
 	var errorGetAll bool
-	alertas := append([]interface{}{"Data:"})
+	//alertas := append([]interface{}{"Data:"})
 
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento?query=Activo:true,TerceroId:"+idPersona+",PeriodoId:"+idPeriodo+",DescuentosDependenciaId.DependenciaId:"+idDependencia+"&fields=Id,TerceroId,Estado,PeriodoId,DescuentosDependenciaId", &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
@@ -534,55 +528,46 @@ func (c *DescuentoController) GetDescuentoByPersonaPeriodoDependencia() {
 									}
 								} else {
 									errorGetAll = true
-									alertas = append(alertas, errSoporte.Error())
-									alerta.Code = "400"
-									alerta.Type = "error"
-									alerta.Body = alertas
-									c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+									logs.Error(errSoporte)
+									c.Data["message"] = "Error service GetDescuentoByPersonaPeriodoDependencia: " + errSoporte.Error()
+									c.Abort("400")
 								}
 							}
 						} else {
 							errorGetAll = true
-							alertas = append(alertas, errTipo.Error())
-							alerta.Code = "400"
-							alerta.Type = "error"
-							alerta.Body = alertas
-							c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+							logs.Error(errTipo)
+							c.Data["message"] = "Error service GetDescuentoByPersonaPeriodoDependencia: " + errTipo.Error()
+							c.Abort("400")
 						}
 					}
 				} else {
 					errorGetAll = true
-					alertas = append(alertas, errDescuento.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+					logs.Error(errDescuento)
+					c.Data["message"] = "Error service GetDescuentoByPersonaPeriodoDependencia: " + errDescuento.Error()
+					c.Abort("400")
 				}
 			}
 			resultado = solicitud
 			// c.Data["json"] = resultado
 		} else {
 			errorGetAll = true
-			alertas = append(alertas, "No data found")
-			alerta.Code = "404"
-			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+			logs.Error("No data found")
+			c.Data["message"] = "Error service GetDescuentoByPersonaPeriodoDependencia: " + "No data found"
+			c.Abort("404")
 		}
 	} else {
 		errorGetAll = true
-		alertas = append(alertas, errSolicitud.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+
+		logs.Error(errSolicitud)
+		c.Data["message"] = "Error service GetDescuentoByPersonaPeriodoDependencia: " + errSolicitud.Error()
+		c.Abort("400")
 	}
 	if !errorGetAll {
-		alertas = append(alertas, resultado)
-		alerta.Code = "200"
-		alerta.Type = "OK"
-		alerta.Body = alertas
-		c.Data["json"] = map[string]interface{}{"Data": alerta}
+		c.Data["json"] = map[string]interface{}{"Success": true, "Status": "200", "Message": "Request successful", "Data": resultado}
 	}
 
 	c.ServeJSON()
