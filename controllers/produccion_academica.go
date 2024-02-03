@@ -6,10 +6,10 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/helpers"
 	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
-	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
 // ProduccionAcademicaController ...
@@ -236,7 +236,7 @@ func (c *ProduccionAcademicaController) GetOneProduccionAcademica() {
 	fmt.Println("Consultando produccion de id: " + idProduccion)
 	//resultado experiencia
 	var resultadoGetProduccion []interface{}
-	if resultado, err := models.GetOneProduccionAcademica(idProduccion); err == nil {
+	if resultado, err := helpers.GetOneProduccionAcademica(idProduccion); err == nil {
 		resultadoGetProduccion = resultado
 		c.Data["json"] = resultadoGetProduccion
 	} else {

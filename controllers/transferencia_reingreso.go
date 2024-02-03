@@ -7,7 +7,9 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/udistrital/sga_mid_inscripcion/helpers"
 	"github.com/udistrital/sga_mid_inscripcion/models"
+	"github.com/udistrital/sga_mid_inscripcion/utils"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/time_bogota"
 )
@@ -33,8 +35,8 @@ func (c *Transferencia_reingresoController) URLMapping() {
 // PostSolicitud ...
 // @Title Create
 // @Description create Transferencia_reingreso
-// @Param	body		body 	models.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
-// @Success 201 {object} models.Transferencia_reingreso
+// @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
+// @Success 201 {object} helpers.Transferencia_reingreso
 // @Failure 403 body is empty
 // @router / [post]
 func (c *Transferencia_reingresoController) PostSolicitud() {
@@ -79,7 +81,7 @@ func (c *Transferencia_reingresoController) PostSolicitud() {
 			"file":            SolicitudInscripcion["Documento"].(map[string]interface{})["file"],
 		}
 		auxDoc = append(auxDoc, documento)
-		doc, errDoc := models.RegistrarDoc(auxDoc)
+		doc, errDoc := helpers.RegistrarDoc(auxDoc)
 		if errDoc == nil {
 			docTem := map[string]interface{}{
 				"Nombre":        doc.(map[string]interface{})["Nombre"].(string),
@@ -247,8 +249,8 @@ func (c *Transferencia_reingresoController) PostSolicitud() {
 // PutInfoSolicitud ...
 // @Title Create
 // @Description create Transferencia_reingreso
-// @Param	body		body 	models.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
-// @Success 201 {object} models.Transferencia_reingreso
+// @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
+// @Success 201 {object} helpers.Transferencia_reingreso
 // @Failure 403 body is empty
 // @Failure 404 not found resource
 // @router /:id [put]
@@ -302,7 +304,7 @@ func (c *Transferencia_reingresoController) PutInfoSolicitud() {
 									"file":            SolicitudInscripcion["Documento"].(map[string]interface{})["file"],
 								}
 								auxDoc = append(auxDoc, documento)
-								doc, errDoc := models.RegistrarDoc(auxDoc)
+								doc, errDoc := helpers.RegistrarDoc(auxDoc)
 								if errDoc == nil {
 									docTem := map[string]interface{}{
 										"Nombre":        doc.(map[string]interface{})["Nombre"].(string),
@@ -352,7 +354,7 @@ func (c *Transferencia_reingresoController) PutInfoSolicitud() {
 									"file":            SolicitudInscripcion["Documento"].(map[string]interface{})["file"],
 								}
 								auxDoc = append(auxDoc, documento)
-								doc, errDoc := models.RegistrarDoc(auxDoc)
+								doc, errDoc := helpers.RegistrarDoc(auxDoc)
 								if errDoc == nil {
 									docTem := map[string]interface{}{
 										"Nombre":        doc.(map[string]interface{})["Nombre"].(string),
@@ -558,8 +560,8 @@ func (c *Transferencia_reingresoController) PutInfoSolicitud() {
 // @Title PutInscripcion
 // @Description crear la inscripción y actualizar solicitud
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
-// @Success 200 {object} models.Transferencia_reingreso
+// @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
+// @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 400 the request contains incorrect syntax
 // @router /actualizar_estado/:id [put]
 func (c *Transferencia_reingresoController) PutInscripcion() {
@@ -788,8 +790,8 @@ func (c *Transferencia_reingresoController) PutInscripcion() {
 // @Title PutSolicitud
 // @Description crear la inscripción y actualizar solicitud
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
-// @Success 200 {object} models.Transferencia_reingreso
+// @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
+// @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 400 the request contains incorrect syntax
 // @router /respuesta_solicitud/:id [put]
 func (c *Transferencia_reingresoController) PutSolicitud() {
@@ -919,7 +921,7 @@ func (c *Transferencia_reingresoController) PutSolicitud() {
 													"file":            RespuestaSolicitud["DocRespuesta"].(map[string]interface{})["file"],
 												}
 												auxDoc = append(auxDoc, documento)
-												doc, errDoc := models.RegistrarDoc(auxDoc)
+												doc, errDoc := helpers.RegistrarDoc(auxDoc)
 												if errDoc == nil {
 													docTem := map[string]interface{}{
 														"Nombre":        doc.(map[string]interface{})["Nombre"].(string),
@@ -1074,7 +1076,7 @@ func (c *Transferencia_reingresoController) PutSolicitud() {
 // @Title GetInscripcion
 // @Description get Transferencia_reingreso by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Transferencia_reingreso
+// @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 403 :id is empty
 // @router /inscripcion/:id [get]
 func (c *Transferencia_reingresoController) GetInscripcion() {
@@ -1370,7 +1372,7 @@ func (c *Transferencia_reingresoController) GetInscripcion() {
 // GetSolicitudesInscripcion ...
 // @Title GetSolicitudesInscripcion
 // @Description get Transferencia_reingreso by id
-// @Success 200 {object} models.Transferencia_reingreso
+// @Success 200 {object} helpers.Transferencia_reingreso
 // @router /solicitudes/ [get]
 func (c *Transferencia_reingresoController) GetSolicitudesInscripcion() {
 	var inscripcionGet []map[string]interface{}
@@ -1762,7 +1764,7 @@ func (c *Transferencia_reingresoController) GetEstadoInscripcion() {
 					Estado = "Pago"
 				} else {
 					//Verifica si el recibo está vencido o no
-					ATiempo, err := models.VerificarFechaLimite(FechaLimite)
+					ATiempo, err := utils.VerificarFechaLimite(FechaLimite)
 					if err == nil {
 						if ATiempo {
 							Estado = "Pendiente pago"
@@ -1880,7 +1882,7 @@ func (c *Transferencia_reingresoController) GetEstadoInscripcion() {
 // @Title GetEstados
 // @Description get Transferencia_reingreso by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Transferencia_reingreso
+// @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 403 :id is empty
 // @router /estados [get]
 func (c *Transferencia_reingresoController) GetEstados() {

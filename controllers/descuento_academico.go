@@ -9,7 +9,6 @@ import (
 	"github.com/udistrital/sga_mid_inscripcion/models"
 	"github.com/udistrital/utils_oas/formatdata"
 	"github.com/udistrital/utils_oas/request"
-	"github.com/udistrital/sga_mid_inscripcion/models"
 
 )
 

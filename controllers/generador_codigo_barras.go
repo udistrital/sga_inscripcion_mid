@@ -3,14 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
 	"image/png"
 	"os"
 
 	"github.com/astaxie/beego"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/code128"
-	"image/png"
-	"os"
 	"github.com/udistrital/sga_mid_inscripcion/models"
 )
 
