@@ -98,6 +98,8 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 // @Failure 404 not found resource
 // @router /descuentoAcademicoByID/:dependencia_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
+
+	defer errorhandler.HandlePanic(&c.Controller)
 	//Id de la persona
 	idStr := c.Ctx.Input.Param(":dependencia_id")
 
@@ -117,6 +119,8 @@ func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 // @Failure 404 not found resource
 // @router /:persona_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
 	//Id de la persona
 	idStr := c.Ctx.Input.Param(":persona_id")
 
@@ -138,6 +142,8 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 // @Failure 404 not found resource
 // @router /descuentopersonaperiododependencia/ [get]
 func (c *DescuentoController) GetDescuentoByPersonaPeriodoDependencia() {
+	defer errorhandler.HandlePanic(&c.Controller)
+	
 	//Captura de parámetros
 	idPersona := c.GetString("PersonaId")
 	idDependencia := c.GetString("DependenciaId")
