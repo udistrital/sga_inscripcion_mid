@@ -151,6 +151,8 @@ func (c *FormacionController) GetFormacionAcademicaByTercero() {
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
 	c.Data["json"] = respuesta
+
+	c.ServeJSON()
 }
 
 // PostTercero ...
@@ -194,4 +196,6 @@ func (c *FormacionController) DeleteFormacionAcademica() {
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
 	c.Data["json"] = respuesta
+
+	c.ServeJSON()
 }
