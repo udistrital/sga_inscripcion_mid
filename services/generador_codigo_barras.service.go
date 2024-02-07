@@ -34,8 +34,7 @@ func GenerarCodigoBarras( data []byte) (APIResponseDTO requestresponse.APIRespon
 	var InformacionCodigo map[string]interface{}
 	//alertas := append([]interface{}{"Response:"})
 	if err := json.Unmarshal(data, &InformacionCodigo); err == nil {
-		fmt.Println(InformacionCodigo["Prueba"])
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, InformacionCodigo)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, InformacionCodigo, nil)
 		//alertas = append(alertas, InformacionCodigo)
 
 		CodigoRecibido := InformacionCodigo["Prueba"].(string)

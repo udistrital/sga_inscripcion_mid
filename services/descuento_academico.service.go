@@ -21,6 +21,7 @@ func SolicitarDescuentoAcademico( data []byte) (APIResponseDTO requestresponse.A
 	var solicitud map[string]interface{}
 	var solicitudPost map[string]interface{}
 	var tipoDescuento []map[string]interface{}
+	alertas := []interface{}{}
 
 	if err := json.Unmarshal(data, &solicitud); err == nil {
 		IDTipoDescuento := fmt.Sprintf("%v", solicitud["DescuentosDependenciaId"].(map[string]interface{})["Id"])
@@ -63,7 +64,7 @@ func SolicitarDescuentoAcademico( data []byte) (APIResponseDTO requestresponse.A
 						if soporte["Status"] != 400 {
 							resultado = map[string]interface{}{"Id": solicitudPost["Id"], "PersonaId": solicitudPost["PersonaId"], "Estado": solicitudPost["Estado"], "PeriodoId": solicitudPost["PeriodoId"], "DescuentosDependenciaId": solicitudPost["DescuentosDependenciaId"]}
 							resultado["DocumentoId"] = soporte["DocumentoId"]
-							APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+							APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 						} else {
 							//resultado solicitud de descuento
@@ -71,35 +72,39 @@ func SolicitarDescuentoAcademico( data []byte) (APIResponseDTO requestresponse.A
 							request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento/%.f", solicitudPost["Id"]), "DELETE", &resultado2, nil)
 							logs.Error(errSoporte)
 							//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, soporte)
+							alertas = append(alertas, soporte)
 						}
 					} else {
 						logs.Error(errSoporte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, soporte)
+						alertas = append(alertas, soporte)
 					}
 				} else {
 					logs.Error(errSolicitud)
 					//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, solicitudPost)
+					alertas = append(alertas, solicitudPost)
 				}
 			} else {
 				logs.Error(errSolicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, solicitudPost)
+				alertas = append(alertas, solicitudPost)
 			}
 		} else {
 			logs.Error(errDescuentosDependencia)
 			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errDescuentosDependencia)
+			alertas = append(alertas, errDescuentosDependencia)
 		}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, err)
+		alertas = append(alertas, err)
 	}
 
-	return APIResponseDTO
+	if (len(alertas) > 0) {
+		return requestresponse.APIResponseDTO(false, 400, nil, alertas)
+	}else{
+		return APIResponseDTO
+	}
 
 }
 
@@ -124,40 +129,40 @@ func ActualizarDescuentoAcademico( data []byte, id string) (APIResponseDTO reque
 				if errSoportePut == nil && fmt.Sprintf("%v", soportePut["System"]) != "map[]" && soportePut["Id"] != nil {
 					if soportePut["Status"] != 400 {
 						resultado = solicitud
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 					} else {
 						logs.Error(errSoportePut)
 						//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, soportePut)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errSoportePut)
 						return APIResponseDTO
 					}
 				} else {
 					logs.Error(errSoportePut)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoportePut)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoportePut)
 					return APIResponseDTO
 				}
 
 			} else {
 				if soporte[0]["Message"] == "Not found resource" {
-					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil, "No data found")
 				} else {
 					logs.Error(soporte)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 					return APIResponseDTO
 				}
 			}
 		} else {
 			logs.Error(soporte)
 			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 			return APIResponseDTO
 		}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, err)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
 		return APIResponseDTO
 	}
 
@@ -169,6 +174,7 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 	var resultado map[string]interface{}
 	//resultado solicitud descuento
 	var solicitud []map[string]interface{}
+	validData := []interface{}{}
 
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento/?query=TerceroId:"+idTercero+",Id:"+idSolicitud+"&fields=Id,TerceroId,Estado,PeriodoId,DescuentosDependenciaId", &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
@@ -195,69 +201,72 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 								if soporte[0]["Status"] != 404 {
 									//fmt.Println("el resultado de los documentos es: ", resultado4)
 									resultado["DocumentoId"] = soporte[0]["DocumentoId"]
-									APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+									validData = append(validData, resultado)
 								} else {
 									if soporte[0]["Message"] == "Not found resource" {
-										APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+										APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+										return APIResponseDTO
 									} else {
 										logs.Error(soporte)
 										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-										APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+										APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 										return APIResponseDTO
 									}
 								}
 							} else {
 								logs.Error(soporte)
 								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 								return APIResponseDTO
 							}
 						} else {
 							if tipo["Message"] == "Not found resource" {
-								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+								validData = append(validData, nil)
 							} else {
 								logs.Error(tipo)
 								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errTipo)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errTipo)
 								return APIResponseDTO
 							}
 						}
 					} else {
 						logs.Error(tipo)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errTipo)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errTipo)
 						return APIResponseDTO
 					}
 				} else {
 					if descuento["Message"] == "Not found resource" {
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+						return APIResponseDTO
 					} else {
 						logs.Error(descuento)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errDescuento)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil,errDescuento)
 						return APIResponseDTO
 					}
 				}
 			} else {
 				logs.Error(descuento)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errDescuento)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento)
 				return APIResponseDTO
 			}
 		} else {
 			if solicitud[0]["Message"] == "Not found resource" {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+				return APIResponseDTO
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSolicitud)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSolicitud)
 				return APIResponseDTO
 			}
 		}
 	} else {
 		logs.Error(solicitud)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSolicitud)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud)
 		return APIResponseDTO
 	}
 	return APIResponseDTO
@@ -283,7 +292,7 @@ func GetDescuentoByDpendencia( idDependencia string ) (APIResponseDTO requestres
 						resultados = append(resultados, tipoDescuento)
 					} else {
 						errorGetAll = true
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errDescuento.Error())
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
 					}
 				}
 			} else {
@@ -292,11 +301,11 @@ func GetDescuentoByDpendencia( idDependencia string ) (APIResponseDTO requestres
 			}
 		} else {
 			errorGetAll = true
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errSolicitud.Error())
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud.Error())
 			alertas = append(alertas, errSolicitud.Error())
 		}
 		if !errorGetAll {
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultados)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultados, nil)
 			return APIResponseDTO
 		}else {
 			return APIResponseDTO
@@ -337,69 +346,73 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 										solicitud[u]["DocumentoId"] = soporte[0]["DocumentoId"]
 									} else {
 										if soporte[0]["Message"] == "Not found resource" {
-											APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+											APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+											return APIResponseDTO
 										} else {
 											logs.Error(soporte)
 											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-											APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+											APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
 											return APIResponseDTO
 										}
 									}
 								} else {
 									logs.Error(soporte)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
 									return APIResponseDTO
 								}
 							} else {
 								if tipo["Message"] == "Not found resource" {
-									APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+									return APIResponseDTO
 								} else {
 									logs.Error(tipo)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errTipo)
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errTipo)
 									return APIResponseDTO
 								}
 							}
 						} else {
 							logs.Error(tipo)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errTipo)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errTipo)
 							return APIResponseDTO
 						}
 					} else {
 						if descuento["Message"] == "Not found resource" {
-							APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+							return APIResponseDTO
 						} else {
 							logs.Error(descuento)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errDescuento)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errDescuento)
 							return APIResponseDTO
 						}
 					}
 				} else {
 					logs.Error(descuento)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errDescuento)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errDescuento)
 					return APIResponseDTO
 				}
 			}
 			resultado = solicitud
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		} else {
 			if solicitud[0]["Message"] == "Not found resource" {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+				return APIResponseDTO
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSolicitud)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSolicitud)
 				return APIResponseDTO
 			}
 		}
 	} else {
 		logs.Error(solicitud)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSolicitud)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud)
 		return APIResponseDTO
 	}
 	return APIResponseDTO
@@ -464,7 +477,7 @@ func GetDescuentoByTerceroPeriodoDependencia( idTercero string, idPeriodo string
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errSolicitud.Error())
 	}
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO

@@ -41,14 +41,17 @@ func CrearFormacion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 			} else {
 				if resultadoInfoComplementaria[0]["Message"] == "Not found resource" {
 					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+					return APIResponseDTO
 				} else {
 					logs.Error(resultadoInfoComplementaria)
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, resultadoInfoComplementaria)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404,nil ,resultadoInfoComplementaria)
+					return APIResponseDTO
 				}
 			}
 		} else {
 			logs.Error(errIdInfo)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errIdInfo)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errIdInfo)
+			return APIResponseDTO
 		}
 		intVar, _ := strconv.Atoi(idInfoFormacion)
 
@@ -72,18 +75,21 @@ func CrearFormacion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 		if errFormacion == nil && fmt.Sprintf("%v", FormacionAcademicaPost["System"]) != "map[]" && FormacionAcademicaPost["Id"] != nil {
 			if FormacionAcademicaPost["Status"] != 400 {
 				respuesta["FormacionAcademica"] = FormacionAcademicaPost
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta)
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta, nil)
 			} else {
 				logs.Error(errFormacion)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, FormacionAcademicaPost)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, FormacionAcademicaPost)
+				return APIResponseDTO
 			}
 		} else {
 			logs.Error(errFormacion)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errFormacion)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errFormacion)
+			return APIResponseDTO
 		}
 	} else {
 		logs.Error(err)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, FormacionAcademica)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+		return APIResponseDTO
 	}
 	return APIResponseDTO
 }
@@ -230,7 +236,7 @@ func GetUniversidadInfo(idUniversidad string) (APIResponseDTO requestresponse.AP
 						//c.Abort("404")
 					}
 
-					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta)
+					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta, nil)
 
 				} else {
 					logs.Error(errUniversidad)
@@ -264,31 +270,30 @@ func GetUniversidadNombre(nombre string) (APIResponseDTO requestresponse.APIResp
 		err := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero/?query=NombreCompleto__contains:"+nombre+"&limit=0", &universidades)
 		if err == nil {
 			if universidades != nil && fmt.Sprintf("%v", universidades[0]) != "map[]" {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, universidades)
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, universidades, nil)
 			} else {
 				logs.Error(universidades)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, err)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,err)
 				return APIResponseDTO
 			}
 		} else {
 			logs.Error(universidades)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, err)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,err)
 				return APIResponseDTO
 		}
 	} else if len(NombresAux) > 1 {
 		err := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero/?query=NombreCompleto__contains:"+NombresAux[0]+",NombreCompleto__contains:"+NombresAux[1]+"&limit=0", &universidades)
 		if err == nil {
 			if universidades != nil {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, universidades)
-				return APIResponseDTO
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, universidades, nil)
 			} else {
 				logs.Error(universidades)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, err)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, err)
 				return APIResponseDTO
 			}
 		} else {
 			logs.Error(universidades)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, err)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, err)
 			return APIResponseDTO
 		}
 	}
@@ -341,7 +346,7 @@ func ActualizarFormacionAcademica(idFormacion string, data []byte) (APIResponseD
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO
@@ -402,7 +407,7 @@ func GetFormacionAcademicaById(id string) (APIResponseDTO requestresponse.APIRes
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO
@@ -537,7 +542,7 @@ func GetFormacionAcademicaByIdTercero(idTercero string) (APIResponseDTO requestr
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO
@@ -591,7 +596,7 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 					if identificacion["Status"] != 400 {
 						//beego.Info(identificacion)
 						estado := identificacion
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, estado)
+						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, estado, nil)
 
 						var telefono map[string]interface{}
 						var correo map[string]interface{}
@@ -609,15 +614,17 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								resultado["NumeroIdentificacion"] = identificacion["Numero"]
 								resultado["TipoIdentificacionId"] = identificacion["TipoDocumentoId"].(map[string]interface{})["Id"]
 								resultado["TipoTerceroId"] = terceroTipoTercero["Id"]
-								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, terceroTipoTercero)
+								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 							} else {
 								logs.Error(errTipoTercero)
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errTipoTercero)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errTipoTercero)
+								return APIResponseDTO
 							}
 						} else {
 							logs.Error(errTipoTercero)
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errTipoTercero)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errTipoTercero)
+							return APIResponseDTO
 						}
 
 						InfoComplementariaTelefono := map[string]interface{}{
@@ -672,7 +679,7 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								resultado["NumeroIdentificacion"] = identificacion["Numero"]
 								resultado["TipoIdentificacionId"] = identificacion["TipoDocumentoId"].(map[string]interface{})["Id"]
 								resultado["Telefono"] = telefono["Id"]
-								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 							} else {
 								var resultado2 map[string]interface{}
@@ -680,11 +687,13 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"datos_identificacion/%.f", identificacion["Id"]), "DELETE", &resultado2, nil)
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", terceroPost["Id"]), "DELETE", &resultado2, nil)
 								logs.Error(errGenero1)
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errGenero1)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errGenero1)
+								return APIResponseDTO
 							}
 						} else {
 							logs.Error(errGenero1)
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errGenero1)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errGenero1)
+							return APIResponseDTO
 						}
 						errGenero2 := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &correo, correoTercero)
 						//beego.Info("correo tercero", correo)
@@ -695,7 +704,7 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								resultado["NumeroIdentificacion"] = identificacion["Numero"]
 								resultado["TipoIdentificacionId"] = identificacion["TipoDocumentoId"].(map[string]interface{})["Id"]
 								resultado["Correo"] = correo["Id"]
-								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 							} else {
 								var resultado2 map[string]interface{}
@@ -703,12 +712,14 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"datos_identificacion/%.f", identificacion["Id"]), "DELETE", &resultado2, nil)
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", terceroPost["Id"]), "DELETE", &resultado2, nil)
 								logs.Error(errGenero2)
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 400,errGenero2)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errGenero2)
+								return APIResponseDTO
 							}
 						} else {
 							//beego.Info("error genero", errGenero2)
 							logs.Error(errGenero2)
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errGenero2)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errGenero2)
+							return APIResponseDTO
 						}
 						errGenero3 := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &direccion, direccionTercero)
 						if errGenero3 == nil && errGenero2 == nil && errGenero1 == nil && fmt.Sprintf("%v", direccion) != "map[]" && direccion["Id"] != nil {
@@ -718,7 +729,7 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								resultado["NumeroIdentificacion"] = identificacion["Numero"]
 								resultado["TipoIdentificacionId"] = identificacion["TipoDocumentoId"].(map[string]interface{})["Id"]
 								resultado["Direccion"] = direccion["Id"]
-								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+								APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 							} else {
 								var resultado2 map[string]interface{}
@@ -726,36 +737,43 @@ func NuevoTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"datos_identificacion/%.f", identificacion["Id"]), "DELETE", &resultado2, nil)
 								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", terceroPost["Id"]), "DELETE", &resultado2, nil)
 								logs.Error(errGenero3)
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errGenero3)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errGenero3)
+								return APIResponseDTO
 							}
 						} else {
 							logs.Error(errGenero3)
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errGenero3)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errGenero3)
+							return APIResponseDTO
 						}
 					} else {
 						//Si pasa un error borra todo lo creado al momento del registro del documento de identidad
 						var resultado2 map[string]interface{}
 						request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("TercerosService")+"tercero/%.f", terceroPost["Id"]), "DELETE", &resultado2, nil)
 						logs.Error(errIdentificacion)
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errIdentificacion)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errIdentificacion)
+						return APIResponseDTO
 					}
 				} else {
 					//beego.Info("error identificacion", errPersona)
 					logs.Error(errIdentificacion)
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errIdentificacion)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errIdentificacion)
+					return APIResponseDTO
 				}
 			} else {
 				//beego.Info(errPersona)
 				logs.Error(errPersona)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errPersona)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errPersona)
+				return APIResponseDTO
 			}
 		} else {
 			logs.Error(errPersona)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errPersona)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errPersona)
+			return APIResponseDTO
 		}
 	} else {
 		logs.Error(err)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, err)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+		return APIResponseDTO
 	}
 
 	return APIResponseDTO
@@ -794,7 +812,7 @@ func EliminarFormacion(idFormacion string) (APIResponseDTO requestresponse.APIRe
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO

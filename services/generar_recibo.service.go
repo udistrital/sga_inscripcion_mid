@@ -29,17 +29,17 @@ func GenerarReciboPago(dataRecibo []byte) (APIResponseDTO requestresponse.APIRes
 
 		if pdf.Err() {
 			logs.Error("Failed creating PDF report: %s\n", pdf.Error())
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, pdf.Error())
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, pdf.Error())
 		}
 
 		if pdf.Ok() {
 			encodedFile := encodePDF(pdf)
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile, nil)
 		}
 
 	} else {
 		logs.Error(parseErr)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, parseErr.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, parseErr.Error())
 		return APIResponseDTO
 	}
 
@@ -56,17 +56,17 @@ func GenerarReciboPost(dataRecibo []byte) (APIResponseDTO requestresponse.APIRes
 
 		if pdf.Err() {
 			logs.Error("Failed creating PDF report: %s\n", pdf.Error())
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, pdf.Error())
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, pdf.Error())
 		}
 
 		if pdf.Ok() {
 			encodedFile := encodePDF(pdf)
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile, nil)
 		}
 
 	} else {
 		logs.Error(parseErr)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, parseErr.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, parseErr.Error())
 		return APIResponseDTO
 	}
 	return APIResponseDTO
@@ -107,12 +107,12 @@ func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIRe
 
 					if pdf.Err() {
 						logs.Error("Failed creating PDF voucher: %s\n", pdf.Error())
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, pdf.Error())
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,pdf.Error())
 					}
 
 					if pdf.Ok() {
 						encodedFile := encodePDF(pdf)
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile)
+						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile, nil)
 						fecha_actual := time.Now()
 						dataEmail := map[string]interface{}{
 							"dia":     fecha_actual.Day(),
@@ -134,22 +134,22 @@ func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIRe
 
 				} else {
 					logs.Error("reciboCollection seems empty", ReciboXML)
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, "ReciboCollection seems empty")
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboCollection seems empty")
 					return APIResponseDTO
 				}
 			} else {
 				logs.Error(errRecibo)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errRecibo.Error())
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errRecibo.Error())
 				return APIResponseDTO
 			}
 		} else {
 			logs.Error("ReciboInscripcionId seems empty")
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, "ReciboInscripcionId seems empty")
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboInscripcionId seems empty")
 			return APIResponseDTO
 		}
 	} else {
 		logs.Error(parseErr)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, parseErr.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, parseErr.Error())
 		return APIResponseDTO
 	}
 	return APIResponseDTO

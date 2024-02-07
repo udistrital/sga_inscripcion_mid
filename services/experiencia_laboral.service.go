@@ -44,16 +44,16 @@ func CreateExperienciaLaboral(data []byte) (APIResponseDTO requestresponse.APIRe
 				idInfoExperencia = fmt.Sprintf("%v", resultadoInfoComplementaria[0]["Id"])
 			} else {
 				if resultadoInfoComplementaria[0]["Message"] == "Not found resource" {
-					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+					return APIResponseDTO
 				} else {
 					logs.Error(resultadoInfoComplementaria)
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, resultadoInfoComplementaria)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, resultadoInfoComplementaria)
 					return APIResponseDTO
 				}
 			}
 		} else {
 			logs.Error(errIdInfo)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errIdInfo)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errIdInfo)
 			return APIResponseDTO
 		}
 		intVar, _ := strconv.Atoi(idInfoExperencia)
@@ -80,21 +80,21 @@ func CreateExperienciaLaboral(data []byte) (APIResponseDTO requestresponse.APIRe
 			if ExperienciaLaboralPost["Status"] != 400 {
 				respuesta["FormacionAcademica"] = ExperienciaLaboralPost
 				//formatdata.JsonPrint(respuesta)
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta)
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta, nil)
 			} else {
 				logs.Error(ExperienciaLaboralPost)
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 400, ExperienciaLaboralPost)
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 400, nil ,ExperienciaLaboralPost)
 				return APIResponseDTO
 			}
 		} else {
 			logs.Error(errExperiencia)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, errExperiencia)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errExperiencia)
 			return APIResponseDTO
 		}
 
 	} else {
 		logs.Error(err)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, ExperienciaLaboral)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,err)
 		return APIResponseDTO
 	}
 	return APIResponseDTO
@@ -267,25 +267,25 @@ func GetInfoEmpresa(idEmpresa string) (APIResponseDTO requestresponse.APIRespons
 						//c.Abort("404")
 					}
 
-					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta)
+					APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta, nil)
 
 				} else {
 					logs.Error(empresaTercero["Status"])
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, empresaTercero)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, empresaTercero)
 					return APIResponseDTO
 				}
 			} else {
 				logs.Error(errUniversidad)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, empresaTercero)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, empresaTercero)
 				return APIResponseDTO
 			}
 		} else {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, empresa)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, empresa)
 			return APIResponseDTO
 		}
 	} else {
 		logs.Error(errNit)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, empresa)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,empresa)
 		return APIResponseDTO
 	}
 
@@ -482,7 +482,7 @@ func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestres
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	} else {
 		return APIResponseDTO
@@ -542,11 +542,11 @@ func ActualizarExperienciaLaboral(idTercero string, data []byte) (APIResponseDTO
 		}
 
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, ExperienciaLaboral)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,ExperienciaLaboral)
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	} else {
 		return APIResponseDTO
@@ -571,18 +571,19 @@ func GetExperienciaLaboralById(idExperiencia string) (APIResponseDTO requestresp
 
 				} else {
 					if soporte[0]["Message"] == "Not found resource" {
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+						return APIResponseDTO
 					} else {
 						logs.Error(soporte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404,nil ,errSoporte)
 						return APIResponseDTO
 					}
 				}
 			} else {
 				logs.Error(soporte)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errSoporte)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
 				return APIResponseDTO
 			}
 
@@ -604,39 +605,40 @@ func GetExperienciaLaboralById(idExperiencia string) (APIResponseDTO requestresp
 
 				} else {
 					if organizacion[0]["Message"] == "Not found resource" {
-						APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+						return APIResponseDTO
 					} else {
 						logs.Error(organizacion)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errOrganizacion)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errOrganizacion)
 						return APIResponseDTO
 					}
 				}
 			} else {
 				logs.Error(organizacion)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errOrganizacion)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errOrganizacion)
 				return APIResponseDTO
 			}
 
 			resultado = experiencia[0]
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 		} else {
 			if experiencia[0]["Message"] == "Not found resource" {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, nil)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 				return APIResponseDTO
 			} else {
 				logs.Error(experiencia)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errExperiencia)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errExperiencia)
 				return APIResponseDTO
 			}
 		}
 	} else {
 		logs.Error(experiencia)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, errExperiencia)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errExperiencia)
 		return APIResponseDTO
 	}
 
@@ -674,7 +676,7 @@ func DeleteExperienciaById(idExperiencia string) (APIResponseDTO requestresponse
 	}
 
 	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 	}else {
 		return APIResponseDTO
