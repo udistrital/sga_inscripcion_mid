@@ -1,13 +1,9 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-	"strconv"
-
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-	"github.com/udistrital/sga_mid_inscripcion/helpers"
+	"github.com/udistrital/sga_mid_inscripcion/services"
+	"github.com/udistrital/utils_oas/errorhandler"
 )
 
 // SolicitudProduccionController ...
@@ -30,45 +26,19 @@ func (c *SolicitudProduccionController) URLMapping() {
 // @Failure 400 the request contains incorrect syntax
 // @router /:tercero/:tipo_produccion [post]
 func (c *SolicitudProduccionController) PostAlertSolicitudProduccion() {
+
+	defer errorhandler.HandlePanic(&c.Controller)
+
 	idTercero := c.Ctx.Input.Param(":tercero")
 	idTipoProduccionSrt := c.Ctx.Input.Param(":tipo_produccion")
-	idTipoProduccion, _ := strconv.Atoi(idTipoProduccionSrt)
+	data := c.Ctx.Input.RequestBody
 
-	//resultado experiencia
-	resultado := make(map[string]interface{})
-	var SolicitudProduccion map[string]interface{}
-	fmt.Println("Post Alert Solicitud")
-	fmt.Println("Id Tercero: ", idTercero)
-	fmt.Println("Id Tercero: ", idTipoProduccionSrt)
+	respuesta := services.PostAlertSolicitud(idTercero, idTipoProduccionSrt, data)
 
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &SolicitudProduccion); err == nil {
-		if SolicitudProduccionAlert, errAlert := helpers.CheckCriteriaData(SolicitudProduccion, idTipoProduccion, idTercero); errAlert == nil {
-			if SolicitudProduccionPut, errCoincidence := helpers.CheckCoincidenceProduction(SolicitudProduccionAlert, idTipoProduccion, idTercero); errCoincidence == nil {
-				idStr := fmt.Sprintf("%v", SolicitudProduccionPut["Id"])
-				fmt.Println(idStr)
-				if resultadoPutSolicitudDocente, errPut := helpers.PutSolicitudDocente(SolicitudProduccionPut, idStr); errPut == nil {
-					resultado = resultadoPutSolicitudDocente
-					c.Data["json"] = resultado
-				} else {
-					logs.Error(errPut)
-					c.Data["system"] = resultado
-					c.Abort("400")
-				}
-			} else {
-				logs.Error(errCoincidence)
-				c.Data["system"] = resultado
-				c.Abort("400")
-			}
-		} else {
-			logs.Error(errAlert)
-			c.Data["system"] = resultado
-			c.Abort("400")
-		}
-	} else {
-		logs.Error(err)
-		c.Data["system"] = err
-		c.Abort("400")
-	}
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
 	c.ServeJSON()
 }
 
@@ -81,22 +51,19 @@ func (c *SolicitudProduccionController) PostAlertSolicitudProduccion() {
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *SolicitudProduccionController) PutResultadoSolicitud() {
+
+	defer errorhandler.HandlePanic(&c.Controller)
+
 	idStr := c.Ctx.Input.Param(":id")
-	fmt.Println("Id es: " + idStr)
-	var SolicitudProduccion map[string]interface{}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &SolicitudProduccion); err == nil {
-		if SolicitudProduccionResult, errPuntaje := helpers.GenerateResult(SolicitudProduccion); errPuntaje == nil {
-			c.Data["json"] = SolicitudProduccionResult
-		} else {
-			logs.Error(SolicitudProduccionResult)
-			c.Data["system"] = errPuntaje
-			c.Abort("400")
-		}
-	} else {
-		logs.Error(err)
-		c.Data["system"] = err
-		c.Abort("400")
-	}
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.PutResultado(idStr, data)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
 	c.ServeJSON()
 }
 
@@ -108,32 +75,20 @@ func (c *SolicitudProduccionController) PutResultadoSolicitud() {
 // @Failure 400 the request contains incorrect syntax
 // @router /coincidencia/:id_solicitud/:id_coincidencia/:id_tercero [post]
 func (c *SolicitudProduccionController) PostSolicitudEvaluacionCoincidencia() {
+	
+	defer errorhandler.HandlePanic(&c.Controller)
+	
 	idSolicitud := c.Ctx.Input.Param(":id_solicitud")
 	idSolicitudCoincidencia := c.Ctx.Input.Param(":id_coincidencia")
 	idTercero := c.Ctx.Input.Param(":id_tercero")
 
-	//resultado experiencia
-	resultado := make(map[string]interface{})
-	var SolicitudProduccion map[string]interface{}
-	fmt.Println("Post coincidence Solicitud Evaluacion")
-	fmt.Println("Id Solicitud: ", idSolicitud)
-	fmt.Println("Id Solicitud Coincidencia: ", idSolicitudCoincidencia)
+	data := c.Ctx.Input.RequestBody
 
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &SolicitudProduccion); err == nil {
-		if SolicitudProduccionClone, errClone := helpers.GenerateEvaluationsCloning(SolicitudProduccion, idSolicitud, idSolicitudCoincidencia, idTercero); errClone == nil {
-			if len(SolicitudProduccionClone) > 0 {
-				resultado = SolicitudProduccion
-				c.Data["json"] = resultado
-			}
-		} else {
-			logs.Error(errClone)
-			c.Data["system"] = resultado
-			c.Abort("400")
-		}
-	} else {
-		logs.Error(err)
-		c.Data["system"] = err
-		c.Abort("400")
-	}
+	respuesta := services.PostSolicitudEvaluacion(idSolicitud, idSolicitudCoincidencia, idTercero, data)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
 	c.ServeJSON()
 }

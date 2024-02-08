@@ -381,7 +381,7 @@ func DeleteProduccion( idProduccion string) (APIResponseDTO requestresponse.APIR
 			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, map[string]interface{}{"ProduccionAcademica": idProduccion}, nil)
 		} else {
 			logs.Error("Failed deleting tr_produccion_academica/" + idProduccion)
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 400, nil, "Failed deleting tr_produccion_academica/" + idProduccion)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Failed deleting tr_produccion_academica/" + idProduccion)
 			return APIResponseDTO
 		}
 		return APIResponseDTO
