@@ -1389,7 +1389,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     }
                 ],
@@ -1397,7 +1397,7 @@
                     "201": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "403": {
@@ -1427,7 +1427,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     }
                 ],
@@ -1435,7 +1435,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "400": {
@@ -1531,7 +1531,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "403": {
@@ -1560,7 +1560,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "403": {
@@ -1590,7 +1590,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     }
                 ],
@@ -1598,7 +1598,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "400": {
@@ -1618,7 +1618,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     }
                 }
@@ -1638,7 +1638,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     }
                 ],
@@ -1646,7 +1646,7 @@
                     "201": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Transferencia_reingreso"
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
                         }
                     },
                     "403": {
@@ -1660,7 +1660,7 @@
         }
     },
     "definitions": {
-        "models.Transferencia_reingreso": {
+        "helpers.Transferencia_reingreso": {
             "title": "Transferencia_reingreso",
             "type": "object"
         },
