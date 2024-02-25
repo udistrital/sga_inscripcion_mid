@@ -2,7 +2,7 @@ package helpers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/udistrital/sga_mid_inscripcion/utils"
+	"github.com/udistrital/sga_inscripcion_mid/utils"
 )
 
 func RegistrarDoc(documento []map[string]interface{}) (status interface{}, outputError interface{}) {
