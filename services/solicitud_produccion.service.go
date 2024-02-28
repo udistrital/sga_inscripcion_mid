@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego/logs"
-	"github.com/udistrital/sga_mid_inscripcion/helpers"
+	"github.com/udistrital/sga_inscripcion_mid/helpers"
 	"github.com/udistrital/utils_oas/requestresponse"
 )
 

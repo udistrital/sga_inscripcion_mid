@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/udistrital/sga_mid_inscripcion/utils"
+	"github.com/udistrital/sga_inscripcion_mid/utils"
 	"github.com/udistrital/utils_oas/request"
 )
 
