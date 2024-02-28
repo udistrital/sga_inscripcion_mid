@@ -14,6 +14,7 @@ en los módulos del SGA cliente.
 
 ### Variables de Entorno
 ```shell
+
 CONSULTAR_RECIBO_JBPM_SERVICE: [Servicio API RECIBO]
 DESCUENTO_ACADEMICO_SERVICE: [Servicio API DESCUENTO ACADEMICO]
 EVENTOS_SERVICE: [Servicio API EVENTOS]
@@ -29,6 +30,7 @@ SGA_MID_INSCRIPCION_STATIC_PATH: [Ruta de imágenes usadas en la generación de 
 TERCEROS_SERVICE: [Servicio API TERCEROS]
 UBICACIONES_SERVICE: [Servicio API UBICACIONES]
 ```
+
 **NOTA:** Las variables se pueden ver en el fichero conf/app.conf.
 
 ### Ejecución del Proyecto

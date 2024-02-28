@@ -10,6 +10,7 @@ package routers
 import (
 	"github.com/udistrital/sga_inscripcion_mid/controllers"
 
+
 	"github.com/astaxie/beego"
 )
 
