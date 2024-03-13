@@ -10,7 +10,6 @@ package routers
 import (
 	"github.com/udistrital/sga_inscripcion_mid/controllers"
 
-
 	"github.com/astaxie/beego"
 )
 
@@ -36,7 +35,7 @@ func init() {
 				&controllers.GeneradorCodigoBarrasController{},
 			),
 		),
-		beego.NSNamespace("/generar_recibo",
+		beego.NSNamespace("/recibos",
 			beego.NSInclude(
 				&controllers.GenerarReciboController{},
 			),
