@@ -619,90 +619,6 @@
                 }
             }
         },
-        "/generar_recibo/": {
-            "post": {
-                "tags": [
-                    "generar_recibo"
-                ],
-                "description": "Genera un recibo de pago",
-                "operationId": "GenerarReciboController.PostGenerarRecibo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Datos del recibo content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/generar_recibo/comprobante_inscripcion/": {
-            "post": {
-                "tags": [
-                    "generar_recibo"
-                ],
-                "description": "Genera un comprobante de inscripcion",
-                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Informacion para el comprobante",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/generar_recibo/recibo_estudiante/": {
-            "post": {
-                "tags": [
-                    "generar_recibo"
-                ],
-                "description": "Genera un recibo de pago",
-                "operationId": "GenerarReciboController.PostGenerarEstudianteRecibo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Datos del recibo content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/inscripciones/consultar_proyectos_eventos/{evento_padre_id}": {
             "get": {
                 "tags": [
@@ -1279,6 +1195,90 @@
                     },
                     "404": {
                         "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/recibos/": {
+            "post": {
+                "tags": [
+                    "recibos"
+                ],
+                "description": "Genera un recibo de pago",
+                "operationId": "GenerarReciboController.PostGenerarRecibo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Datos del recibo content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/recibos/comprobante_inscripcion/": {
+            "post": {
+                "tags": [
+                    "recibos"
+                ],
+                "description": "Genera un comprobante de inscripcion",
+                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Informacion para el comprobante",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/recibos/estudiantes/": {
+            "post": {
+                "tags": [
+                    "recibos"
+                ],
+                "description": "Genera un recibo de pago",
+                "operationId": "GenerarReciboController.PostGenerarEstudianteRecibo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Datos del recibo content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "body is empty"
                     }
                 }
             }
