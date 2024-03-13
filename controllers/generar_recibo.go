@@ -24,7 +24,7 @@ func (c *GenerarReciboController) URLMapping() {
 // @Param	body		body 	{}	true		"body Datos del recibo content"
 // @Success 200 {}
 // @Failure 400 body is empty
-// @router /recibo_estudiante/ [post]
+// @router /estudiantes/ [post]
 func (c *GenerarReciboController) PostGenerarEstudianteRecibo() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
