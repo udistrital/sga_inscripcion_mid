@@ -15,10 +15,10 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/descuento_academico/": {
+        "/academico/descuento/": {
             "get": {
                 "tags": [
-                    "descuento_academico"
+                    "academico/descuento"
                 ],
                 "description": "consultar Descuento Academico por userid",
                 "operationId": "DescuentoController.GetDescuentoAcademico",
@@ -51,7 +51,7 @@
             },
             "post": {
                 "tags": [
-                    "descuento_academico"
+                    "academico/descuento"
                 ],
                 "description": "Agregar Descuento Academico",
                 "operationId": "DescuentoController.PostDescuentoAcademico",
@@ -76,37 +76,10 @@
                 }
             }
         },
-        "/descuento_academico/descuentoAcademicoByID/{dependencia_id}": {
+        "/academico/descuento/academico/descuento/detalle": {
             "get": {
                 "tags": [
-                    "descuento_academico"
-                ],
-                "description": "consultar Descuento Academico por DependenciaId",
-                "operationId": "DescuentoController.GetDescuentoAcademicoByDependenciaID",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "dependencia_id",
-                        "description": "DependenciaId",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/descuento_academico/descuentopersonaperiododependencia/": {
-            "get": {
-                "tags": [
-                    "descuento_academico"
+                    "academico/descuento"
                 ],
                 "description": "consultar Descuento Academico por userid",
                 "operationId": "DescuentoController.GetDescuentoByPersonaPeriodoDependencia",
@@ -146,10 +119,64 @@
                 }
             }
         },
-        "/descuento_academico/{id}": {
+        "/academico/descuento/academico/descuento/persona/{persona_id}": {
+            "get": {
+                "tags": [
+                    "academico/descuento"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoAcademicoByPersona",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "persona_id",
+                        "description": "Id de la persona",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/descuento/academico/descuento/{dependencia_id}": {
+            "get": {
+                "tags": [
+                    "academico/descuento"
+                ],
+                "description": "consultar Descuento Academico por DependenciaId",
+                "operationId": "DescuentoController.GetDescuentoAcademicoByDependenciaID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "dependencia_id",
+                        "description": "DependenciaId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/descuento/{id}": {
             "put": {
                 "tags": [
-                    "descuento_academico"
+                    "academico/descuento"
                 ],
                 "description": "Modificar Descuento Academico",
                 "operationId": "DescuentoController.PutDescuentoAcademico",
@@ -182,18 +209,18 @@
                 }
             }
         },
-        "/descuento_academico/{persona_id}": {
+        "/academico/formacion/": {
             "get": {
                 "tags": [
-                    "descuento_academico"
+                    "academico/formacion"
                 ],
-                "description": "consultar Descuento Academico por userid",
-                "operationId": "DescuentoController.GetDescuentoAcademicoByPersona",
+                "description": "consultar la Formacion Academica por id del tercero",
+                "operationId": "FormacionController.GetFormacionAcademicaByTercero",
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "persona_id",
-                        "description": "Id de la persona",
+                        "in": "query",
+                        "name": "Id",
+                        "description": "Id del tercero",
                         "required": true,
                         "type": "integer",
                         "format": "int64"
@@ -205,6 +232,450 @@
                     },
                     "404": {
                         "description": "not found resource"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "Modificar Formacion Academica",
+                "operationId": "FormacionController.PutFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Id",
+                        "description": "Id del registro de formación",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "Agregar Formacion Academica ud",
+                "operationId": "FormacionController.PostFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/formacion/academico/formacion/informacion-complementaria": {
+            "get": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "consultar Formacion Academica por id",
+                "operationId": "FormacionController.GetFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Id",
+                        "description": "Id del registro de formación",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/formacion/academico/formacion/informacion-universidad/nit/{id}": {
+            "get": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "Obtener la información de la universidad por el nit",
+                "operationId": "FormacionController.GetInfoUniversidad",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Id",
+                        "description": "nit de la universidad",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/formacion/academico/formacion/informacion-universidad/nombre/{nombre}": {
+            "get": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "Obtener la información de la universidad por el nombre",
+                "operationId": "FormacionController.GetInfoUniversidadByNombre",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "nombre",
+                        "description": "nombre universidad",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/formacion/academico/formacion/tercero": {
+            "post": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "Agregar nuevo tercero",
+                "operationId": "FormacionController.PostTercero",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar nuevo tercero content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/formacion/{id}": {
+            "delete": {
+                "tags": [
+                    "academico/formacion"
+                ],
+                "description": "eliminar Formacion Academica por id de la formacion",
+                "operationId": "FormacionController.DeleteFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la formacion academica",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/": {
+            "get": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "consultar todas las Producciones académicas",
+                "operationId": "ProduccionAcademicaController.GetAllProduccionAcademica",
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "Agregar Producción academica",
+                "operationId": "ProduccionAcademicaController.PostProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar ProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/academico/produccion/autor/{id}": {
+            "put": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "Modificar Estado de Autor de Producción Academica",
+                "operationId": "ProduccionAcademicaController.PutEstadoAutorProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "el id del autor a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar AutorProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/academico/produccion/{id}": {
+            "get": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "consultar Produccion Academica por id",
+                "operationId": "ProduccionAcademicaController.GetOneProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/academico/produccion/{tercero}": {
+            "get": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "consultar Produccion Academica por tercero",
+                "operationId": "ProduccionAcademicaController.GetIdProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tercero",
+                        "description": "Tercero",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/{id}": {
+            "put": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "Modificar Producción Academica",
+                "operationId": "ProduccionAcademicaController.PutProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "el id de la Produccion academica a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar ProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "eliminar Produccion Academica por id",
+                "operationId": "ProduccionAcademicaController.DeleteProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la Produccion Academica",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/{tercero}": {
+            "get": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "consultar Produccion Academica por tercero",
+                "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tercero",
+                        "description": "Tercero",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/codigo/": {
+            "post": {
+                "tags": [
+                    "codigo"
+                ],
+                "description": "Creacion de codigo de barras",
+                "operationId": "GeneradorCodigoBarrasController.GenerarCodigoBarras",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar ProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -237,13 +708,13 @@
                 }
             }
         },
-        "/experiencia_laboral/by_tercero/": {
+        "/experiencia_laboral/informacion-empresa/": {
             "get": {
                 "tags": [
                     "experiencia_laboral"
                 ],
                 "description": "Obtener la información de la empresa por el nit",
-                "operationId": "ExperienciaLaboralController.GetExperienciaLaboralByTercero",
+                "operationId": "ExperienciaLaboralController.GetInformacionEmpresa",
                 "parameters": [
                     {
                         "in": "query",
@@ -264,13 +735,13 @@
                 }
             }
         },
-        "/experiencia_laboral/informacion_empresa/": {
+        "/experiencia_laboral/tercero/": {
             "get": {
                 "tags": [
                     "experiencia_laboral"
                 ],
                 "description": "Obtener la información de la empresa por el nit",
-                "operationId": "ExperienciaLaboralController.GetInformacionEmpresa",
+                "operationId": "ExperienciaLaboralController.GetExperienciaLaboralByTercero",
                 "parameters": [
                     {
                         "in": "query",
@@ -369,284 +840,7 @@
                 }
             }
         },
-        "/formacion_academica/": {
-            "get": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "consultar la Formacion Academica por id del tercero",
-                "operationId": "FormacionController.GetFormacionAcademicaByTercero",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "Id",
-                        "description": "Id del tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "Modificar Formacion Academica",
-                "operationId": "FormacionController.PutFormacionAcademica",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "Id",
-                        "description": "Id del registro de formación",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar Formacion Academica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "Agregar Formacion Academica ud",
-                "operationId": "FormacionController.PostFormacionAcademica",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar Formacion Academica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/formacion_academica/info_complementaria/": {
-            "get": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "consultar Formacion Academica por id",
-                "operationId": "FormacionController.GetFormacionAcademica",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "Id",
-                        "description": "Id del registro de formación",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/formacion_academica/info_universidad/": {
-            "get": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "Obtener la información de la universidad por el nit",
-                "operationId": "FormacionController.GetInfoUniversidad",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "Id",
-                        "description": "nit de la universidad",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/formacion_academica/info_universidad_nombre": {
-            "get": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "Obtener la información de la universidad por el nombre",
-                "operationId": "FormacionController.GetInfoUniversidadByNombre",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "nombre",
-                        "description": "nombre universidad",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/formacion_academica/post_tercero": {
-            "post": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "Agregar nuevo tercero",
-                "operationId": "FormacionController.PostTercero",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar nuevo tercero content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/formacion_academica/{id}": {
-            "delete": {
-                "tags": [
-                    "formacion_academica"
-                ],
-                "description": "eliminar Formacion Academica por id de la formacion",
-                "operationId": "FormacionController.DeleteFormacionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "Id de la formacion academica",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/generar_codigo/": {
-            "post": {
-                "tags": [
-                    "generar_codigo"
-                ],
-                "description": "Creacion de codigo de barras",
-                "operationId": "GeneradorCodigoBarrasController.GenerarCodigoBarras",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar ProduccionAcademica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/inscripciones/consultar_proyectos_eventos/{evento_padre_id}": {
-            "get": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "get ConsultarProyectosEventos by id",
-                "operationId": "InscripcionesController.ConsultarProyectosEventos",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "evento_padre_id",
-                        "description": "Id del Evento Padre",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/inscripciones/estado_recibos/{persona_id}/{id_periodo}": {
+        "/inscripciones/estado-recibos/{persona_id}/{id_periodo}": {
             "get": {
                 "tags": [
                     "inscripciones"
@@ -681,18 +875,18 @@
                 }
             }
         },
-        "/inscripciones/generar_inscripcion": {
-            "post": {
+        "/inscripciones/informacion-complementaria/tercero": {
+            "put": {
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Registra una nueva inscripción con su respectivo recibo de pago",
-                "operationId": "InscripcionesController.PostGenerarInscripcion",
+                "description": "Actualiza los datos de contacto del tercero",
+                "operationId": "InscripcionesController.ActualizarInfoContacto",
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body for información de suministrada por el usuario par la inscripción",
+                        "description": "body for Actualizar la info de contacto del tercero content",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/{}"
@@ -707,9 +901,7 @@
                         "description": "body is empty"
                     }
                 }
-            }
-        },
-        "/inscripciones/info_complementaria_tercero": {
+            },
             "post": {
                 "tags": [
                     "inscripciones"
@@ -737,7 +929,7 @@
                 }
             }
         },
-        "/inscripciones/info_complementaria_tercero/{persona_id}": {
+        "/inscripciones/informacion-complementaria/tercero/{persona_id}": {
             "get": {
                 "tags": [
                     "inscripciones"
@@ -754,7 +946,7 @@
                 }
             }
         },
-        "/inscripciones/info_complementaria_universidad": {
+        "/inscripciones/informacion-complementaria/universidad": {
             "post": {
                 "tags": [
                     "inscripciones"
@@ -782,91 +974,7 @@
                 }
             }
         },
-        "/inscripciones/info_contacto": {
-            "put": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "Actualiza los datos de contacto del tercero",
-                "operationId": "InscripcionesController.ActualizarInfoContacto",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Actualizar la info de contacto del tercero content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/inscripciones/post_info_icfes_colegio": {
-            "post": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "Agregar InfoIcfesColegio",
-                "operationId": "InscripcionesController.PostInfoIcfesColegio",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar InfoIcfesColegio content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/inscripciones/post_info_icfes_colegio_nuevo": {
-            "post": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "Agregar InfoIcfesColegio",
-                "operationId": "InscripcionesController.PostInfoIcfesColegioNuevo",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar InfoIcfesColegio content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/inscripciones/post_informacion_familiar": {
+        "/inscripciones/informacion-familiar": {
             "post": {
                 "tags": [
                     "inscripciones"
@@ -894,7 +1002,35 @@
                 }
             }
         },
-        "/inscripciones/post_preinscripcion": {
+        "/inscripciones/nueva": {
+            "post": {
+                "tags": [
+                    "inscripciones"
+                ],
+                "description": "Registra una nueva inscripción con su respectivo recibo de pago",
+                "operationId": "InscripcionesController.PostGenerarInscripcion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for información de suministrada por el usuario par la inscripción",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/inscripciones/preinscripcion": {
             "post": {
                 "tags": [
                     "inscripciones"
@@ -922,7 +1058,90 @@
                 }
             }
         },
-        "/inscripciones/post_reintegro": {
+        "/inscripciones/proyectos/eventos/{evento_padre_id}": {
+            "get": {
+                "tags": [
+                    "inscripciones"
+                ],
+                "description": "get ConsultarProyectosEventos by id",
+                "operationId": "InscripcionesController.ConsultarProyectosEventos",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "evento_padre_id",
+                        "description": "Id del Evento Padre",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/inscripciones/pruebas-de-estado/informacion/saber-once": {
+            "post": {
+                "tags": [
+                    "inscripciones"
+                ],
+                "description": "Agregar InfoIcfesColegio",
+                "operationId": "InscripcionesController.PostInfoIcfesColegio",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar InfoIcfesColegio content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/inscripciones/pruebas-de-estado/informacion/saber-once-nuevo": {
+            "post": {
+                "tags": [
+                    "inscripciones"
+                ],
+                "description": "Agregar InfoIcfesColegio",
+                "operationId": "InscripcionesController.PostInfoIcfesColegioNuevo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar InfoIcfesColegio content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/inscripciones/reintegro": {
             "post": {
                 "tags": [
                     "inscripciones"
@@ -950,7 +1169,7 @@
                 }
             }
         },
-        "/inscripciones/post_transferencia": {
+        "/inscripciones/transferencia": {
             "post": {
                 "tags": [
                     "inscripciones"
@@ -978,228 +1197,7 @@
                 }
             }
         },
-        "/produccion_academica/": {
-            "get": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "consultar todas las Producciones académicas",
-                "operationId": "ProduccionAcademicaController.GetAllProduccionAcademica",
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "Agregar Producción academica",
-                "operationId": "ProduccionAcademicaController.PostProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar ProduccionAcademica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/produccion_academica/estado_autor_produccion/{id}": {
-            "put": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "Modificar Estado de Autor de Producción Academica",
-                "operationId": "ProduccionAcademicaController.PutEstadoAutorProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "el id del autor a modificar",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar AutorProduccionAcademica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/produccion_academica/get_one/{id}": {
-            "get": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "consultar Produccion Academica por id",
-                "operationId": "ProduccionAcademicaController.GetOneProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "Id",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/produccion_academica/pr_academica/{tercero}": {
-            "get": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "consultar Produccion Academica por tercero",
-                "operationId": "ProduccionAcademicaController.GetIdProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "tercero",
-                        "description": "Tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/produccion_academica/{id}": {
-            "put": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "Modificar Producción Academica",
-                "operationId": "ProduccionAcademicaController.PutProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "el id de la Produccion academica a modificar",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar ProduccionAcademica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "eliminar Produccion Academica por id",
-                "operationId": "ProduccionAcademicaController.DeleteProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "Id de la Produccion Academica",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/produccion_academica/{tercero}": {
-            "get": {
-                "tags": [
-                    "produccion_academica"
-                ],
-                "description": "consultar Produccion Academica por tercero",
-                "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "tercero",
-                        "description": "Tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/recibos/": {
+        "/recibos/estudiantes": {
             "post": {
                 "tags": [
                     "recibos"
@@ -1211,34 +1209,6 @@
                         "in": "body",
                         "name": "body",
                         "description": "body Datos del recibo content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/recibos/comprobante_inscripcion/": {
-            "post": {
-                "tags": [
-                    "recibos"
-                ],
-                "description": "Genera un comprobante de inscripcion",
-                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Informacion para el comprobante",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/{}"
@@ -1267,6 +1237,34 @@
                         "in": "body",
                         "name": "body",
                         "description": "body Datos del recibo content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/recibos/recibo/comprobante-inscripcion": {
+            "post": {
+                "tags": [
+                    "recibos"
+                ],
+                "description": "Genera un comprobante de inscripcion",
+                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Informacion para el comprobante",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/{}"
@@ -1406,7 +1404,7 @@
                 }
             }
         },
-        "/transferencia/actualizar_estado/{id}": {
+        "/transferencia/actualizar-estado/{id}": {
             "put": {
                 "tags": [
                     "transferencia"
@@ -1444,7 +1442,7 @@
                 }
             }
         },
-        "/transferencia/consultar_parametros/{id_calendario}/{persona_id}": {
+        "/transferencia/consultar-parametros/{id_calendario}/{persona_id}": {
             "get": {
                 "tags": [
                     "transferencia"
@@ -1461,7 +1459,7 @@
                 }
             }
         },
-        "/transferencia/consultar_periodo/": {
+        "/transferencia/consultar-periodo/": {
             "get": {
                 "tags": [
                     "transferencia"
@@ -1478,7 +1476,7 @@
                 }
             }
         },
-        "/transferencia/estado_recibos/{persona_id}": {
+        "/transferencia/estado-recibos/{persona_id}": {
             "get": {
                 "tags": [
                     "transferencia"
@@ -1569,7 +1567,7 @@
                 }
             }
         },
-        "/transferencia/respuesta_solicitud/{id}": {
+        "/transferencia/respuesta-solicitud/{id}": {
             "put": {
                 "tags": [
                     "transferencia"
@@ -1671,24 +1669,24 @@
     },
     "tags": [
         {
-            "name": "descuento_academico",
+            "name": "academico/descuento",
             "description": "DescuentoController ...\n"
+        },
+        {
+            "name": "academico/formacion",
+            "description": "FormacionController ...\n"
+        },
+        {
+            "name": "academico/produccion",
+            "description": "ProduccionAcademicaController ...\n"
         },
         {
             "name": "experiencia_laboral",
             "description": "ExperienciaLaboralController ...\n"
         },
         {
-            "name": "formacion_academica",
-            "description": "FormacionController ...\n"
-        },
-        {
-            "name": "generar_codigo",
+            "name": "codigo",
             "description": "GeneradorCodigoBarrasController ...\n"
-        },
-        {
-            "name": "produccion_academica",
-            "description": "ProduccionAcademicaController ...\n"
         },
         {
             "name": "solicitud_produccion",

@@ -15,9 +15,19 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/descuento_academico",
+		beego.NSNamespace("/academico/descuento",
 			beego.NSInclude(
 				&controllers.DescuentoController{},
+			),
+		),
+		beego.NSNamespace("/academico/formacion",
+			beego.NSInclude(
+				&controllers.FormacionController{},
+			),
+		),
+		beego.NSNamespace("/academico/produccion",
+			beego.NSInclude(
+				&controllers.ProduccionAcademicaController{},
 			),
 		),
 		beego.NSNamespace("/experiencia_laboral",
@@ -25,12 +35,7 @@ func init() {
 				&controllers.ExperienciaLaboralController{},
 			),
 		),
-		beego.NSNamespace("/formacion_academica",
-			beego.NSInclude(
-				&controllers.FormacionController{},
-			),
-		),
-		beego.NSNamespace("/generar_codigo",
+		beego.NSNamespace("/codigo",
 			beego.NSInclude(
 				&controllers.GeneradorCodigoBarrasController{},
 			),
@@ -43,11 +48,6 @@ func init() {
 		beego.NSNamespace("/inscripciones",
 			beego.NSInclude(
 				&controllers.InscripcionesController{},
-			),
-		),
-		beego.NSNamespace("/produccion_academica",
-			beego.NSInclude(
-				&controllers.ProduccionAcademicaController{},
 			),
 		),
 		beego.NSNamespace("/solicitud_produccion",

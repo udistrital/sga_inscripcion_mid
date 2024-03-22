@@ -5,7 +5,6 @@ import (
 	"github.com/udistrital/sga_inscripcion_mid/services"
 
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 // Transferencia_reingresoController operations for Transferencia_reingreso
@@ -56,9 +55,9 @@ func (c *Transferencia_reingresoController) PostSolicitud() {
 // @Failure 404 not found resource
 // @router /:id [put]
 func (c *Transferencia_reingresoController) PutInfoSolicitud() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	id_solicitud := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -79,11 +78,11 @@ func (c *Transferencia_reingresoController) PutInfoSolicitud() {
 // @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
 // @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 400 the request contains incorrect syntax
-// @router /actualizar_estado/:id [put]
+// @router /actualizar-estado/:id [put]
 func (c *Transferencia_reingresoController) PutInscripcion() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	id_solicitud := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -104,11 +103,11 @@ func (c *Transferencia_reingresoController) PutInscripcion() {
 // @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
 // @Success 200 {object} helpers.Transferencia_reingreso
 // @Failure 400 the request contains incorrect syntax
-// @router /respuesta_solicitud/:id [put]
+// @router /respuesta-solicitud/:id [put]
 func (c *Transferencia_reingresoController) PutSolicitud() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	id_solicitud := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -130,9 +129,9 @@ func (c *Transferencia_reingresoController) PutSolicitud() {
 // @Failure 403 :id is empty
 // @router /inscripcion/:id [get]
 func (c *Transferencia_reingresoController) GetInscripcion() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idInscripcion := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -168,9 +167,9 @@ func (c *Transferencia_reingresoController) GetSolicitudesInscripcion() {
 // @Description get información necesaria para crear un solicitud de transferencias
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /consultar_periodo/ [get]
+// @router /consultar-periodo/ [get]
 func (c *Transferencia_reingresoController) GetConsultarPeriodo() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	respuesta := services.ConsultarPeriodo()
@@ -187,10 +186,10 @@ func (c *Transferencia_reingresoController) GetConsultarPeriodo() {
 // @Description get información necesaria para crear un solicitud de transferencias
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /consultar_parametros/:id_calendario/:persona_id [get]
+// @router /consultar-parametros/:id_calendario/:persona_id [get]
 func (c *Transferencia_reingresoController) GetConsultarParametros() {
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idCalendario := c.Ctx.Input.Param(":id_calendario")
 	idPersona := c.Ctx.Input.Param(":persona_id")
 
@@ -211,11 +210,11 @@ func (c *Transferencia_reingresoController) GetConsultarParametros() {
 // @Failure 403 body is empty
 // @Failure 404 not found resource
 // @Failure 400 not found resource
-// @router /estado_recibos/:persona_id [get]
+// @router /estado-recibos/:persona_id [get]
 func (c *Transferencia_reingresoController) GetEstadoInscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	persona_id := c.Ctx.Input.Param(":persona_id")
 
 	respuesta := services.EstadoInscripcionGet(persona_id)

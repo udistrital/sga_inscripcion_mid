@@ -4,7 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 type GenerarReciboController struct {
@@ -28,7 +27,7 @@ func (c *GenerarReciboController) URLMapping() {
 func (c *GenerarReciboController) PostGenerarEstudianteRecibo() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.GenerarReciboPago(data)
@@ -45,11 +44,11 @@ func (c *GenerarReciboController) PostGenerarEstudianteRecibo() {
 // @Param	body		body 	{}	true		"body Datos del recibo content"
 // @Success 200 {}
 // @Failure 400 body is empty
-// @router / [post]
+// @router /estudiantes [post]
 func (c *GenerarReciboController) PostGenerarRecibo() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.GenerarReciboPost(data)
@@ -66,10 +65,10 @@ func (c *GenerarReciboController) PostGenerarRecibo() {
 // @Param	body		body 	{}	true		"Informacion para el comprobante"
 // @Success 200 {}
 // @Failure 400 body is empty
-// @router /comprobante_inscripcion/ [post]
+// @router /recibo/comprobante-inscripcion [post]
 func (c *GenerarReciboController) PostGenerarComprobanteInscripcion() {
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.GenerarComprobante(data)
