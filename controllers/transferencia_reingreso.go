@@ -184,14 +184,16 @@ func (c *Transferencia_reingresoController) GetConsultarPeriodo() {
 // GetConsultarParametros ...
 // @Title GetConsultarParametros
 // @Description get información necesaria para crear un solicitud de transferencias
+// @Param	id-calendario	query	string	false	"Se recibe parametro Id del calendario"
+// @Param	persona-id	query	string	false	"Se recibe parametro Id del Periodo"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /consultar-parametros/:id_calendario/:persona_id [get]
+// @router /consultar-parametros [get]
 func (c *Transferencia_reingresoController) GetConsultarParametros() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	idCalendario := c.Ctx.Input.Param(":id_calendario")
-	idPersona := c.Ctx.Input.Param(":persona_id")
+	idCalendario := c.GetString("id-calendario")
+	idPersona := c.GetString("persona-id")
 
 	respuesta := services.ConsultarParametros(idCalendario, idPersona)
 

@@ -51,7 +51,7 @@ func (c *ProduccionAcademicaController) PostProduccionAcademica() {
 // @Param   body        body    {}  true        "body Modificar AutorProduccionAcademica content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /academico/produccion/autor/:id [put]
+// @router /autor/:id [put]
 func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -100,7 +100,7 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 // @Param   id      path    int  true        "Id"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/produccion/:id [get]
+// @router /:id [get]
 func (c *ProduccionAcademicaController) GetOneProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -142,7 +142,7 @@ func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
 // @Param   tercero      path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/produccion/:tercero [get]
+// @router /:tercero [get]
 func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -164,7 +164,7 @@ func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 // @Param   tercero path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /:tercero [get]
+// @router /tercero/:tercero [get]
 func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)

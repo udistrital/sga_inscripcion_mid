@@ -9,11 +9,15 @@ package routers
 
 import (
 	"github.com/udistrital/sga_inscripcion_mid/controllers"
+	"github.com/udistrital/utils_oas/errorhandler"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
+
+	beego.ErrorController(&errorhandler.ErrorHandlerController{})
+
 	ns := beego.NewNamespace("/v1",
 		beego.NSNamespace("/academico/descuento",
 			beego.NSInclude(
@@ -30,7 +34,7 @@ func init() {
 				&controllers.ProduccionAcademicaController{},
 			),
 		),
-		beego.NSNamespace("/experiencia_laboral",
+		beego.NSNamespace("/experiencia-laboral",
 			beego.NSInclude(
 				&controllers.ExperienciaLaboralController{},
 			),
@@ -50,7 +54,7 @@ func init() {
 				&controllers.InscripcionesController{},
 			),
 		),
-		beego.NSNamespace("/solicitud_produccion",
+		beego.NSNamespace("/solicitud-produccion",
 			beego.NSInclude(
 				&controllers.SolicitudProduccionController{},
 			),

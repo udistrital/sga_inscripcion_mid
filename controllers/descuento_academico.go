@@ -96,7 +96,7 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 // @Param	dependencia_id		path 	int	true		"DependenciaId"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/descuento/:dependencia_id [get]
+// @router /:dependencia_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -116,7 +116,7 @@ func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 // @Param	persona_id		path 	int	true		"Id de la persona"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/descuento/persona/:persona_id [get]
+// @router /persona/:persona_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -139,7 +139,7 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 // @Param	PeriodoId		query 	int	true		"Id del periodo académico"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/descuento/detalle [get]
+// @router /detalle [get]
 func (c *DescuentoController) GetDescuentoByPersonaPeriodoDependencia() {
 	defer errorhandler.HandlePanic(&c.Controller)
 

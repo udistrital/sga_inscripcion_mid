@@ -31,16 +31,16 @@ func (c *InscripcionesController) URLMapping() {
 // GetEstadoInscripcion ...
 // @Title GetEstadoInscripcion
 // @Description consultar los estados de todos los recibos generados por el tercero
-// @Param	persona_id	path	int	true	"Id del tercero"
-// @Param	id_periodo	path	int	true	"Id del ultimo periodo"
+// @Param	persona-id	query	string	false	"Id del tercero"
+// @Param	id-periodo	query	string	false	"Id del ultimo periodo"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /estado-recibos/:persona_id/:id_periodo [get]
+// @router /estado-recibos [get]
 func (c *InscripcionesController) GetEstadoInscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	terceroId := c.GetString("Id")
+	terceroId := c.GetString("persona-id")
 
 	respuesta := services.GetFormacionAcademicaByIdTercero(terceroId)
 

@@ -65,7 +65,7 @@ func (c *GenerarReciboController) PostGenerarRecibo() {
 // @Param	body		body 	{}	true		"Informacion para el comprobante"
 // @Success 200 {}
 // @Failure 400 body is empty
-// @router /recibo/comprobante-inscripcion [post]
+// @router /comprobante-inscripcion [post]
 func (c *GenerarReciboController) PostGenerarComprobanteInscripcion() {
 	defer errorhandler.HandlePanic(&c.Controller)
 

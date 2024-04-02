@@ -49,7 +49,7 @@ func (c *FormacionController) PostFormacionAcademica() {
 // @Param	Id		query 	int	true		"nit de la universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /academico/formacion/informacion-universidad/nit/:id [get]
+// @router /informacion-universidad/nit/:id [get]
 func (c *FormacionController) GetInfoUniversidad() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -72,7 +72,7 @@ func (c *FormacionController) GetInfoUniversidad() {
 // @Param	nombre	query 	string	true		"nombre universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /academico/formacion/informacion-universidad/nombre/:nombre [get]
+// @router /informacion-universidad/nombre/:nombre [get]
 func (c *FormacionController) GetInfoUniversidadByNombre() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -120,7 +120,7 @@ func (c *FormacionController) PutFormacionAcademica() {
 // @Param	Id			query	int true		"Id del registro de formación"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /academico/formacion/informacion-complementaria [get]
+// @router /informacion-complementaria [get]
 func (c *FormacionController) GetFormacionAcademica() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -161,7 +161,7 @@ func (c *FormacionController) GetFormacionAcademicaByTercero() {
 // @Param   body        body    {}  true		"body Agregar nuevo tercero content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /academico/formacion/tercero [post]
+// @router /tercero [post]
 func (c *FormacionController) PostTercero() {
 
 	defer errorhandler.HandlePanic(&c.Controller)

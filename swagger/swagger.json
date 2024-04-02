@@ -76,7 +76,7 @@
                 }
             }
         },
-        "/academico/descuento/academico/descuento/detalle": {
+        "/academico/descuento/detalle": {
             "get": {
                 "tags": [
                     "academico/descuento"
@@ -119,7 +119,7 @@
                 }
             }
         },
-        "/academico/descuento/academico/descuento/persona/{persona_id}": {
+        "/academico/descuento/persona/{persona_id}": {
             "get": {
                 "tags": [
                     "academico/descuento"
@@ -146,7 +146,7 @@
                 }
             }
         },
-        "/academico/descuento/academico/descuento/{dependencia_id}": {
+        "/academico/descuento/{dependencia_id}": {
             "get": {
                 "tags": [
                     "academico/descuento"
@@ -296,7 +296,7 @@
                 }
             }
         },
-        "/academico/formacion/academico/formacion/informacion-complementaria": {
+        "/academico/formacion/informacion-complementaria": {
             "get": {
                 "tags": [
                     "academico/formacion"
@@ -323,7 +323,7 @@
                 }
             }
         },
-        "/academico/formacion/academico/formacion/informacion-universidad/nit/{id}": {
+        "/academico/formacion/informacion-universidad/nit/{id}": {
             "get": {
                 "tags": [
                     "academico/formacion"
@@ -350,7 +350,7 @@
                 }
             }
         },
-        "/academico/formacion/academico/formacion/informacion-universidad/nombre/{nombre}": {
+        "/academico/formacion/informacion-universidad/nombre/{nombre}": {
             "get": {
                 "tags": [
                     "academico/formacion"
@@ -376,7 +376,7 @@
                 }
             }
         },
-        "/academico/formacion/academico/formacion/tercero": {
+        "/academico/formacion/tercero": {
             "post": {
                 "tags": [
                     "academico/formacion"
@@ -474,7 +474,7 @@
                 }
             }
         },
-        "/academico/produccion/academico/produccion/autor/{id}": {
+        "/academico/produccion/autor/{id}": {
             "put": {
                 "tags": [
                     "academico/produccion"
@@ -510,7 +510,34 @@
                 }
             }
         },
-        "/academico/produccion/academico/produccion/{id}": {
+        "/academico/produccion/tercero/{tercero}": {
+            "get": {
+                "tags": [
+                    "academico/produccion"
+                ],
+                "description": "consultar Produccion Academica por tercero",
+                "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tercero",
+                        "description": "Tercero",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/academico/produccion/{id}": {
             "get": {
                 "tags": [
                     "academico/produccion"
@@ -535,36 +562,7 @@
                         "description": "not found resource"
                     }
                 }
-            }
-        },
-        "/academico/produccion/academico/produccion/{tercero}": {
-            "get": {
-                "tags": [
-                    "academico/produccion"
-                ],
-                "description": "consultar Produccion Academica por tercero",
-                "operationId": "ProduccionAcademicaController.GetIdProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "tercero",
-                        "description": "Tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/academico/produccion/{id}": {
+            },
             "put": {
                 "tags": [
                     "academico/produccion"
@@ -631,7 +629,7 @@
                     "academico/produccion"
                 ],
                 "description": "consultar Produccion Academica por tercero",
-                "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
+                "operationId": "ProduccionAcademicaController.GetIdProduccionAcademica",
                 "parameters": [
                     {
                         "in": "path",
@@ -680,10 +678,10 @@
                 }
             }
         },
-        "/experiencia_laboral/": {
+        "/experiencia-laboral/": {
             "post": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "Agregar Formacion Academica ud",
                 "operationId": "ExperienciaLaboralController.PostExperienciaLaboral",
@@ -708,10 +706,10 @@
                 }
             }
         },
-        "/experiencia_laboral/informacion-empresa/": {
+        "/experiencia-laboral/informacion-empresa/": {
             "get": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "Obtener la información de la empresa por el nit",
                 "operationId": "ExperienciaLaboralController.GetInformacionEmpresa",
@@ -735,10 +733,10 @@
                 }
             }
         },
-        "/experiencia_laboral/tercero/": {
+        "/experiencia-laboral/tercero/": {
             "get": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "Obtener la información de la empresa por el nit",
                 "operationId": "ExperienciaLaboralController.GetExperienciaLaboralByTercero",
@@ -762,10 +760,10 @@
                 }
             }
         },
-        "/experiencia_laboral/{id}": {
+        "/experiencia-laboral/{id}": {
             "get": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "consultar Experiencia Laboral por id",
                 "operationId": "ExperienciaLaboralController.GetExperienciaLaboral",
@@ -790,7 +788,7 @@
             },
             "put": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "Modificar Formacion Academica ud",
                 "operationId": "ExperienciaLaboralController.PutExperienciaLaboral",
@@ -816,7 +814,7 @@
             },
             "delete": {
                 "tags": [
-                    "experiencia_laboral"
+                    "experiencia-laboral"
                 ],
                 "description": "eliminar Experiencia Laboral por id",
                 "operationId": "ExperienciaLaboralController.DeleteExperienciaLaboral",
@@ -840,7 +838,7 @@
                 }
             }
         },
-        "/inscripciones/estado-recibos/{persona_id}/{id_periodo}": {
+        "/inscripciones/estado-recibos": {
             "get": {
                 "tags": [
                     "inscripciones"
@@ -849,20 +847,16 @@
                 "operationId": "InscripcionesController.GetEstadoInscripcion",
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "persona_id",
+                        "in": "query",
+                        "name": "persona-id",
                         "description": "Id del tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
+                        "type": "string"
                     },
                     {
-                        "in": "path",
-                        "name": "id_periodo",
+                        "in": "query",
+                        "name": "id-periodo",
                         "description": "Id del ultimo periodo",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1197,6 +1191,34 @@
                 }
             }
         },
+        "/recibos/comprobante-inscripcion": {
+            "post": {
+                "tags": [
+                    "recibos"
+                ],
+                "description": "Genera un comprobante de inscripcion",
+                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Informacion para el comprobante",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/recibos/estudiantes": {
             "post": {
                 "tags": [
@@ -1253,41 +1275,13 @@
                 }
             }
         },
-        "/recibos/recibo/comprobante-inscripcion": {
+        "/solicitud-produccion/alerta-docente": {
             "post": {
                 "tags": [
-                    "recibos"
-                ],
-                "description": "Genera un comprobante de inscripcion",
-                "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Informacion para el comprobante",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/solicitud_produccion/coincidencia/{id_solicitud}/{id_coincidencia}/{id_tercero}": {
-            "post": {
-                "tags": [
-                    "solicitud_produccion"
+                    "solicitud-produccion"
                 ],
                 "description": "Agregar Alerta en Solicitud docente en casos necesarios",
-                "operationId": "SolicitudProduccionController.PostSolicitudEvaluacionCoincidencia",
+                "operationId": "SolicitudProduccionController.PostAlertSolicitudProduccion",
                 "parameters": [
                     {
                         "in": "body",
@@ -1297,6 +1291,18 @@
                         "schema": {
                             "$ref": "#/definitions/{}"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "tercero",
+                        "description": "Id del tercero",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo-produccion",
+                        "description": "Id del tipo de produccion",
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -1309,10 +1315,56 @@
                 }
             }
         },
-        "/solicitud_produccion/{id}": {
+        "/solicitud-produccion/coincidencias": {
+            "post": {
+                "tags": [
+                    "solicitud-produccion"
+                ],
+                "description": "Agregar Alerta en Solicitud docente en casos necesarios",
+                "operationId": "SolicitudProduccionController.PostSolicitudEvaluacionCoincidencia",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar SolicitudProduccion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "id-solicitud",
+                        "description": "Se recibe parametro Id de la solicitud",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id-coincidencia",
+                        "description": "Se recibe parametro Id de la coincidencia",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id-tercero",
+                        "description": "Se recibe parametro Id del tercero",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/solicitud-produccion/{id}": {
             "put": {
                 "tags": [
-                    "solicitud_produccion"
+                    "solicitud-produccion"
                 ],
                 "description": "Modificar resultaado solicitud docente",
                 "operationId": "SolicitudProduccionController.PutResultadoSolicitud",
@@ -1338,34 +1390,6 @@
                 "responses": {
                     "200": {
                         "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/solicitud_produccion/{tercero}/{tipo_produccion}": {
-            "post": {
-                "tags": [
-                    "solicitud_produccion"
-                ],
-                "description": "Agregar Alerta en Solicitud docente en casos necesarios",
-                "operationId": "SolicitudProduccionController.PostAlertSolicitudProduccion",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Agregar SolicitudProduccion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -1442,13 +1466,27 @@
                 }
             }
         },
-        "/transferencia/consultar-parametros/{id_calendario}/{persona_id}": {
+        "/transferencia/consultar-parametros": {
             "get": {
                 "tags": [
                     "transferencia"
                 ],
                 "description": "get información necesaria para crear un solicitud de transferencias",
                 "operationId": "Transferencia_reingresoController.GetConsultarParametros",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id-calendario",
+                        "description": "Se recibe parametro Id del calendario",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "persona-id",
+                        "description": "Se recibe parametro Id del Periodo",
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "{}"
@@ -1681,7 +1719,7 @@
             "description": "ProduccionAcademicaController ...\n"
         },
         {
-            "name": "experiencia_laboral",
+            "name": "experiencia-laboral",
             "description": "ExperienciaLaboralController ...\n"
         },
         {
@@ -1689,7 +1727,7 @@
             "description": "GeneradorCodigoBarrasController ...\n"
         },
         {
-            "name": "solicitud_produccion",
+            "name": "solicitud-produccion",
             "description": "SolicitudProduccionController ...\n"
         },
         {

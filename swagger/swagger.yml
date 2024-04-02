@@ -52,6 +52,24 @@ paths:
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
+  /academico/descuento/{dependencia_id}:
+    get:
+      tags:
+      - academico/descuento
+      description: consultar Descuento Academico por DependenciaId
+      operationId: DescuentoController.GetDescuentoAcademicoByDependenciaID
+      parameters:
+      - in: path
+        name: dependencia_id
+        description: DependenciaId
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
+        "404":
+          description: not found resource
   /academico/descuento/{id}:
     put:
       tags:
@@ -76,25 +94,7 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /academico/descuento/academico/descuento/{dependencia_id}:
-    get:
-      tags:
-      - academico/descuento
-      description: consultar Descuento Academico por DependenciaId
-      operationId: DescuentoController.GetDescuentoAcademicoByDependenciaID
-      parameters:
-      - in: path
-        name: dependencia_id
-        description: DependenciaId
-        required: true
-        type: integer
-        format: int64
-      responses:
-        "200":
-          description: '{}'
-        "404":
-          description: not found resource
-  /academico/descuento/academico/descuento/detalle:
+  /academico/descuento/detalle:
     get:
       tags:
       - academico/descuento
@@ -124,7 +124,7 @@ paths:
           description: '{}'
         "404":
           description: not found resource
-  /academico/descuento/academico/descuento/persona/{persona_id}:
+  /academico/descuento/persona/{persona_id}:
     get:
       tags:
       - academico/descuento
@@ -218,7 +218,7 @@ paths:
           description: '{string} delete success!'
         "404":
           description: not found resource
-  /academico/formacion/academico/formacion/informacion-complementaria:
+  /academico/formacion/informacion-complementaria:
     get:
       tags:
       - academico/formacion
@@ -236,7 +236,7 @@ paths:
           description: '{}'
         "404":
           description: not found resource
-  /academico/formacion/academico/formacion/informacion-universidad/nit/{id}:
+  /academico/formacion/informacion-universidad/nit/{id}:
     get:
       tags:
       - academico/formacion
@@ -254,7 +254,7 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /academico/formacion/academico/formacion/informacion-universidad/nombre/{nombre}:
+  /academico/formacion/informacion-universidad/nombre/{nombre}:
     get:
       tags:
       - academico/formacion
@@ -271,7 +271,7 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /academico/formacion/academico/formacion/tercero:
+  /academico/formacion/tercero:
     post:
       tags:
       - academico/formacion
@@ -318,6 +318,23 @@ paths:
         "400":
           description: the request contains incorrect syntax
   /academico/produccion/{id}:
+    get:
+      tags:
+      - academico/produccion
+      description: consultar Produccion Academica por id
+      operationId: ProduccionAcademicaController.GetOneProduccionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: Id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
+        "404":
+          description: not found resource
     put:
       tags:
       - academico/produccion
@@ -363,42 +380,6 @@ paths:
       tags:
       - academico/produccion
       description: consultar Produccion Academica por tercero
-      operationId: ProduccionAcademicaController.GetProduccionAcademica
-      parameters:
-      - in: path
-        name: tercero
-        description: Tercero
-        required: true
-        type: integer
-        format: int64
-      responses:
-        "200":
-          description: '{}'
-        "404":
-          description: not found resource
-  /academico/produccion/academico/produccion/{id}:
-    get:
-      tags:
-      - academico/produccion
-      description: consultar Produccion Academica por id
-      operationId: ProduccionAcademicaController.GetOneProduccionAcademica
-      parameters:
-      - in: path
-        name: id
-        description: Id
-        required: true
-        type: integer
-        format: int64
-      responses:
-        "200":
-          description: '{}'
-        "404":
-          description: not found resource
-  /academico/produccion/academico/produccion/{tercero}:
-    get:
-      tags:
-      - academico/produccion
-      description: consultar Produccion Academica por tercero
       operationId: ProduccionAcademicaController.GetIdProduccionAcademica
       parameters:
       - in: path
@@ -412,7 +393,7 @@ paths:
           description: '{}'
         "404":
           description: not found resource
-  /academico/produccion/academico/produccion/autor/{id}:
+  /academico/produccion/autor/{id}:
     put:
       tags:
       - academico/produccion
@@ -436,6 +417,24 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
+  /academico/produccion/tercero/{tercero}:
+    get:
+      tags:
+      - academico/produccion
+      description: consultar Produccion Academica por tercero
+      operationId: ProduccionAcademicaController.GetProduccionAcademica
+      parameters:
+      - in: path
+        name: tercero
+        description: Tercero
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
+        "404":
+          description: not found resource
   /codigo/:
     post:
       tags:
@@ -454,10 +453,10 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /experiencia_laboral/:
+  /experiencia-laboral/:
     post:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: Agregar Formacion Academica ud
       operationId: ExperienciaLaboralController.PostExperienciaLaboral
       parameters:
@@ -472,10 +471,10 @@ paths:
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
-  /experiencia_laboral/{id}:
+  /experiencia-laboral/{id}:
     get:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: consultar Experiencia Laboral por id
       operationId: ExperienciaLaboralController.GetExperienciaLaboral
       parameters:
@@ -492,7 +491,7 @@ paths:
           description: not found resource
     put:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: Modificar Formacion Academica ud
       operationId: ExperienciaLaboralController.PutExperienciaLaboral
       parameters:
@@ -509,7 +508,7 @@ paths:
           description: the request contains incorrect syntax
     delete:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: eliminar Experiencia Laboral por id
       operationId: ExperienciaLaboralController.DeleteExperienciaLaboral
       parameters:
@@ -524,10 +523,10 @@ paths:
           description: '{string} delete success!'
         "404":
           description: not found resource
-  /experiencia_laboral/informacion-empresa/:
+  /experiencia-laboral/informacion-empresa/:
     get:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: Obtener la información de la empresa por el nit
       operationId: ExperienciaLaboralController.GetInformacionEmpresa
       parameters:
@@ -542,10 +541,10 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /experiencia_laboral/tercero/:
+  /experiencia-laboral/tercero/:
     get:
       tags:
-      - experiencia_laboral
+      - experiencia-laboral
       description: Obtener la información de la empresa por el nit
       operationId: ExperienciaLaboralController.GetExperienciaLaboralByTercero
       parameters:
@@ -560,25 +559,21 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /inscripciones/estado-recibos/{persona_id}/{id_periodo}:
+  /inscripciones/estado-recibos:
     get:
       tags:
       - inscripciones
       description: consultar los estados de todos los recibos generados por el tercero
       operationId: InscripcionesController.GetEstadoInscripcion
       parameters:
-      - in: path
-        name: persona_id
+      - in: query
+        name: persona-id
         description: Id del tercero
-        required: true
-        type: integer
-        format: int64
-      - in: path
-        name: id_periodo
+        type: string
+      - in: query
+        name: id-periodo
         description: Id del ultimo periodo
-        required: true
-        type: integer
-        format: int64
+        type: string
       responses:
         "200":
           description: '{}'
@@ -792,6 +787,24 @@ paths:
           description: '{}'
         "403":
           description: body is empty
+  /recibos/comprobante-inscripcion:
+    post:
+      tags:
+      - recibos
+      description: Genera un comprobante de inscripcion
+      operationId: GenerarReciboController.PostGenerarComprobanteInscripcion
+      parameters:
+      - in: body
+        name: body
+        description: Informacion para el comprobante
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "400":
+          description: body is empty
   /recibos/estudiantes:
     post:
       tags:
@@ -828,28 +841,10 @@ paths:
           description: '{}'
         "400":
           description: body is empty
-  /recibos/recibo/comprobante-inscripcion:
-    post:
-      tags:
-      - recibos
-      description: Genera un comprobante de inscripcion
-      operationId: GenerarReciboController.PostGenerarComprobanteInscripcion
-      parameters:
-      - in: body
-        name: body
-        description: Informacion para el comprobante
-        required: true
-        schema:
-          $ref: '#/definitions/{}'
-      responses:
-        "200":
-          description: '{}'
-        "400":
-          description: body is empty
-  /solicitud_produccion/{id}:
+  /solicitud-produccion/{id}:
     put:
       tags:
-      - solicitud_produccion
+      - solicitud-produccion
       description: Modificar resultaado solicitud docente
       operationId: SolicitudProduccionController.PutResultadoSolicitud
       parameters:
@@ -870,10 +865,10 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /solicitud_produccion/{tercero}/{tipo_produccion}:
+  /solicitud-produccion/alerta-docente:
     post:
       tags:
-      - solicitud_produccion
+      - solicitud-produccion
       description: Agregar Alerta en Solicitud docente en casos necesarios
       operationId: SolicitudProduccionController.PostAlertSolicitudProduccion
       parameters:
@@ -883,15 +878,23 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/{}'
+      - in: query
+        name: tercero
+        description: Id del tercero
+        type: string
+      - in: query
+        name: tipo-produccion
+        description: Id del tipo de produccion
+        type: string
       responses:
         "201":
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
-  /solicitud_produccion/coincidencia/{id_solicitud}/{id_coincidencia}/{id_tercero}:
+  /solicitud-produccion/coincidencias:
     post:
       tags:
-      - solicitud_produccion
+      - solicitud-produccion
       description: Agregar Alerta en Solicitud docente en casos necesarios
       operationId: SolicitudProduccionController.PostSolicitudEvaluacionCoincidencia
       parameters:
@@ -901,6 +904,18 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/{}'
+      - in: query
+        name: id-solicitud
+        description: Se recibe parametro Id de la solicitud
+        type: string
+      - in: query
+        name: id-coincidencia
+        description: Se recibe parametro Id de la coincidencia
+        type: string
+      - in: query
+        name: id-tercero
+        description: Se recibe parametro Id del tercero
+        type: string
       responses:
         "201":
           description: '{int}'
@@ -973,12 +988,21 @@ paths:
             $ref: '#/definitions/helpers.Transferencia_reingreso'
         "400":
           description: the request contains incorrect syntax
-  /transferencia/consultar-parametros/{id_calendario}/{persona_id}:
+  /transferencia/consultar-parametros:
     get:
       tags:
       - transferencia
       description: get información necesaria para crear un solicitud de transferencias
       operationId: Transferencia_reingresoController.GetConsultarParametros
+      parameters:
+      - in: query
+        name: id-calendario
+        description: Se recibe parametro Id del calendario
+        type: string
+      - in: query
+        name: persona-id
+        description: Se recibe parametro Id del Periodo
+        type: string
       responses:
         "200":
           description: '{}'
@@ -1108,13 +1132,13 @@ tags:
 - name: academico/produccion
   description: |
     ProduccionAcademicaController ...
-- name: experiencia_laboral
+- name: experiencia-laboral
   description: |
     ExperienciaLaboralController ...
 - name: codigo
   description: |
     GeneradorCodigoBarrasController ...
-- name: solicitud_produccion
+- name: solicitud-produccion
   description: |
     SolicitudProduccionController ...
 - name: transferencia
