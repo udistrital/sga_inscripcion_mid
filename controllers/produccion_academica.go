@@ -4,7 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 // ProduccionAcademicaController ...
@@ -52,10 +51,10 @@ func (c *ProduccionAcademicaController) PostProduccionAcademica() {
 // @Param   body        body    {}  true        "body Modificar AutorProduccionAcademica content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /estado_autor_produccion/:id [put]
+// @router /autor/:id [put]
 func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idStr := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -80,7 +79,7 @@ func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idStr := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
@@ -101,11 +100,11 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 // @Param   id      path    int  true        "Id"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /get_one/:id [get]
+// @router /:id [get]
 func (c *ProduccionAcademicaController) GetOneProduccionAcademica() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	//Id de la producción
 	idProduccion := c.Ctx.Input.Param(":id")
 
@@ -125,9 +124,9 @@ func (c *ProduccionAcademicaController) GetOneProduccionAcademica() {
 // @Failure 404 not found resource
 // @router / [get]
 func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	respuesta := services.GetAllProducciones()
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
@@ -143,11 +142,11 @@ func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
 // @Param   tercero      path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /pr_academica/:tercero [get]
+// @router /:tercero [get]
 func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idTercero := c.Ctx.Input.Param(":tercero")
 
 	respuesta := services.GetIdProduccion(idTercero)
@@ -165,11 +164,11 @@ func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 // @Param   tercero path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /:tercero [get]
+// @router /tercero/:tercero [get]
 func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idTercero := c.Ctx.Input.Param(":tercero")
 
 	respuesta := services.GetProduccion(idTercero)
@@ -191,7 +190,7 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 func (c *ProduccionAcademicaController) DeleteProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	idStr := c.Ctx.Input.Param(":id")
 
 	respuesta := services.DeleteProduccion(idStr)

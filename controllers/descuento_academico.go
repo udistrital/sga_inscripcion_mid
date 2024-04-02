@@ -1,11 +1,9 @@
 package controllers
 
 import (
-
 	"github.com/astaxie/beego"
-	"github.com/udistrital/utils_oas/errorhandler"
 	"github.com/udistrital/sga_inscripcion_mid/services"
-
+	"github.com/udistrital/utils_oas/errorhandler"
 )
 
 // DescuentoController ...
@@ -85,7 +83,7 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 	//Id de la solicitud
 	idSolitudDes := c.GetString("SolicitudId")
 
-	respuesta := services.GetDescuentoAcademicoById( idStr, idSolitudDes)
+	respuesta := services.GetDescuentoAcademicoById(idStr, idSolitudDes)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 	c.Data["json"] = respuesta
@@ -98,15 +96,14 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 // @Param	dependencia_id		path 	int	true		"DependenciaId"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /descuentoAcademicoByID/:dependencia_id [get]
+// @router /:dependencia_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 	//Id de la persona
 	idStr := c.Ctx.Input.Param(":dependencia_id")
 
-
-	respuesta := services.GetDescuentoByDpendencia( idStr )
+	respuesta := services.GetDescuentoByDpendencia(idStr)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 	c.Data["json"] = respuesta
@@ -119,14 +116,14 @@ func (c *DescuentoController) GetDescuentoAcademicoByDependenciaID() {
 // @Param	persona_id		path 	int	true		"Id de la persona"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /:persona_id [get]
+// @router /persona/:persona_id [get]
 func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	//Id de la persona
 	idStr := c.Ctx.Input.Param(":persona_id")
 
-	respuesta := services.GetDescuentoAcademicoByTercero( idStr )
+	respuesta := services.GetDescuentoAcademicoByTercero(idStr)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 	c.Data["json"] = respuesta
@@ -142,16 +139,16 @@ func (c *DescuentoController) GetDescuentoAcademicoByPersona() {
 // @Param	PeriodoId		query 	int	true		"Id del periodo académico"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /descuentopersonaperiododependencia/ [get]
+// @router /detalle [get]
 func (c *DescuentoController) GetDescuentoByPersonaPeriodoDependencia() {
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	//Captura de parámetros
 	idPersona := c.GetString("PersonaId")
 	idDependencia := c.GetString("DependenciaId")
 	idPeriodo := c.GetString("PeriodoId")
-	
-	respuesta := services.GetDescuentoByTerceroPeriodoDependencia( idPersona, idPeriodo, idDependencia)
+
+	respuesta := services.GetDescuentoByTerceroPeriodoDependencia(idPersona, idPeriodo, idDependencia)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 	c.Data["json"] = respuesta
