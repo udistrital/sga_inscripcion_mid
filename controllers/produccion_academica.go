@@ -142,7 +142,7 @@ func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
 // @Param   tercero      path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /:tercero [get]
+// @router /tercero/:tercero [get]
 func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)

@@ -46,18 +46,18 @@ func (c *DescuentoController) PostDescuentoAcademico() {
 // PutDescuentoAcademico ...
 // @Title PutDescuentoAcademico
 // @Description Modificar Descuento Academico
-// @Param	id	path 	int	true		"el id de la solicitud de descuento a modificar"
+// @Param	id	query 	int	true		"el id de la solicitud de descuento a modificar"
 // @Param	body		body 	{}	true		"body Modificar Descuento Academico content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /:id [put]
+// @router / [put]
 func (c *DescuentoController) PutDescuentoAcademico() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	data := c.Ctx.Input.RequestBody
 
-	idStr := c.Ctx.Input.Param(":id")
+	idStr := c.GetString("Id")
 
 	respuesta := services.ActualizarDescuentoAcademico(data, idStr)
 

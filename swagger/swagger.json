@@ -49,6 +49,40 @@
                     }
                 }
             },
+            "put": {
+                "tags": [
+                    "academico/descuento"
+                ],
+                "description": "Modificar Descuento Academico",
+                "operationId": "DescuentoController.PutDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "el id de la solicitud de descuento a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Descuento Academico content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "academico/descuento"
@@ -173,42 +207,6 @@
                 }
             }
         },
-        "/academico/descuento/{id}": {
-            "put": {
-                "tags": [
-                    "academico/descuento"
-                ],
-                "description": "Modificar Descuento Academico",
-                "operationId": "DescuentoController.PutDescuentoAcademico",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "el id de la solicitud de descuento a modificar",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar Descuento Academico content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
         "/academico/formacion/": {
             "get": {
                 "tags": [
@@ -323,7 +321,7 @@
                 }
             }
         },
-        "/academico/formacion/informacion-universidad/nit/{id}": {
+        "/academico/formacion/informacion-universidad/nit": {
             "get": {
                 "tags": [
                     "academico/formacion"
@@ -350,7 +348,7 @@
                 }
             }
         },
-        "/academico/formacion/informacion-universidad/nombre/{nombre}": {
+        "/academico/formacion/informacion-universidad/nombre": {
             "get": {
                 "tags": [
                     "academico/formacion"
@@ -616,33 +614,6 @@
                 "responses": {
                     "200": {
                         "description": "{string} delete success!"
-                    },
-                    "404": {
-                        "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/academico/produccion/{tercero}": {
-            "get": {
-                "tags": [
-                    "academico/produccion"
-                ],
-                "description": "consultar Produccion Academica por tercero",
-                "operationId": "ProduccionAcademicaController.GetIdProduccionAcademica",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "tercero",
-                        "description": "Tercero",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
                     },
                     "404": {
                         "description": "not found resource"

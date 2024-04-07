@@ -41,8 +41,9 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	terceroId := c.GetString("persona-id")
+	idPeriodo := c.GetString("id-periodo")
 
-	respuesta := services.GetFormacionAcademicaByIdTercero(terceroId)
+	respuesta := services.EstadoInscripcion(terceroId, idPeriodo)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
