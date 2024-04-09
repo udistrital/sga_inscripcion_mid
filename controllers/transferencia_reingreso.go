@@ -28,7 +28,7 @@ func (c *Transferencia_reingresoController) URLMapping() {
 // PostSolicitud ...
 // @Title Create
 // @Description create Transferencia_reingreso
-// @Param	body		body 	helpers.Transferencia_reingreso	true		"body for Transferencia_reingreso content"
+// @Param	body		body 	{}	true		"body for Transferencia_reingreso content"
 // @Success 201 {object} helpers.Transferencia_reingreso
 // @Failure 403 body is empty
 // @router / [post]

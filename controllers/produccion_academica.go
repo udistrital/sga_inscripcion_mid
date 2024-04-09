@@ -4,6 +4,8 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
+
+	"github.com/k0kubun/pp"
 )
 
 // ProduccionAcademicaController ...
@@ -83,6 +85,10 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 	idStr := c.Ctx.Input.Param(":id")
 
 	data := c.Ctx.Input.RequestBody
+
+	pp.Println(string(data))
+
+	pp.Println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
 
 	respuesta := services.ProduccionAcademicaPut(idStr, data)
 

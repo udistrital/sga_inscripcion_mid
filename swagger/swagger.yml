@@ -35,29 +35,6 @@ paths:
           description: '{}'
         "404":
           description: not found resource
-    put:
-      tags:
-      - academico/descuento
-      description: Modificar Descuento Academico
-      operationId: DescuentoController.PutDescuentoAcademico
-      parameters:
-      - in: query
-        name: id
-        description: el id de la solicitud de descuento a modificar
-        required: true
-        type: integer
-        format: int64
-      - in: body
-        name: body
-        description: body Modificar Descuento Academico content
-        required: true
-        schema:
-          $ref: '#/definitions/{}'
-      responses:
-        "200":
-          description: '{}'
-        "400":
-          description: the request contains incorrect syntax
     post:
       tags:
       - academico/descuento
@@ -93,6 +70,30 @@ paths:
           description: '{}'
         "404":
           description: not found resource
+  /academico/descuento/{id}:
+    put:
+      tags:
+      - academico/descuento
+      description: Modificar Descuento Academico
+      operationId: DescuentoController.PutDescuentoAcademico
+      parameters:
+      - in: path
+        name: id
+        description: el id de la solicitud de descuento a modificar
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: body Modificar Descuento Academico content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "400":
+          description: the request contains incorrect syntax
   /academico/descuento/detalle:
     get:
       tags:

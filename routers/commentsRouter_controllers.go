@@ -18,15 +18,6 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"],
         beego.ControllerComments{
-            Method: "PutDescuentoAcademico",
-            Router: "/",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"],
-        beego.ControllerComments{
             Method: "GetDescuentoAcademico",
             Router: "/",
             AllowHTTPMethods: []string{"get"},
@@ -39,6 +30,15 @@ func init() {
             Method: "GetDescuentoAcademicoByDependenciaID",
             Router: "/:dependencia_id",
             AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "PutDescuentoAcademico",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
