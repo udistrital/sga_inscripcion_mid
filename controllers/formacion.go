@@ -49,7 +49,7 @@ func (c *FormacionController) PostFormacionAcademica() {
 // @Param	Id		query 	int	true		"nit de la universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /informacion-universidad/nit/:id [get]
+// @router /informacion-universidad/nit [get]
 func (c *FormacionController) GetInfoUniversidad() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -72,7 +72,7 @@ func (c *FormacionController) GetInfoUniversidad() {
 // @Param	nombre	query 	string	true		"nombre universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /informacion-universidad/nombre/:nombre [get]
+// @router /informacion-universidad/nombre [get]
 func (c *FormacionController) GetInfoUniversidadByNombre() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -189,7 +189,7 @@ func (c *FormacionController) DeleteFormacionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	FormacionId := c.GetString("id")
+	FormacionId := c.Ctx.Input.Param(":id")
 
 	respuesta := services.EliminarFormacion(FormacionId)
 

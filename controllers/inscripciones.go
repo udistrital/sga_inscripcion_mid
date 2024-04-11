@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+
 	//"github.com/astaxie/beego/httplib"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
@@ -41,8 +42,9 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	terceroId := c.GetString("persona-id")
+	idPeriodo := c.GetString("id-periodo")
 
-	respuesta := services.GetFormacionAcademicaByIdTercero(terceroId)
+	respuesta := services.EstadoInscripcion(terceroId, idPeriodo)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 

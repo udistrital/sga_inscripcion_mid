@@ -80,6 +80,7 @@ func (c *DescuentoController) GetDescuentoAcademico() {
 
 	//Id de la persona
 	idStr := c.GetString("PersonaId")
+
 	//Id de la solicitud
 	idSolitudDes := c.GetString("SolicitudId")
 

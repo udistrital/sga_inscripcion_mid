@@ -236,7 +236,7 @@ paths:
           description: '{}'
         "404":
           description: not found resource
-  /academico/formacion/informacion-universidad/nit/{id}:
+  /academico/formacion/informacion-universidad/nit:
     get:
       tags:
       - academico/formacion
@@ -254,7 +254,7 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /academico/formacion/informacion-universidad/nombre/{nombre}:
+  /academico/formacion/informacion-universidad/nombre:
     get:
       tags:
       - academico/formacion
@@ -373,24 +373,6 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "404":
-          description: not found resource
-  /academico/produccion/{tercero}:
-    get:
-      tags:
-      - academico/produccion
-      description: consultar Produccion Academica por tercero
-      operationId: ProduccionAcademicaController.GetIdProduccionAcademica
-      parameters:
-      - in: path
-        name: tercero
-        description: Tercero
-        required: true
-        type: integer
-        format: int64
-      responses:
-        "200":
-          description: '{}'
         "404":
           description: not found resource
   /academico/produccion/autor/{id}:

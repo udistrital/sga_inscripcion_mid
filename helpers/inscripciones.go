@@ -78,8 +78,8 @@ func IdInfoCompTercero(grupo string, codAbrev string) (Id string, ok bool) {
 	return Id, ok
 }
 
-//Verificar estado de lso recibos ...
-func VerificarRecibos(personaId string, periodoId string) ( resultadoAuxResponse map[string]interface{}, Error string) {
+// Verificar estado de lso recibos ...
+func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse map[string]interface{}, Error string) {
 	var Inscripciones []map[string]interface{}
 	var ReciboXML map[string]interface{}
 	var resultadoAux []map[string]interface{}
@@ -153,14 +153,14 @@ func VerificarRecibos(personaId string, periodoId string) ( resultadoAuxResponse
 			}
 
 			resultado["Inscripciones"] = resultadoAux
-		} else if (fmt.Sprintf("%v", Inscripciones[0]) == "map[]"){
+		} else if fmt.Sprintf("%v", Inscripciones[0]) == "map[]" {
 
 			fmt.Println("Nueva inscripción")
 
 		} else {
 			return resultado, "404"
 		}
-	}else {
+	} else {
 		return resultado, "400"
 	}
 
