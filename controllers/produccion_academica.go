@@ -4,6 +4,8 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
+
+	"github.com/k0kubun/pp"
 )
 
 // ProduccionAcademicaController ...
@@ -84,6 +86,10 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 
 	data := c.Ctx.Input.RequestBody
 
+	pp.Println(string(data))
+
+	pp.Println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
+
 	respuesta := services.ProduccionAcademicaPut(idStr, data)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
@@ -142,7 +148,7 @@ func (c *ProduccionAcademicaController) GetAllProduccionAcademica() {
 // @Param   tercero      path    int  true        "Tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /:tercero [get]
+// @router /tercero/:tercero [get]
 func (c *ProduccionAcademicaController) GetIdProduccionAcademica() {
 
 	defer errorhandler.HandlePanic(&c.Controller)

@@ -163,7 +163,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetInfoUniversidad",
-            Router: "/informacion-universidad/nit/:id",
+            Router: "/informacion-universidad/nit",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -172,7 +172,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "GetInfoUniversidadByNombre",
-            Router: "/informacion-universidad/nombre/:nombre",
+            Router: "/informacion-universidad/nombre",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -387,18 +387,18 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
-            Method: "GetIdProduccionAcademica",
-            Router: "/:tercero",
-            AllowHTTPMethods: []string{"get"},
+            Method: "PutEstadoAutorProduccionAcademica",
+            Router: "/autor/:id",
+            AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:ProduccionAcademicaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:ProduccionAcademicaController"],
         beego.ControllerComments{
-            Method: "PutEstadoAutorProduccionAcademica",
-            Router: "/autor/:id",
-            AllowHTTPMethods: []string{"put"},
+            Method: "GetIdProduccionAcademica",
+            Router: "/tercero/:tercero",
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
