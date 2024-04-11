@@ -22,7 +22,7 @@ func EstadoInscripcion(idPersona string, idPeriodo string) (APIResponseDTO reque
 	if err == "" {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, recibosResultado, nil)
 	} else if err == "400" {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400,nil , "Bad request")
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Bad request")
 	} else {
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 	}
@@ -30,13 +30,13 @@ func EstadoInscripcion(idPersona string, idPeriodo string) (APIResponseDTO reque
 	return APIResponseDTO
 }
 
-func InformacionFamiliar(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func InformacionFamiliar(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InformacionFamiliar map[string]interface{}
 	var TerceroFamiliarPost map[string]interface{}
 	var FamiliarParentescoPost map[string]interface{}
 	var InfoContactoPost map[string]interface{}
 
-	if err := json.Unmarshal( data, &InformacionFamiliar); err == nil {
+	if err := json.Unmarshal(data, &InformacionFamiliar); err == nil {
 		InfoFamiliarAux := InformacionFamiliar["Familiares"].([]interface{})
 		//InfoTercero := InformacionFamiliar["Tercero_Familiar"]
 
@@ -125,12 +125,12 @@ func InformacionFamiliar(data []byte) (APIResponseDTO requestresponse.APIRespons
 			}
 		}
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil,  err.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 	}
 	return APIResponseDTO
 }
 
-func Reintegro(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func Reintegro(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var Reintegro map[string]interface{}
 	if err := json.Unmarshal(data, &Reintegro); err == nil {
 
@@ -150,7 +150,7 @@ func Reintegro(data []byte) (APIResponseDTO requestresponse.APIResponse){
 	return APIResponseDTO
 }
 
-func TransferenciaPost(data []byte)(APIResponseDTO requestresponse.APIResponse){
+func TransferenciaPost(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var Transferencia map[string]interface{}
 
 	if err := json.Unmarshal(data, &Transferencia); err == nil {
@@ -158,7 +158,7 @@ func TransferenciaPost(data []byte)(APIResponseDTO requestresponse.APIResponse){
 		var resultadoTransferencia map[string]interface{}
 		errTransferencia := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"tr_inscripcion/transferencia", "POST", &resultadoTransferencia, Transferencia)
 		if resultadoTransferencia["Type"] == "error" || errTransferencia != nil || resultadoTransferencia["Status"] == "404" || resultadoTransferencia["Message"] != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoTransferencia)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoTransferencia)
 			return APIResponseDTO
 		} else {
 			fmt.Println("Transferencia registrada")
@@ -171,7 +171,7 @@ func TransferenciaPost(data []byte)(APIResponseDTO requestresponse.APIResponse){
 	return APIResponseDTO
 }
 
-func InfoIcfesColegio(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func InfoIcfesColegio(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InfoIcfesColegio map[string]interface{}
 	resultado := []interface{}{}
 
@@ -190,7 +190,7 @@ func InfoIcfesColegio(data []byte) (APIResponseDTO requestresponse.APIResponse){
 			var resultadoInfoComeplementaria map[string]interface{}
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Message"] != nil {
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoInfoComeplementaria)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoInfoComeplementaria)
 				return APIResponseDTO
 			} else {
 				fmt.Println("Info complementaria registrada", dato["InfoComplementariaId"])
@@ -234,7 +234,7 @@ func InfoIcfesColegio(data []byte) (APIResponseDTO requestresponse.APIResponse){
 				return APIResponseDTO
 			}
 		} else {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoRegistroColegio)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoRegistroColegio)
 			return APIResponseDTO
 		}
 	} else {
@@ -242,14 +242,14 @@ func InfoIcfesColegio(data []byte) (APIResponseDTO requestresponse.APIResponse){
 		return APIResponseDTO
 	}
 
-	if (len(resultado) > 0){
+	if len(resultado) > 0 {
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
-	}else{
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func PreinscripcionPost(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func PreinscripcionPost(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var Infopreinscripcion map[string]interface{}
 	if err := json.Unmarshal(data, &Infopreinscripcion); err == nil {
 
@@ -260,7 +260,7 @@ func PreinscripcionPost(data []byte) (APIResponseDTO requestresponse.APIResponse
 			var resultadoPreinscripcion map[string]interface{}
 			errPreinscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &resultadoPreinscripcion, dato)
 			if resultadoPreinscripcion["Type"] == "error" || errPreinscripcion != nil || resultadoPreinscripcion["Status"] == "404" || resultadoPreinscripcion["Message"] != nil {
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoPreinscripcion)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoPreinscripcion)
 				return APIResponseDTO
 			} else {
 				fmt.Println("Preinscripcion registrada", dato)
@@ -293,7 +293,7 @@ func InfoNuevoColegioIcfes(data []byte) (APIResponseDTO requestresponse.APIRespo
 		var resultadoRegistroColegio map[string]interface{}
 		errRegistroColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"tercero", "POST", &resultadoRegistroColegio, InformacionColegio)
 		if resultadoRegistroColegio["Type"] == "error" || errRegistroColegio != nil || resultadoRegistroColegio["Status"] == "404" || resultadoRegistroColegio["Message"] != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoRegistroColegio)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoRegistroColegio)
 			return APIResponseDTO
 		} else {
 			fmt.Println("Colegio registrado")
@@ -311,7 +311,7 @@ func InfoNuevoColegioIcfes(data []byte) (APIResponseDTO requestresponse.APIRespo
 		var resultadoDirecionColegio map[string]interface{}
 		errRegistroDirecionColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoDirecionColegio, DireccionColegioPost)
 		if resultadoDirecionColegio["Type"] == "error" || errRegistroDirecionColegio != nil || resultadoDirecionColegio["Status"] == "404" || resultadoDirecionColegio["Message"] != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoDirecionColegio)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoDirecionColegio)
 			return APIResponseDTO
 		} else {
 			fmt.Println("Direccion Colegio registrado")
@@ -326,7 +326,7 @@ func InfoNuevoColegioIcfes(data []byte) (APIResponseDTO requestresponse.APIRespo
 		var resultadoUbicacionColegio map[string]interface{}
 		errRegistroUbicacionColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoUbicacionColegio, UbicacionColegioPost)
 		if resultadoUbicacionColegio["Type"] == "error" || errRegistroUbicacionColegio != nil || resultadoUbicacionColegio["Status"] == "404" || resultadoUbicacionColegio["Message"] != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoUbicacionColegio)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoUbicacionColegio)
 			return APIResponseDTO
 		} else {
 			fmt.Println("Ubicacion Colegio registrado")
@@ -359,7 +359,7 @@ func InfoNuevoColegioIcfes(data []byte) (APIResponseDTO requestresponse.APIRespo
 		var resultadoVerificarColegio map[string]interface{}
 		errRegistroVerificarColegio := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"tercero_tipo_tercero", "POST", &resultadoVerificarColegio, VerificarColegioPost)
 		if resultadoVerificarColegio["Type"] == "error" || errRegistroVerificarColegio != nil || resultadoVerificarColegio["Status"] == "404" || resultadoVerificarColegio["Message"] != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoVerificarColegio)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoVerificarColegio)
 			return APIResponseDTO
 		} else {
 			fmt.Println("Verificar registrado")
@@ -419,19 +419,19 @@ func InfoNuevoColegioIcfes(data []byte) (APIResponseDTO requestresponse.APIRespo
 		}
 
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,err.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 		return APIResponseDTO
 	}
 
-	if (len(resultado) > 0){
+	if len(resultado) > 0 {
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
-	}else{
+	} else {
 		return APIResponseDTO
 	}
 
 }
 
-func PutInfoComplementaria(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func PutInfoComplementaria(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InfoComplementariaUniversidad map[string]interface{}
 	if err := json.Unmarshal(data, &InfoComplementariaUniversidad); err == nil {
 
@@ -445,7 +445,7 @@ func PutInfoComplementaria(data []byte) (APIResponseDTO requestresponse.APIRespo
 			var resultadoInfoComeplementaria map[string]interface{}
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Message"] != nil {
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,resultadoInfoComeplementaria)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, resultadoInfoComeplementaria)
 				return APIResponseDTO
 			} else {
 				fmt.Println("Info complementaria registrada", dato["InfoComplementariaId"])
@@ -461,77 +461,77 @@ func PutInfoComplementaria(data []byte) (APIResponseDTO requestresponse.APIRespo
 }
 
 func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIResponse) {
-		// resultado datos complementarios persona
-		var resultado []map[string]interface{}
-		var EventosInscripcion []map[string]interface{}
-	
-		erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcion)
-		if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcion[0]) != "map[]" {
-			if EventosInscripcion[0]["Status"] != 404 {
-	
-				var Proyectos_academicos []map[string]interface{}
-				var Proyectos_academicos_Get []map[string]interface{}
-				for i := 0; i < len(EventosInscripcion); i++ {
-					if len(EventosInscripcion) > 0 {
-						proyectoacademico := EventosInscripcion[i]["TipoEventoId"].(map[string]interface{})
-	
-						var ProyectosAcademicosConEvento map[string]interface{}
-	
-						erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
-						if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
-							if ProyectosAcademicosConEvento["Status"] != 404 {
-								periodoevento := EventosInscripcion[i]["PeriodoId"]
-								fmt.Println(periodoevento)
-								ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
-								Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
-	
-							} else {
-								if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-									return APIResponseDTO
-								} else {
-									logs.Error(ProyectosAcademicosConEvento)
-									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
-									return APIResponseDTO
-								}
-							}
+	// resultado datos complementarios persona
+	var resultado []map[string]interface{}
+	var EventosInscripcion []map[string]interface{}
+
+	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcion)
+	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcion[0]) != "map[]" {
+		if EventosInscripcion[0]["Status"] != 404 {
+
+			var Proyectos_academicos []map[string]interface{}
+			var Proyectos_academicos_Get []map[string]interface{}
+			for i := 0; i < len(EventosInscripcion); i++ {
+				if len(EventosInscripcion) > 0 {
+					proyectoacademico := EventosInscripcion[i]["TipoEventoId"].(map[string]interface{})
+
+					var ProyectosAcademicosConEvento map[string]interface{}
+
+					erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
+					if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
+						if ProyectosAcademicosConEvento["Status"] != 404 {
+							periodoevento := EventosInscripcion[i]["PeriodoId"]
+							fmt.Println(periodoevento)
+							ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
+							Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
+
 						} else {
-							logs.Error(ProyectosAcademicosConEvento)
-							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
-							return APIResponseDTO
+							if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+								return APIResponseDTO
+							} else {
+								logs.Error(ProyectosAcademicosConEvento)
+								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
+								return APIResponseDTO
+							}
 						}
-	
-						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
-	
+					} else {
+						logs.Error(ProyectosAcademicosConEvento)
+						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
+						return APIResponseDTO
 					}
-				}
-				resultado = Proyectos_academicos_Get
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
-	
-			} else {
-				if EventosInscripcion[0]["Message"] == "Not found resource" {
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-					return APIResponseDTO
-				} else {
-					logs.Error(EventosInscripcion)
-					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
-					return APIResponseDTO
+
+					Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
+
 				}
 			}
-		} else {
-			logs.Error(EventosInscripcion)
-			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
-			return APIResponseDTO
-		}
+			resultado = Proyectos_academicos_Get
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
+		} else {
+			if EventosInscripcion[0]["Message"] == "Not found resource" {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+				return APIResponseDTO
+			} else {
+				logs.Error(EventosInscripcion)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
+				return APIResponseDTO
+			}
+		}
+	} else {
+		logs.Error(EventosInscripcion)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
 		return APIResponseDTO
+	}
+
+	return APIResponseDTO
 }
 
-func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InfoComplementaria map[string]interface{}
 
 	var algoFallo bool = false
@@ -553,7 +553,7 @@ func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIR
 			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
 			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Status"] == "400" || resultadoInfoComeplementaria["Message"] != nil {
 				algoFallo = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400,  nil, errInfoComplementaria.Error())
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInfoComplementaria.Error())
 			} else {
 				respuestas = append(respuestas, resultadoInfoComeplementaria)
 				inactivePosts = append(inactivePosts, resultadoInfoComeplementaria)
@@ -563,11 +563,11 @@ func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIR
 			}
 		}
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400,  nil, err.Error())
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 	}
 
 	if !algoFallo {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200,  respuestas, nil)
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuestas, nil)
 	} else {
 		for _, disable := range inactivePosts {
 			helpers.SetInactivo("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero/" + fmt.Sprintf("%.f", disable["Id"].(float64)))
@@ -577,7 +577,7 @@ func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIR
 	return APIResponseDTO
 }
 
-func GetInfoCompTercero(idTercero string) (APIResponseDTO requestresponse.APIResponse){
+func GetInfoCompTercero(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado consulta
 	resultado := map[string]interface{}{}
 	// var resultado map[string]interface{}
@@ -786,12 +786,12 @@ func GetInfoCompTercero(idTercero string) (APIResponseDTO requestresponse.APIRes
 
 	if !errorGetAll {
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func ActualizarInfoContact(data []byte)(APIResponseDTO requestresponse.APIResponse){
+func ActualizarInfoContact(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InfoContacto map[string]interface{}
 
 	var algoFallo bool = false
@@ -865,7 +865,7 @@ func ActualizarInfoContact(data []byte)(APIResponseDTO requestresponse.APIRespon
 
 }
 
-func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var reciboVencido bool
 	var SolicitudInscripcion map[string]interface{}
 	var TipoParametro string
@@ -923,19 +923,21 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 				inscripcionesMap, ok := inscripciones.([]map[string]interface{})
 				if len(inscripcionesMap) > 0 && ok {
 					for i := 0; i < len(inscripcionesMap); i++ {
-						id_programa_inscripciones := fmt.Sprintf("%d", int(inscripcionesMap[i]["ProgramaAcademicoId"].(float64)))
-						estado_recibo_inscripciones := inscripcionesMap[i]["Estado"].(string)
-						if id_programa_inscripciones == id_programa_academico {
-							if estado_recibo_inscripciones == "Vencido" {
-								reciboVencido = true
-							}else {	
-								reciboVencido = false
+						if inscripcionesMap[i]["ProgramaAcademicoId"] != nil {
+							id_programa_inscripciones := fmt.Sprintf("%d", int(inscripcionesMap[i]["ProgramaAcademicoId"].(float64)))
+							estado_recibo_inscripciones := inscripcionesMap[i]["Estado"].(string)
+							if id_programa_inscripciones == id_programa_academico {
+								if estado_recibo_inscripciones == "Vencido" {
+									reciboVencido = true
+								} else {
+									reciboVencido = false
+								}
+							} else {
+								contadorRecibos++
 							}
-						}else{
-							contadorRecibos++
 						}
 					}
-					if contadorRecibos == len(inscripcionesMap){
+					if contadorRecibos == len(inscripcionesMap) {
 						reciboVencido = true
 					}
 				}
@@ -1028,6 +1030,3 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 
 	return APIResponseDTO
 }
-
-
-
