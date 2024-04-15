@@ -1,11 +1,9 @@
 package controllers
 
 import (
-
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 // FormacionController ...
@@ -51,7 +49,7 @@ func (c *FormacionController) PostFormacionAcademica() {
 // @Param	Id		query 	int	true		"nit de la universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /info_universidad/ [get]
+// @router /informacion-universidad/nit [get]
 func (c *FormacionController) GetInfoUniversidad() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -74,7 +72,7 @@ func (c *FormacionController) GetInfoUniversidad() {
 // @Param	nombre	query 	string	true		"nombre universidad"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /info_universidad_nombre [get]
+// @router /informacion-universidad/nombre [get]
 func (c *FormacionController) GetInfoUniversidadByNombre() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -88,7 +86,7 @@ func (c *FormacionController) GetInfoUniversidadByNombre() {
 
 	c.Data["json"] = respuesta
 	c.ServeJSON()
-	
+
 }
 
 // PutFormacionAcademica ...
@@ -104,11 +102,11 @@ func (c *FormacionController) PutFormacionAcademica() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	idFormacion := c.GetString("Id")
-	
+
 	data := c.Ctx.Input.RequestBody
-	
+
 	respuesta := services.ActualizarFormacionAcademica(idFormacion, data)
-	
+
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
 	c.Data["json"] = respuesta
@@ -122,7 +120,7 @@ func (c *FormacionController) PutFormacionAcademica() {
 // @Param	Id			query	int true		"Id del registro de formación"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /info_complementaria/ [get]
+// @router /informacion-complementaria [get]
 func (c *FormacionController) GetFormacionAcademica() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -163,21 +161,21 @@ func (c *FormacionController) GetFormacionAcademicaByTercero() {
 // @Param   body        body    {}  true		"body Agregar nuevo tercero content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /post_tercero [post]
+// @router /tercero [post]
 func (c *FormacionController) PostTercero() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	data := c.Ctx.Input.RequestBody
-	
+
 	respuesta := services.NuevoTercero(data)
-	
+
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
 	c.Data["json"] = respuesta
 
 	c.ServeJSON()
-	
+
 }
 
 // DeleteFormacionAcademica ...
@@ -188,10 +186,10 @@ func (c *FormacionController) PostTercero() {
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *FormacionController) DeleteFormacionAcademica() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	FormacionId := c.GetString("id")
+	FormacionId := c.Ctx.Input.Param(":id")
 
 	respuesta := services.EliminarFormacion(FormacionId)
 

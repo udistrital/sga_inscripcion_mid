@@ -1,11 +1,9 @@
 package controllers
 
 import (
-
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 // SolicitudProduccionController ...
@@ -24,15 +22,17 @@ func (c *SolicitudProduccionController) URLMapping() {
 // @Title PostAlertSolicitudProduccion
 // @Description Agregar Alerta en Solicitud docente en casos necesarios
 // @Param   body    body    {}  true        "body Agregar SolicitudProduccion content"
+// @Param	tercero	query	        string	false	"Id del tercero"
+// @Param	tipo-produccion	query	string	false	"Id del tipo de produccion"
 // @Success 201 {int}
 // @Failure 400 the request contains incorrect syntax
-// @router /:tercero/:tipo_produccion [post]
+// @router /alerta-docente [post]
 func (c *SolicitudProduccionController) PostAlertSolicitudProduccion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	idTercero := c.Ctx.Input.Param(":tercero")
-	idTipoProduccionSrt := c.Ctx.Input.Param(":tipo_produccion")
+	idTercero := c.GetString("persona")
+	idTipoProduccionSrt := c.GetString("tipo-produccion")
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.PostAlertSolicitud(idTercero, idTipoProduccionSrt, data)
@@ -73,16 +73,19 @@ func (c *SolicitudProduccionController) PutResultadoSolicitud() {
 // @Title PostSolicitudEvaluacionCoincidencia
 // @Description Agregar Alerta en Solicitud docente en casos necesarios
 // @Param   body    body    {}  true        "body Agregar SolicitudProduccion content"
+// @Param	id-solicitud	query	string	false	"Se recibe parametro Id de la solicitud"
+// @Param	id-coincidencia	query	string	false	"Se recibe parametro Id de la coincidencia"
+// @Param	id-tercero	query	string	false	"Se recibe parametro Id del tercero"
 // @Success 201 {int}
 // @Failure 400 the request contains incorrect syntax
-// @router /coincidencia/:id_solicitud/:id_coincidencia/:id_tercero [post]
+// @router /coincidencias [post]
 func (c *SolicitudProduccionController) PostSolicitudEvaluacionCoincidencia() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
-	idSolicitud := c.Ctx.Input.Param(":id_solicitud")
-	idSolicitudCoincidencia := c.Ctx.Input.Param(":id_coincidencia")
-	idTercero := c.Ctx.Input.Param(":id_tercero")
+
+	idSolicitud := c.GetString("id-solicitud")
+	idSolicitudCoincidencia := c.GetString("id-coincidencia")
+	idTercero := c.GetString("id-tercero")
 
 	data := c.Ctx.Input.RequestBody
 

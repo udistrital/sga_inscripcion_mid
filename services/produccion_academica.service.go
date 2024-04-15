@@ -10,9 +10,11 @@ import (
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 	"github.com/udistrital/utils_oas/time_bogota"
+
+	"github.com/k0kubun/pp"
 )
 
-func ProduccionAcademicaPost(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func ProduccionAcademicaPost(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado experiencia
 	var resultado map[string]interface{}
 	var produccionAcademica map[string]interface{}
@@ -84,7 +86,7 @@ func ProduccionAcademicaPost(data []byte) (APIResponseDTO requestresponse.APIRes
 	return APIResponseDTO
 }
 
-func EstadoAutorProduccion(idAutor string, data []byte) (APIResponseDTO requestresponse.APIResponse){
+func EstadoAutorProduccion(idAutor string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado experiencia
 	var resultado map[string]interface{}
 	var dataPut map[string]interface{}
@@ -123,7 +125,7 @@ func EstadoAutorProduccion(idAutor string, data []byte) (APIResponseDTO requestr
 	return APIResponseDTO
 }
 
-func ProduccionAcademicaPut(idProduccion string, data []byte) (APIResponseDTO requestresponse.APIResponse){
+func ProduccionAcademicaPut(idProduccion string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 
 	date := time_bogota.TiempoBogotaFormato()
 
@@ -158,9 +160,16 @@ func ProduccionAcademicaPut(idProduccion string, data []byte) (APIResponseDTO re
 		var resultadoProduccionAcademica map[string]interface{}
 
 		errProduccion := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+idProduccion, "PUT", &resultadoProduccionAcademica, produccionAcademicaPut)
+		pp.Println(resultadoProduccionAcademica)
+		pp.Println("1111111111111111111111111")
+		pp.Println(errProduccion)
+		pp.Println("2222222222222222222222222222")
 		if errProduccion == nil && fmt.Sprintf("%v", resultadoProduccionAcademica["System"]) != "map[]" {
+			pp.Println(resultadoProduccionAcademica)
 			if resultadoProduccionAcademica["Status"] != 400 {
 				resultado = produccionAcademica
+				pp.Println("#######################")
+				pp.Println(resultado)
 				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 			} else {
 				logs.Error(errProduccion)
@@ -180,7 +189,7 @@ func ProduccionAcademicaPut(idProduccion string, data []byte) (APIResponseDTO re
 	return APIResponseDTO
 }
 
-func GetProduccionById(idProduccion string) (APIResponseDTO requestresponse.APIResponse){
+func GetProduccionById(idProduccion string) (APIResponseDTO requestresponse.APIResponse) {
 
 	//resultado experiencia
 	var resultadoGetProduccion []interface{}
@@ -196,7 +205,7 @@ func GetProduccionById(idProduccion string) (APIResponseDTO requestresponse.APIR
 	return APIResponseDTO
 }
 
-func GetAllProducciones() (APIResponseDTO requestresponse.APIResponse){
+func GetAllProducciones() (APIResponseDTO requestresponse.APIResponse) {
 	fmt.Println("Consultando todas las producciones")
 	//resultado resultado final
 	var resultado []map[string]interface{}
@@ -255,7 +264,7 @@ func GetAllProducciones() (APIResponseDTO requestresponse.APIResponse){
 	return APIResponseDTO
 }
 
-func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse){
+func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
 	var resultado []map[string]interface{}
 	var producciones []map[string]interface{}
 	var errorGetAll bool
@@ -309,7 +318,7 @@ func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIRespon
 	return APIResponseDTO
 }
 
-func GetProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse){
+func GetProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado resultado final
 	var resultado []map[string]interface{}
 	//resultado experiencia
@@ -369,20 +378,20 @@ func GetProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse
 	return APIResponseDTO
 }
 
-func DeleteProduccion( idProduccion string) (APIResponseDTO requestresponse.APIResponse){
+func DeleteProduccion(idProduccion string) (APIResponseDTO requestresponse.APIResponse) {
 
-		//resultados eliminacion
-		var borrado map[string]interface{}
+	//resultados eliminacion
+	var borrado map[string]interface{}
 
-		errDelete := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+idProduccion, "DELETE", &borrado, nil)
-		//borradoOk := models.SetInactivo("http://" + beego.AppConfig.String("ProduccionAcademicaService") + "/tr_produccion_academica/" + idStr)
-	
-		if errDelete == nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, map[string]interface{}{"ProduccionAcademica": idProduccion}, nil)
-		} else {
-			logs.Error("Failed deleting tr_produccion_academica/" + idProduccion)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Failed deleting tr_produccion_academica/" + idProduccion)
-			return APIResponseDTO
-		}
+	errDelete := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+idProduccion, "DELETE", &borrado, nil)
+	//borradoOk := models.SetInactivo("http://" + beego.AppConfig.String("ProduccionAcademicaService") + "/tr_produccion_academica/" + idStr)
+
+	if errDelete == nil {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, map[string]interface{}{"ProduccionAcademica": idProduccion}, nil)
+	} else {
+		logs.Error("Failed deleting tr_produccion_academica/" + idProduccion)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Failed deleting tr_produccion_academica/"+idProduccion)
 		return APIResponseDTO
+	}
+	return APIResponseDTO
 }

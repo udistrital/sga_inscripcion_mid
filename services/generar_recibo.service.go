@@ -19,7 +19,7 @@ import (
 	"github.com/udistrital/utils_oas/requestresponse"
 )
 
-func GenerarReciboPago(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse){
+func GenerarReciboPago(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var data map[string]interface{}
 	//First we fetch the data
 
@@ -46,7 +46,7 @@ func GenerarReciboPago(dataRecibo []byte) (APIResponseDTO requestresponse.APIRes
 	return APIResponseDTO
 }
 
-func GenerarReciboPost(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse){
+func GenerarReciboPost(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var data map[string]interface{}
 	//First we fetch the data
 
@@ -72,7 +72,7 @@ func GenerarReciboPost(dataRecibo []byte) (APIResponseDTO requestresponse.APIRes
 	return APIResponseDTO
 }
 
-func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse){
+func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var data map[string]interface{}
 
 	if parseErr := json.Unmarshal(dataRecibo, &data); parseErr == nil {
@@ -81,6 +81,8 @@ func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIRe
 		ReciboInscripcion := data["INSCRIPCION"].(map[string]interface{})["idRecibo"].(string)
 		if ReciboInscripcion != "0/<nil>" {
 			errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+ReciboInscripcion, &ReciboXML)
+			fmt.Println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+			fmt.Println("http://" + beego.AppConfig.String("ConsultarReciboJbpmService") + "consulta_recibo/")
 			if errRecibo == nil {
 				if ReciboXML != nil && fmt.Sprintf("%v", ReciboXML) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", ReciboXML) != "map[]" {
 					data["PAGO"].(map[string]interface{})["valor"] = ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["valor_extraordinario"].(string)
@@ -107,7 +109,7 @@ func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIRe
 
 					if pdf.Err() {
 						logs.Error("Failed creating PDF voucher: %s\n", pdf.Error())
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,pdf.Error())
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, pdf.Error())
 					}
 
 					if pdf.Ok() {
@@ -154,7 +156,6 @@ func GenerarComprobante(dataRecibo []byte) (APIResponseDTO requestresponse.APIRe
 	}
 	return APIResponseDTO
 }
-
 
 // *** functions *** //
 type styling struct {
@@ -1123,12 +1124,46 @@ func fontStyle(pdf *gofpdf.Fpdf, style string, size float64, bw int) {
 }
 
 // Divide texto largo en lineas
+// func dividirTexto(pdf *gofpdf.Fpdf, text string, w float64) []string {
+// 	fmt.Println("Texto: ", text)
+// 	lineasraw := pdf.SplitLines([]byte(text), w)
+// 	var lineas []string
+// 	for _, lineraw := range lineasraw {
+// 		lineas = append(lineas, string(lineraw))
+// 	}
+// 	return lineas
+// }
+
 func dividirTexto(pdf *gofpdf.Fpdf, text string, w float64) []string {
-	lineasraw := pdf.SplitLines([]byte(text), w)
+	palabras := strings.Fields(text)
 	var lineas []string
-	for _, lineraw := range lineasraw {
-		lineas = append(lineas, string(lineraw))
+	var lineaActual string
+
+	for _, palabra := range palabras {
+		pruebaLinea := lineaActual
+		if len(pruebaLinea) > 0 {
+			pruebaLinea += " "
+		}
+		pruebaLinea += palabra
+
+		// Calcula el ancho de la línea con la palabra añadida
+		anchoLinea := pdf.GetStringWidth(pruebaLinea)
+
+		if anchoLinea > w && len(lineaActual) > 0 {
+			// Si la línea excede el ancho permitido, guarda la línea actual y comienza una nueva
+			lineas = append(lineas, lineaActual)
+			lineaActual = palabra
+		} else {
+			// Si la línea no excede el ancho, añade la palabra a la línea actual
+			lineaActual = pruebaLinea
+		}
 	}
+
+	// Añade la última línea si queda alguna palabra
+	if len(lineaActual) > 0 {
+		lineas = append(lineas, lineaActual)
+	}
+
 	return lineas
 }
 

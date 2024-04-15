@@ -8,28 +8,39 @@
 package routers
 
 import (
+	"github.com/udistrital/sga_inscripcion_mid/controllers"
+	"github.com/udistrital/utils_oas/errorhandler"
+
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/controllers"
 )
 
 func init() {
+
+	beego.ErrorController(&errorhandler.ErrorHandlerController{})
+
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/descuento_academico",
+		beego.NSNamespace("/academico/descuento",
 			beego.NSInclude(
 				&controllers.DescuentoController{},
 			),
 		),
-		beego.NSNamespace("/experiencia_laboral",
-			beego.NSInclude(
-				&controllers.ExperienciaLaboralController{},
-			),
-		),
-		beego.NSNamespace("/formacion_academica",
+		beego.NSNamespace("/academico/formacion",
 			beego.NSInclude(
 				&controllers.FormacionController{},
 			),
 		),
-		beego.NSNamespace("/generar_codigo",
+		beego.NSNamespace("/academico/produccion",
+			beego.NSInclude(
+				&controllers.ProduccionAcademicaController{},
+			),
+		),
+		beego.NSNamespace("/experiencia-laboral",
+			beego.NSInclude(
+				&controllers.ExperienciaLaboralController{},
+			),
+		),
+		beego.NSNamespace("/codigo",
 			beego.NSInclude(
 				&controllers.GeneradorCodigoBarrasController{},
 			),
@@ -44,12 +55,7 @@ func init() {
 				&controllers.InscripcionesController{},
 			),
 		),
-		beego.NSNamespace("/produccion_academica",
-			beego.NSInclude(
-				&controllers.ProduccionAcademicaController{},
-			),
-		),
-		beego.NSNamespace("/solicitud_produccion",
+		beego.NSNamespace("/solicitud-produccion",
 			beego.NSInclude(
 				&controllers.SolicitudProduccionController{},
 			),

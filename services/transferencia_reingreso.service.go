@@ -14,7 +14,7 @@ import (
 	"github.com/udistrital/utils_oas/time_bogota"
 )
 
-func SolicitudPost(data []byte) (APIResponseDTO requestresponse.APIResponse){
+func SolicitudPost(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var SolicitudInscripcion map[string]interface{}
 	var Referencia string
 	var IdEstadoTipoSolicitud int
@@ -24,7 +24,6 @@ func SolicitudPost(data []byte) (APIResponseDTO requestresponse.APIResponse){
 	var SolicitudEvolucionEstadoPost map[string]interface{}
 	resultado := make(map[string]interface{})
 	var errorGetAll bool
-
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
 		inscripcion := map[string]interface{}{
 			"InscripcionId": map[string]interface{}{
@@ -174,13 +173,12 @@ func SolicitudPost(data []byte) (APIResponseDTO requestresponse.APIResponse){
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }
 
-
-func PutSolicitudInfo(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse){
+func PutSolicitudInfo(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var SolicitudInscripcion map[string]interface{}
 	var IdEstadoTipoSolicitud int
 	var inscripcionRealizada map[string]interface{}
@@ -424,12 +422,12 @@ func PutSolicitudInfo(idSolicitud string, data []byte) (APIResponseDTO requestre
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func PutInscripcion(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse){
+func PutInscripcion(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var RespuestaSolicitud map[string]interface{}
 	var Solicitud map[string]interface{}
 	var SolicitudPut map[string]interface{}
@@ -606,12 +604,12 @@ func PutInscripcion(idSolicitud string, data []byte) (APIResponseDTO requestresp
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "Update successful")
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func SolicitudPut(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse){
+func SolicitudPut(idSolicitud string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var RespuestaSolicitud map[string]interface{}
 	var Solicitud map[string]interface{}
 	var SolicitudPut map[string]interface{}
@@ -838,13 +836,13 @@ func SolicitudPut(idSolicitud string, data []byte) (APIResponseDTO requestrespon
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
 		// c.Data["json"] = map[string]interface{}{"Sucsses": true, "Status": "200", "Message": "Update successful", "Data": resultado}
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 
 }
 
-func GetInscripcionById(idInscripcion string, data []byte)(APIResponseDTO requestresponse.APIResponse){
+func GetInscripcionById(idInscripcion string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado informacion basica persona
 	var resultado map[string]interface{}
 	var calendarioGet []map[string]interface{}
@@ -860,8 +858,6 @@ func GetInscripcionById(idInscripcion string, data []byte)(APIResponseDTO reques
 	var jsondata map[string]interface{}
 	var Solicitudes []map[string]interface{}
 	var tipoSolicitud map[string]interface{}
-
-
 
 	// Incripción
 	errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"/inscripcion?query=Id:"+fmt.Sprintf("%v", idInscripcion), &inscripcionGet)
@@ -1126,15 +1122,15 @@ func GetInscripcionById(idInscripcion string, data []byte)(APIResponseDTO reques
 
 	} else {
 		logs.Error(periodoGet)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil,errInscripcion)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcion)
 		return APIResponseDTO
 	}
 
 	return APIResponseDTO
-	
+
 }
 
-func GetSolicitudes()(APIResponseDTO requestresponse.APIResponse){
+func GetSolicitudes() (APIResponseDTO requestresponse.APIResponse) {
 	var inscripcionGet []map[string]interface{}
 	var nivelGet map[string]interface{}
 	var resultadoAux []map[string]interface{}
@@ -1204,12 +1200,12 @@ func GetSolicitudes()(APIResponseDTO requestresponse.APIResponse){
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
-	}else{
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func ConsultarPeriodo() (APIResponseDTO requestresponse.APIResponse){
+func ConsultarPeriodo() (APIResponseDTO requestresponse.APIResponse) {
 	//resultado informacion basica persona
 	var resultado map[string]interface{}
 	var calendarioGet []map[string]interface{}
@@ -1271,7 +1267,7 @@ func ConsultarPeriodo() (APIResponseDTO requestresponse.APIResponse){
 	return APIResponseDTO
 }
 
-func ConsultarParametros(idCalendario string, idPersona string) (APIResponseDTO requestresponse.APIResponse){
+func ConsultarParametros(idCalendario string, idPersona string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado informacion basica persona
 	var resultado map[string]interface{}
 	var calendario map[string]interface{}
@@ -1283,7 +1279,6 @@ func ConsultarParametros(idCalendario string, idPersona string) (APIResponseDTO 
 	var codigosRes []map[string]interface{}
 	var proyectoGet []map[string]interface{}
 	var proyectos []map[string]interface{}
-
 
 	errCalendario := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"calendario/"+idCalendario, &calendario)
 	if errCalendario == nil {
@@ -1418,7 +1413,7 @@ func ConsultarParametros(idCalendario string, idPersona string) (APIResponseDTO 
 
 }
 
-func EstadoInscripcionGet(idPersona string) (APIResponseDTO requestresponse.APIResponse){
+func EstadoInscripcionGet(idPersona string) (APIResponseDTO requestresponse.APIResponse) {
 	var InternaGet []map[string]interface{}
 	var ExternaGet []map[string]interface{}
 	var reingresoGet []map[string]interface{}
@@ -1572,12 +1567,12 @@ func EstadoInscripcionGet(idPersona string) (APIResponseDTO requestresponse.APIR
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }
 
-func EstadosGet() (APIResponseDTO requestresponse.APIResponse){
+func EstadosGet() (APIResponseDTO requestresponse.APIResponse) {
 	//resultado informacion basica persona
 	var estadoGet map[string]interface{}
 	var resultado []map[string]interface{}

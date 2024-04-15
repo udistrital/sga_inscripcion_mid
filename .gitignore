@@ -1,7 +1,7 @@
 lastupdate.tmp
 .vscode/
 .idea/
-sga_mid
+sga_inscripcion_mid
 main
 .scannerwork/
 swagger/*.png
@@ -9,12 +9,12 @@ swagger/*.html
 swagger/*.js
 swagger/*.map
 swagger/*.css
-swagger/*.yml
 swagger/css/
 swagger/fonts/
 swagger/images/
 swagger/lang/
 swagger/lib/
-sga_mid.exe
+swagger.zip
+sga_inscripcion_mid.exe
 go.mod
 go.sum
