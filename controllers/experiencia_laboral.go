@@ -1,11 +1,9 @@
 package controllers
 
 import (
-
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 // ExperienciaLaboralController ...
@@ -50,15 +48,13 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 // @Param	Id		query 	int	true		"nit de la empresa"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /informacion_empresa/ [get]
+// @router /informacion-empresa/ [get]
 func (c *ExperienciaLaboralController) GetInformacionEmpresa() {
 
-	
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	//Numero del nit de la empresa
 	idStr := c.GetString("Id")
-
 
 	respuesta := services.GetInfoEmpresa(idStr)
 
@@ -74,7 +70,7 @@ func (c *ExperienciaLaboralController) GetInformacionEmpresa() {
 // @Param	Id		query 	int	true		"nit de la empresa"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /by_tercero/ [get]
+// @router /tercero/ [get]
 func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -96,11 +92,11 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboralByTercero() {
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	idTercero := c.GetString(":id")
-	
+
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.ActualizarExperienciaLaboral(idTercero, data)
@@ -118,7 +114,7 @@ func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 // @Success 200 {}
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *ExperienciaLaboralController) GetExperienciaLaboral() {	
+func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	//Id de la experiencia

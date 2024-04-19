@@ -9,11 +9,12 @@ import (
 	"github.com/udistrital/utils_oas/formatdata"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
+
+	"github.com/k0kubun/pp"
 )
 
-
-//Funcion para solicitar descuentos academicos
-func SolicitarDescuentoAcademico( data []byte) (APIResponseDTO requestresponse.APIResponse) {
+// Funcion para solicitar descuentos academicos
+func SolicitarDescuentoAcademico(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 
 	//resultado solicitud de descuento
 	var resultado map[string]interface{}
@@ -100,15 +101,15 @@ func SolicitarDescuentoAcademico( data []byte) (APIResponseDTO requestresponse.A
 		alertas = append(alertas, err)
 	}
 
-	if (len(alertas) > 0) {
+	if len(alertas) > 0 {
 		return requestresponse.APIResponseDTO(false, 400, nil, alertas)
-	}else{
+	} else {
 		return APIResponseDTO
 	}
 
 }
 
-func ActualizarDescuentoAcademico( data []byte, id string) (APIResponseDTO requestresponse.APIResponse) {
+func ActualizarDescuentoAcademico(data []byte, id string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado solicitud de descuento
 	var resultado map[string]interface{}
 	//solicitud de descuento
@@ -169,16 +170,17 @@ func ActualizarDescuentoAcademico( data []byte, id string) (APIResponseDTO reque
 	return APIResponseDTO
 }
 
-func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIResponseDTO requestresponse.APIResponse) {
+func GetDescuentoAcademicoById(idTercero string, idSolicitud string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado consulta
 	var resultado map[string]interface{}
 	//resultado solicitud descuento
 	var solicitud []map[string]interface{}
 	validData := []interface{}{}
 
-	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento/?query=TerceroId:"+idTercero+",Id:"+idSolicitud+"&fields=Id,TerceroId,Estado,PeriodoId,DescuentosDependenciaId", &solicitud)
+	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"solicitud_descuento?query=TerceroId:"+idTercero+",Id:"+idSolicitud+"&fields=Id,TerceroId,Estado,PeriodoId,DescuentosDependenciaId", &solicitud)
+
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
-		if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
+		if len(solicitud[0]) >= 1 {
 			resultado = solicitud[0]
 
 			//resultado descuento dependencia
@@ -188,7 +190,9 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 				if descuento["Status"] != 404 {
 					//resultado tipo descuento
 					var tipo map[string]interface{}
+
 					errTipo := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", descuento["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipo)
+
 					if errTipo == nil && fmt.Sprintf("%v", tipo["System"]) != "map[]" {
 						if tipo["Status"] != 404 {
 							descuento["TipoDescuentoId"] = tipo
@@ -196,12 +200,17 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 
 							//resultado soporte descuento
 							var soporte []map[string]interface{}
+
 							errSoporte := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"soporte_descuento/?query=SolicitudDescuentoId:"+idSolicitud+"&fields=DocumentoId", &soporte)
+
 							if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
 								if soporte[0]["Status"] != 404 {
+									pp.Println("$$$$$$$$$$$$$$$$$$$$$$$$$")
 									//fmt.Println("el resultado de los documentos es: ", resultado4)
 									resultado["DocumentoId"] = soporte[0]["DocumentoId"]
 									validData = append(validData, resultado)
+									APIResponseDTO = requestresponse.APIResponseDTO(true, 200, validData)
+
 								} else {
 									if soporte[0]["Message"] == "Not found resource" {
 										APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
@@ -242,7 +251,7 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 					} else {
 						logs.Error(descuento)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil,errDescuento)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento)
 						return APIResponseDTO
 					}
 				}
@@ -259,7 +268,7 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSolicitud)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud)
 				return APIResponseDTO
 			}
 		}
@@ -269,50 +278,51 @@ func GetDescuentoAcademicoById( idTercero string, idSolicitud string ) (APIRespo
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud)
 		return APIResponseDTO
 	}
+
 	return APIResponseDTO
 }
 
-func GetDescuentoByDpendencia( idDependencia string ) (APIResponseDTO requestresponse.APIResponse) {
-		//resultado consulta
-		var resultados []map[string]interface{}
-		//resultado solicitud descuento
-		var solicitud []map[string]interface{}
-		//var alerta models.Alert
-		var errorGetAll bool
-		alertas := append([]interface{}{"Data:"})
-	
-		errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idDependencia, &solicitud)
-		if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
-			if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
-	
-				for u := 0; u < len(solicitud); u++ {
-					var tipoDescuento map[string]interface{}
-					errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solicitud[u]["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
-					if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
-						resultados = append(resultados, tipoDescuento)
-					} else {
-						errorGetAll = true
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
-					}
+func GetDescuentoByDpendencia(idDependencia string) (APIResponseDTO requestresponse.APIResponse) {
+	//resultado consulta
+	var resultados []map[string]interface{}
+	//resultado solicitud descuento
+	var solicitud []map[string]interface{}
+	//var alerta models.Alert
+	var errorGetAll bool
+	alertas := append([]interface{}{"Data:"})
+
+	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idDependencia, &solicitud)
+	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
+		if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
+
+			for u := 0; u < len(solicitud); u++ {
+				var tipoDescuento map[string]interface{}
+				errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solicitud[u]["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
+				if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
+					resultados = append(resultados, tipoDescuento)
+				} else {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
 				}
-			} else {
-				errorGetAll = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 			}
 		} else {
 			errorGetAll = true
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud.Error())
-			alertas = append(alertas, errSolicitud.Error())
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 		}
-		if !errorGetAll {
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultados, nil)
-			return APIResponseDTO
-		}else {
-			return APIResponseDTO
-		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud.Error())
+		alertas = append(alertas, errSolicitud.Error())
+	}
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultados, nil)
+		return APIResponseDTO
+	} else {
+		return APIResponseDTO
+	}
 }
 
-func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestresponse.APIResponse) {
+func GetDescuentoAcademicoByTercero(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado solicitud descuento
 	var resultado []map[string]interface{}
 	//resultado solicitud descuento
@@ -351,14 +361,14 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 										} else {
 											logs.Error(soporte)
 											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-											APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
+											APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 											return APIResponseDTO
 										}
 									}
 								} else {
 									logs.Error(soporte)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 									return APIResponseDTO
 								}
 							} else {
@@ -375,7 +385,7 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 						} else {
 							logs.Error(tipo)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errTipo)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errTipo)
 							return APIResponseDTO
 						}
 					} else {
@@ -385,14 +395,14 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 						} else {
 							logs.Error(descuento)
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errDescuento)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento)
 							return APIResponseDTO
 						}
 					}
 				} else {
 					logs.Error(descuento)
 					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errDescuento)
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento)
 					return APIResponseDTO
 				}
 			}
@@ -405,7 +415,7 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 			} else {
 				logs.Error(solicitud)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSolicitud)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSolicitud)
 				return APIResponseDTO
 			}
 		}
@@ -418,7 +428,7 @@ func GetDescuentoAcademicoByTercero( idTercero string ) (APIResponseDTO requestr
 	return APIResponseDTO
 }
 
-func GetDescuentoByTerceroPeriodoDependencia( idTercero string, idPeriodo string, idDependencia string ) (APIResponseDTO requestresponse.APIResponse) {
+func GetDescuentoByTerceroPeriodoDependencia(idTercero string, idPeriodo string, idDependencia string) (APIResponseDTO requestresponse.APIResponse) {
 	//resultado solicitud descuento
 	var resultado []map[string]interface{}
 	//resultado solicitud descuento
@@ -479,7 +489,7 @@ func GetDescuentoByTerceroPeriodoDependencia( idTercero string, idPeriodo string
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 200, resultado, nil)
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 }

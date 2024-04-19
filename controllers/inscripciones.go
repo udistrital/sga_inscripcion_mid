@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+
 	//"github.com/astaxie/beego/httplib"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
-
 )
 
 type InscripcionesController struct {
@@ -32,18 +32,19 @@ func (c *InscripcionesController) URLMapping() {
 // GetEstadoInscripcion ...
 // @Title GetEstadoInscripcion
 // @Description consultar los estados de todos los recibos generados por el tercero
-// @Param	persona_id	path	int	true	"Id del tercero"
-// @Param	id_periodo	path	int	true	"Id del ultimo periodo"
+// @Param	persona-id	query	string	false	"Id del tercero"
+// @Param	id-periodo	query	string	false	"Id del ultimo periodo"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /estado_recibos/:persona_id/:id_periodo [get]
+// @router /estado-recibos [get]
 func (c *InscripcionesController) GetEstadoInscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	terceroId := c.GetString("Id")
+	terceroId := c.GetString("persona-id")
+	idPeriodo := c.GetString("id-periodo")
 
-	respuesta := services.GetFormacionAcademicaByIdTercero(terceroId)
+	respuesta := services.EstadoInscripcion(terceroId, idPeriodo)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
@@ -58,7 +59,7 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 // @Param   body        body    {}  true        "body Agregar PostInformacionFamiliar content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_informacion_familiar [post]
+// @router /informacion-familiar [post]
 func (c *InscripcionesController) PostInformacionFamiliar() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -80,7 +81,7 @@ func (c *InscripcionesController) PostInformacionFamiliar() {
 // @Param   body        body    {}  true        "body Agregar Reintegro content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_reintegro [post]
+// @router /reintegro [post]
 func (c *InscripcionesController) PostReintegro() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -101,7 +102,7 @@ func (c *InscripcionesController) PostReintegro() {
 // @Param   body        body    {}  true        "body Agregar Transferencia content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_transferencia [post]
+// @router /transferencia [post]
 func (c *InscripcionesController) PostTransferencia() {
 	defer errorhandler.HandlePanic(&c.Controller)
 
@@ -122,7 +123,7 @@ func (c *InscripcionesController) PostTransferencia() {
 // @Param   body        body    {}  true        "body Agregar InfoIcfesColegio content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_info_icfes_colegio [post]
+// @router /pruebas-de-estado/informacion/saber-once [post]
 func (c *InscripcionesController) PostInfoIcfesColegio() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -144,7 +145,7 @@ func (c *InscripcionesController) PostInfoIcfesColegio() {
 // @Param   body        body    {}  true        "body Agregar Preinscripcion content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_preinscripcion [post]
+// @router /preinscripcion [post]
 func (c *InscripcionesController) PostPreinscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -166,7 +167,7 @@ func (c *InscripcionesController) PostPreinscripcion() {
 // @Param   body        body    {}  true        "body Agregar InfoIcfesColegio content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /post_info_icfes_colegio_nuevo [post]
+// @router /pruebas-de-estado/informacion/saber-once-nuevo [post]
 func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -188,7 +189,7 @@ func (c *InscripcionesController) PostInfoIcfesColegioNuevo() {
 // @Param   body        body    {}  true        "body Agregar InfoComplementariaUniversidad content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /info_complementaria_universidad [post]
+// @router /informacion-complementaria/universidad [post]
 func (c *InscripcionesController) PostInfoComplementariaUniversidad() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
@@ -210,11 +211,11 @@ func (c *InscripcionesController) PostInfoComplementariaUniversidad() {
 // @Param	evento_padre_id	path	int	true	"Id del Evento Padre"
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /consultar_proyectos_eventos/:evento_padre_id [get]
+// @router /proyectos/eventos/:evento_padre_id [get]
 func (c *InscripcionesController) ConsultarProyectosEventos() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
-	
+
 	//Id de la persona
 	idStr := c.Ctx.Input.Param(":evento_padre_id")
 
@@ -232,9 +233,9 @@ func (c *InscripcionesController) ConsultarProyectosEventos() {
 // @Param   body        body    {}  true        "body Agregar PostInfoComplementariaTercero content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /info_complementaria_tercero [post]
+// @router /informacion-complementaria/tercero [post]
 func (c *InscripcionesController) PostInfoComplementariaTercero() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	data := c.Ctx.Input.RequestBody
@@ -253,9 +254,9 @@ func (c *InscripcionesController) PostInfoComplementariaTercero() {
 // @Description consultar la información complementaria del tercero
 // @Success 200 {}
 // @Failure 404 not found resource
-// @router /info_complementaria_tercero/:persona_id [get]
+// @router  /informacion-complementaria/tercero/:persona_id [get]
 func (c *InscripcionesController) GetInfoComplementariaTercero() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	//Id de la persona
@@ -276,9 +277,9 @@ func (c *InscripcionesController) GetInfoComplementariaTercero() {
 // @Param	body	body 	{}	true		"body for Actualizar la info de contacto del tercero content"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /info_contacto [put]
+// @router /informacion-complementaria/tercero [put]
 func (c *InscripcionesController) ActualizarInfoContacto() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	data := c.Ctx.Input.RequestBody
@@ -298,9 +299,9 @@ func (c *InscripcionesController) ActualizarInfoContacto() {
 // @Param	body	body 	{}	true		"body for información de suministrada por el usuario par la inscripción"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /generar_inscripcion [post]
+// @router /nueva [post]
 func (c *InscripcionesController) PostGenerarInscripcion() {
-	
+
 	defer errorhandler.HandlePanic(&c.Controller)
 
 	data := c.Ctx.Input.RequestBody
