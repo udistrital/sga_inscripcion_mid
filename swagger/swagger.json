@@ -1375,6 +1375,26 @@
                 }
             }
         },
+        "/time_bog/": {
+            "get": {
+                "tags": [
+                    "time_bog"
+                ],
+                "description": "get Time_bog",
+                "operationId": "Time_bogController.GetTimeBog",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Time_bog"
+                        }
+                    },
+                    "500": {
+                        "description": "something bad happened"
+                    }
+                }
+            }
+        },
         "/transferencia/": {
             "post": {
                 "tags": [
@@ -1664,6 +1684,10 @@
             "title": "Transferencia_reingreso",
             "type": "object"
         },
+        "models.Time_bog": {
+            "title": "Time_bog",
+            "type": "object"
+        },
         "{}": {
             "title": "{}",
             "type": "object"
@@ -1697,6 +1721,10 @@
         {
             "name": "transferencia",
             "description": "Transferencia_reingresoController operations for Transferencia_reingreso\n"
+        },
+        {
+            "name": "time_bog",
+            "description": "Time_bogController operations for Time_bog\n"
         }
     ]
 }
