@@ -64,6 +64,11 @@ func init() {
 				&controllers.Transferencia_reingresoController{},
 			),
 		),
+		beego.NSNamespace("/time_bog",
+			beego.NSInclude(
+				&controllers.Time_bogController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
