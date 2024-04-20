@@ -102,6 +102,7 @@ func EstadoAutorProduccion(idAutor string, data []byte) (APIResponseDTO requestr
 		}
 		var resultadoAutor map[string]interface{}
 		errAutor := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/autor_produccion_academica/"+idAutor, "PUT", &resultadoAutor, AutorProduccionAcademica)
+		pp.Println(resultadoAutor)
 		if errAutor == nil && fmt.Sprintf("%v", resultadoAutor["System"]) != "map[]" && resultadoAutor["Id"] != nil {
 			if resultadoAutor["Status"] != 400 {
 				resultado = AutorProduccionAcademica
@@ -160,16 +161,10 @@ func ProduccionAcademicaPut(idProduccion string, data []byte) (APIResponseDTO re
 		var resultadoProduccionAcademica map[string]interface{}
 
 		errProduccion := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+idProduccion, "PUT", &resultadoProduccionAcademica, produccionAcademicaPut)
-		pp.Println(resultadoProduccionAcademica)
-		pp.Println("1111111111111111111111111")
-		pp.Println(errProduccion)
-		pp.Println("2222222222222222222222222222")
 		if errProduccion == nil && fmt.Sprintf("%v", resultadoProduccionAcademica["System"]) != "map[]" {
-			pp.Println(resultadoProduccionAcademica)
+
 			if resultadoProduccionAcademica["Status"] != 400 {
 				resultado = produccionAcademica
-				pp.Println("#######################")
-				pp.Println(resultado)
 				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 			} else {
 				logs.Error(errProduccion)
