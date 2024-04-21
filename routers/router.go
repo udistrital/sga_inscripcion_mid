@@ -64,6 +64,11 @@ func init() {
 				&controllers.Transferencia_reingresoController{},
 			),
 		),
+		beego.NSNamespace("/legalizacion",
+			beego.NSInclude(
+				&controllers.LegalizacionController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
