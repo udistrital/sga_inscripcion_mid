@@ -15,7 +15,6 @@ import (
 )
 
 func init() {
-
 	beego.ErrorController(&errorhandler.ErrorHandlerController{})
 
 	ns := beego.NewNamespace("/v1",
