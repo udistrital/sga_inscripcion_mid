@@ -1638,6 +1638,26 @@
                 }
             }
         },
+        "/time_bog/": {
+            "get": {
+                "tags": [
+                    "time_bog"
+                ],
+                "description": "get Time_bog",
+                "operationId": "Time_bogController.GetTimeBog",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Time_bog"
+                        }
+                    },
+                    "500": {
+                        "description": "something bad happened"
+                    }
+                }
+            }
+        },
         "/transferencia/": {
             "post": {
                 "tags": [
@@ -1652,7 +1672,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -1928,7 +1948,10 @@
             "type": "object"
         },
         "models.Cupos": {
-            "title": "Cupos",
+            "title": "Cupos"
+        },
+        "models.Time_bog": {
+            "title": "Time_bog",
             "type": "object"
         },
         "{}": {
@@ -1968,6 +1991,10 @@
         {
             "name": "cupos",
             "description": "CuposController operations for Cupos\n"
+        },
+        {
+            "name": "time_bog",
+            "description": "Time_bogController operations for Time_bog\n"
         }
     ]
 }
