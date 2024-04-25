@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -294,17 +295,23 @@ func GetDescuentoByDpendencia(idDependencia string) (APIResponseDTO requestrespo
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idDependencia, &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
 		if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
-
-			for u := 0; u < len(solicitud); u++ {
-				var tipoDescuento map[string]interface{}
-				errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solicitud[u]["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
-				if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
-					resultados = append(resultados, tipoDescuento)
-				} else {
-					errorGetAll = true
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
-				}
+			var wg sync.WaitGroup
+			
+			for _, solici := range  solicitud{
+				wg.Add(1)
+				go func (solicitudDescuento map[string]interface{})  {
+					var tipoDescuento map[string]interface{}
+					errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solicitudDescuento["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
+					if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
+						resultados = append(resultados, tipoDescuento)
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
+					}
+					wg.Done()
+				}(solici)
 			}
+			wg.Wait()
 		} else {
 			errorGetAll = true
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
