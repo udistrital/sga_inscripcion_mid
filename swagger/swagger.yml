@@ -915,7 +915,7 @@ paths:
         description: body for Transferencia_reingreso content
         required: true
         schema:
-          $ref: '#/definitions/helpers.Transferencia_reingreso'
+          $ref: '#/definitions/{}'
       responses:
         "201":
           description: ""
@@ -1103,6 +1103,9 @@ definitions:
     type: object
   helpers.Transferencia_reingreso:
     title: Transferencia_reingreso
+    type: object
+  models.Liquidacion:
+    title: Liquidacion
     type: object
 tags:
 - name: academico/descuento

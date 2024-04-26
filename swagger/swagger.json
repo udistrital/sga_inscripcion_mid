@@ -1384,7 +1384,7 @@
                         "description": "body for Transferencia_reingreso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -1671,6 +1671,10 @@
     "definitions": {
         "helpers.Transferencia_reingreso": {
             "title": "Transferencia_reingreso",
+            "type": "object"
+        },
+        "models.Liquidacion": {
+            "title": "Liquidacion",
             "type": "object"
         },
         "{}": {
