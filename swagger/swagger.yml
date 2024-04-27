@@ -1117,8 +1117,8 @@ definitions:
   helpers.Transferencia_reingreso:
     title: Transferencia_reingreso
     type: object
-  models.Time_bog:
-    title: Time_bog
+  models.Liquidacion:
+    title: Liquidacion
     type: object
 tags:
 - name: academico/descuento
