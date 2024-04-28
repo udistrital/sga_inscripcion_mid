@@ -248,9 +248,6 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 			if resultadoSoporteSituacionLab[0]["Message"] == "Not found resource" {
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
-			} else {
-				errorGetAll = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
 		}
 	} else {
@@ -371,8 +368,6 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 	var resultadoSoporteGeneral []map[string]interface{}
 	errSoporteGeneral := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdSoporteGeneral+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoSoporteGeneral)
 	if errSoporteGeneral == nil && fmt.Sprintf("%v", resultadoSoporteGeneral[0]["System"]) != "map[]" {
-		fmt.Println("RESULTADO PRINCIPAL")
-		fmt.Println(resultadoSoporteIngresosCostea)
 		if resultadoSoporteGeneral[0]["Status"] != 404 && resultadoSoporteGeneral[0]["Id"] != nil {
 			// unmarshall dato
 			var direccionJson map[string]interface{}
