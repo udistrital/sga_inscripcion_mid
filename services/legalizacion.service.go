@@ -14,6 +14,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 	//resultado consulta
 	resultado := map[string]interface{}{}
 	var errorGetAll bool
+	count := 0
 
 	// Recuperación de la dirección
 	IdDirResidencia, _ := helpers.IdInfoCompTercero("9", "dir-residencia")
@@ -33,6 +34,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -60,6 +62,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -87,6 +90,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -114,6 +118,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -141,6 +146,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -168,6 +174,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -195,6 +202,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -222,6 +230,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -273,6 +282,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -300,6 +310,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -327,6 +338,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -354,6 +366,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -381,6 +394,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			} else {
+				count += 1
 				errorGetAll = true
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
 			}
@@ -394,6 +408,10 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 	if !errorGetAll {
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
 	} else {
+		if count == 13 {
+			//APIResponseDTO = requestresponse.APIResponseDTO(false, 404, "No existe legalización", "Not found resource")
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No existe legalización", nil)
+		}
 		return APIResponseDTO
 	}
 }

@@ -279,6 +279,8 @@ func (c *LegalizacionController) GetInfoLegalizacionMatricula() {
 
 	//Id de la persona
 	persona_id := c.Ctx.Input.Param(":persona_id")
+	fmt.Println("PERSONA ID:")
+	fmt.Println(persona_id)
 
 	respuesta := services.GetInfoLegalizacionTercero(persona_id)
 
