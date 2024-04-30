@@ -9,15 +9,12 @@ swagger/*.html
 swagger/*.js
 swagger/*.map
 swagger/*.css
-swagger/*.json
-swagger/*.yml
 swagger/css/
 swagger/fonts/
 swagger/images/
 swagger/lang/
 swagger/lib/
 swagger.zip
-sga_inscripcion_mid.exe
 sga_inscripcion_mid.exe~
 go.mod
 go.sum
