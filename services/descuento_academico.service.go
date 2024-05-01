@@ -297,7 +297,7 @@ func GetDescuentoByDpendencia(idDependencia string) (APIResponseDTO requestrespo
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idDependencia, &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
 		if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
-
+			wge.SetLimit(-1)
 			for _, solici := range  solicitud{
 				wge.Go(func () error{
 					fmt.Println("Entra hilo")

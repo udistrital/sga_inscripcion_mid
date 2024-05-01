@@ -21,7 +21,7 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 	wge := new(errgroup.Group)
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
 	if errCupos == nil {
-
+		wge.SetLimit(-1)
 		for _, c := range cupo {
 			wge.Go(func () error{
 				var cupoContenido = make(map[string]interface{})
