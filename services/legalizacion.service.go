@@ -409,8 +409,7 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
 	} else {
 		if count == 13 {
-			//APIResponseDTO = requestresponse.APIResponseDTO(false, 404, "No existe legalización", "Not found resource")
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No existe legalización", nil)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No existe legalizacion", nil)
 		}
 		return APIResponseDTO
 	}
