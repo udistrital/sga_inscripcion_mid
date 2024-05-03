@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 	"github.com/udistrital/utils_oas/time_bogota"
+	"golang.org/x/sync/errgroup"
 )
 
 func EstadoInscripcion(idPersona string, idPeriodo string) (APIResponseDTO requestresponse.APIResponse) {
@@ -463,66 +465,76 @@ func PutInfoComplementaria(data []byte) (APIResponseDTO requestresponse.APIRespo
 func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIResponse) {
 	// resultado datos complementarios persona
 	var resultado []map[string]interface{}
-	var EventosInscripcion []map[string]interface{}
+	var EventosInscripcionMap []map[string]interface{}
+	wge := new(errgroup.Group)
 
-	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcion)
-	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcion[0]) != "map[]" {
-		if EventosInscripcion[0]["Status"] != 404 {
-
+	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcionMap)
+	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcionMap[0]) != "[map[]]" {
+		if EventosInscripcionMap[0]["Status"] != 404 {
+			
 			var Proyectos_academicos []map[string]interface{}
 			var Proyectos_academicos_Get []map[string]interface{}
-			for i := 0; i < len(EventosInscripcion); i++ {
-				if len(EventosInscripcion) > 0 {
-					proyectoacademico := EventosInscripcion[i]["TipoEventoId"].(map[string]interface{})
+			wge.SetLimit(-1)
+			for _, EventosInscripcion := range EventosInscripcionMap {
+				wge.Go(func () error{
 
-					var ProyectosAcademicosConEvento map[string]interface{}
-
-					erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
-					if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
-						if ProyectosAcademicosConEvento["Status"] != 404 {
-							periodoevento := EventosInscripcion[i]["PeriodoId"]
-							fmt.Println(periodoevento)
-							ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
-							Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
-
-						} else {
-							if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-								return APIResponseDTO
+					if len(EventosInscripcion) > 0 {
+						proyectoacademico := EventosInscripcion["TipoEventoId"].(map[string]interface{})
+	
+						var ProyectosAcademicosConEvento map[string]interface{}
+	
+						erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
+						if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
+							if ProyectosAcademicosConEvento["Status"] != 404 {
+								periodoevento := EventosInscripcion["PeriodoId"]
+								fmt.Println(periodoevento)
+								ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
+								Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
+	
 							} else {
-								logs.Error(ProyectosAcademicosConEvento)
-								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
-								return APIResponseDTO
+								if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
+									return errors.New("No data found")
+								} else {
+									logs.Error(ProyectosAcademicosConEvento)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									return erreproyectos
+								}
 							}
+						} else {
+							logs.Error(ProyectosAcademicosConEvento)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							return erreproyectos
 						}
-					} else {
-						logs.Error(ProyectosAcademicosConEvento)
-						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreproyectos)
-						return APIResponseDTO
+	
+						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
+	
+					}else {
+						return errors.New("No data found")
 					}
-
-					Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
-
-				}
+					return nil
+				})
+			}
+			//Si existe error, se realiza
+			if err := wge.Wait(); err != nil {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+				return APIResponseDTO
 			}
 			resultado = Proyectos_academicos_Get
 			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 
 		} else {
-			if EventosInscripcion[0]["Message"] == "Not found resource" {
+			if EventosInscripcionMap[0]["Message"] == "Not found resource" {
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 				return APIResponseDTO
 			} else {
-				logs.Error(EventosInscripcion)
+				logs.Error(EventosInscripcionMap)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
 				return APIResponseDTO
 			}
 		}
 	} else {
-		logs.Error(EventosInscripcion)
+		logs.Error(EventosInscripcionMap)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, erreVentos)
 		return APIResponseDTO
