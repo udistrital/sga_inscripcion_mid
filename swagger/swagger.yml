@@ -1018,6 +1018,19 @@ paths:
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
+  /time_bog/:
+    get:
+      tags:
+      - time_bog
+      description: get Time_bog
+      operationId: Time_bogController.GetTimeBog
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Time_bog'
+        "500":
+          description: something bad happened
   /transferencia/:
     post:
       tags:
@@ -1221,6 +1234,8 @@ definitions:
     type: object
   models.Legalizacion:
     title: Legalizacion
+  models.Liquidacion:
+    title: Liquidacion
     type: object
 tags:
 - name: academico/descuento
@@ -1247,3 +1262,6 @@ tags:
 - name: legalizacion
   description: |
     LegalizacionController operations for Legalizacion
+- name: time_bog
+  description: |
+    Time_bogController operations for Time_bog
