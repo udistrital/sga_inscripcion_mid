@@ -1,7 +1,6 @@
 lastupdate.tmp
 .vscode/
 .idea/
-sga_inscripcion_mid
 main
 .scannerwork/
 swagger/*.png
@@ -16,5 +15,6 @@ swagger/lang/
 swagger/lib/
 swagger.zip
 sga_inscripcion_mid.exe~
+*.exe
 go.mod
 go.sum
