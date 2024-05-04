@@ -443,6 +443,10 @@ func init() {
         beego.ControllerComments{
             Method: "PostBaseLegalizacionMatricula",
             Router: "/base",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LiquidacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LiquidacionController"],
         beego.ControllerComments{
