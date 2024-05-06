@@ -769,6 +769,121 @@ paths:
           description: '{}'
         "403":
           description: body is empty
+  /legalizacion/:
+    get:
+      tags:
+      - legalizacion
+      description: get Legalizacion
+      operationId: LegalizacionController.GetAll
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Legalizacion'
+        "403":
+          description: ""
+  /legalizacion/{id}:
+    get:
+      tags:
+      - legalizacion
+      description: get Legalizacion by id
+      operationId: LegalizacionController.GetOne
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Legalizacion'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - legalizacion
+      description: update the Legalizacion
+      operationId: LegalizacionController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for Legalizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Legalizacion'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Legalizacion'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - legalizacion
+      description: delete the Legalizacion
+      operationId: LegalizacionController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /legalizacion/base:
+    post:
+      tags:
+      - legalizacion
+      description: create Legalizacion
+      operationId: LegalizacionController.PostBaseLegalizacionMatricula
+      parameters:
+      - in: body
+        name: body
+        description: body for Legalizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
   /recibos/comprobante-inscripcion:
     post:
       tags:
@@ -1117,6 +1232,8 @@ definitions:
   helpers.Transferencia_reingreso:
     title: Transferencia_reingreso
     type: object
+  models.Legalizacion:
+    title: Legalizacion
   models.Liquidacion:
     title: Liquidacion
     type: object
@@ -1142,6 +1259,9 @@ tags:
 - name: transferencia
   description: |
     Transferencia_reingresoController operations for Transferencia_reingreso
+- name: legalizacion
+  description: |
+    LegalizacionController operations for Legalizacion
 - name: time_bog
   description: |
     Time_bogController operations for Time_bog
