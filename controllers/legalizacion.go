@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
@@ -13,6 +14,8 @@ type LegalizacionController struct {
 
 // URLMapping ...
 func (c *LegalizacionController) URLMapping() {
+	c.Mapping("Post", c.PostBaseLegalizacionMatricula)
+	c.Mapping("GetInfoLegalizacionMatricula", c.GetInfoLegalizacionMatricula)
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -33,6 +36,30 @@ func (c *LegalizacionController) PostBaseLegalizacionMatricula() {
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.CrearInfolegalizacionMatricula(data)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
+	c.ServeJSON()
+}
+
+// GetInfoLegalizacionMatricula ...
+// @Title GetInfoLegalizacionMatricula
+// @Description consultar la información complementaria del tercero
+// @Param	persona_id	path	int	true	"Id del tercero"
+// @Success 200 {}
+// @Failure 404 not found resource
+// @router  /informacion-legalizacion/:persona_id [get]
+func (c *LegalizacionController) GetInfoLegalizacionMatricula() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	//Id de la persona
+	persona_id := c.Ctx.Input.Param(":persona_id")
+	fmt.Println("PERSONA ID:")
+	fmt.Println(persona_id)
+
+	respuesta := services.GetInfoLegalizacionTercero(persona_id)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 

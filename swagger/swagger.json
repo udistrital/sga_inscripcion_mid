@@ -1250,11 +1250,23 @@
                 }
             }
         },
-        "/legalizacion/{id}": {
+        "/legalizacion/informacion-legalizacion/{persona_id}": {
+
             "get": {
                 "tags": [
                     "legalizacion"
                 ],
+                "description": "consultar la información complementaria del tercero",
+                "operationId": "LegalizacionController.GetInfoLegalizacionMatricula",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "persona_id",
+                        "description": "Id del tercero",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+
                 "description": "get Legalizacion by id",
                 "operationId": "LegalizacionController.GetOne",
                 "parameters": [
@@ -1331,6 +1343,10 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
                         "description": "{string} delete success!"
                     },
                     "403": {

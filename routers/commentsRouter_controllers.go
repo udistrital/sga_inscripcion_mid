@@ -405,22 +405,22 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"],
         beego.ControllerComments{
-            Method: "GetAll",
-            Router: "/",
-            AllowHTTPMethods: []string{"get"},
+            Method: "PostBaseLegalizacionMatricula",
+            Router: "/base",
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"],
         beego.ControllerComments{
-            Method: "GetOne",
-            Router: "/:id",
+            Method: "GetInfoLegalizacionMatricula",
+            Router: "/informacion-legalizacion/:persona_id",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
-
+  
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"],
         beego.ControllerComments{
             Method: "Put",
