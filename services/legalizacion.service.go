@@ -650,3 +650,4 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 		return APIResponseDTO
 	}
 }
+

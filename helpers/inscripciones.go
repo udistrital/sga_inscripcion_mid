@@ -124,13 +124,15 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 									}
 								}
 
+								//Estado = "Pago"
+
 								resultadoAux[i] = map[string]interface{}{
-									"Id":                  Inscripciones[i]["Id"],
-									"ProgramaAcademicoId": Inscripciones[i]["ProgramaAcademicoId"],
-									"ReciboInscripcion":   Inscripciones[i]["ReciboInscripcion"],
-									"FechaCreacion":       Inscripciones[i]["FechaCreacion"],
-									"Estado":              Estado,
-									"EstadoInscripcion":   Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
+									"Id": Inscripciones[i]["Id"],
+									//"ProgramaAcademicoId": Inscripciones[i]["ProgramaAcademicoId"],
+									"ReciboInscripcion": Inscripciones[i]["ReciboInscripcion"],
+									"FechaCreacion":     Inscripciones[i]["FechaCreacion"],
+									"Estado":            Estado,
+									"EstadoInscripcion": Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
 								}
 							} else {
 								if fmt.Sprintf("%v", resultadoAux) != "map[]" {

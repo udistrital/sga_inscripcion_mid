@@ -41,8 +41,11 @@ func (c *InscripcionesController) GetEstadoInscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	terceroId := c.GetString("persona-id")
-	idPeriodo := c.GetString("id-periodo")
+	// terceroId := c.GetString("persona-id")
+	// idPeriodo := c.GetString("id-periodo")
+
+	terceroId := c.Ctx.Input.Param(":persona_id")
+	idPeriodo := c.Ctx.Input.Param(":id_periodo")
 
 	respuesta := services.EstadoInscripcion(terceroId, idPeriodo)
 
