@@ -1728,6 +1728,10 @@
             "title": "Transferencia_reingreso",
             "type": "object"
         },
+        "models.Liquidacion": {
+            "title": "Liquidacion",
+            "type": "object"
+        },
         "{}": {
             "title": "{}",
             "type": "object"
