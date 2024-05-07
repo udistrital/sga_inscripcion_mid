@@ -651,6 +651,269 @@
                 }
             }
         },
+        "/cupos/": {
+            "get": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "get Cupos",
+                "operationId": "CuposController.GetAll",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "create Cupos",
+                "operationId": "CuposController.Create",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Cupos content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/cupos/comentarios": {
+            "get": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "get Cupos",
+                "operationId": "CuposController.GetAllDocs",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "create Cupos",
+                "operationId": "CuposController.Create",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Cupos content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/cupos/{id}": {
+            "get": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "get Cupos by id",
+                "operationId": "CuposController.GetOne",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "update the Cupos",
+                "operationId": "CuposController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Cupos content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cupos"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "cupos"
+                ],
+                "description": "delete the Cupos",
+                "operationId": "CuposController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "id is empty"
+                    }
+                }
+            }
+        },
         "/experiencia-laboral/": {
             "post": {
                 "tags": [
@@ -1251,7 +1514,6 @@
             }
         },
         "/legalizacion/informacion-legalizacion/{persona_id}": {
-
             "get": {
                 "tags": [
                     "legalizacion"
@@ -1266,7 +1528,23 @@
                         "required": true,
                         "type": "integer",
                         "format": "int64"
-
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/legalizacion/{id}": {
+            "get": {
+                "tags": [
+                    "legalizacion"
+                ],
                 "description": "get Legalizacion by id",
                 "operationId": "LegalizacionController.GetOne",
                 "parameters": [
@@ -1343,10 +1621,6 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{}"
-                    },
-                    "404": {
-                        "description": "not found resource"
                         "description": "{string} delete success!"
                     },
                     "403": {
@@ -1434,6 +1708,37 @@
                         "description": "{}"
                     },
                     "400": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/recibov2/": {
+            "post": {
+                "tags": [
+                    "recibov2"
+                ],
+                "description": "create Generar_recibo_v2",
+                "operationId": "GenerarReciboV2Controller.Create",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Generar_recibo_v2 content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Generar_recibo_v2"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Generar_recibo_v2"
+                        }
+                    },
+                    "403": {
                         "description": "body is empty"
                     }
                 }
@@ -1557,6 +1862,26 @@
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/time_bog/": {
+            "get": {
+                "tags": [
+                    "time_bog"
+                ],
+                "description": "get Time_bog",
+                "operationId": "Time_bogController.GetTimeBog",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Time_bog"
+                        }
+                    },
+                    "500": {
+                        "description": "something bad happened"
                     }
                 }
             }
@@ -1864,10 +2189,24 @@
             "title": "Transferencia_reingreso",
             "type": "object"
         },
+        "models.Cupos": {
+            "title": "Cupos",
+            "type": "object"
+        },
+        "models.Generar_recibo_v2": {
+            "title": "Generar_recibo_v2",
+            "type": "object"
+        },
         "models.Legalizacion": {
             "title": "Legalizacion",
+            "type": "object"
+        },
         "models.Liquidacion": {
             "title": "Liquidacion",
+            "type": "object"
+        },
+        "models.Time_bog": {
+            "title": "Time_bog",
             "type": "object"
         },
         "{}": {
@@ -1897,6 +2236,10 @@
             "description": "GeneradorCodigoBarrasController ...\n"
         },
         {
+            "name": "recibov2",
+            "description": "Generar_recibo_v2Controller operations for Generar_recibo_v2\n"
+        },
+        {
             "name": "solicitud-produccion",
             "description": "SolicitudProduccionController ...\n"
         },
@@ -1907,6 +2250,14 @@
         {
             "name": "legalizacion",
             "description": "LegalizacionController operations for Legalizacion\n"
+        },
+        {
+            "name": "cupos",
+            "description": "CuposController operations for Cupos\n"
+        },
+        {
+            "name": "time_bog",
+            "description": "Time_bogController operations for Time_bog\n"
         }
     ]
 }

@@ -48,6 +48,11 @@ func init() {
 				&controllers.GenerarReciboController{},
 			),
 		),
+		beego.NSNamespace("/recibov2",
+			beego.NSInclude(
+				&controllers.GenerarReciboV2Controller{},
+			),
+		),
 		beego.NSNamespace("/inscripciones",
 			beego.NSInclude(
 				&controllers.InscripcionesController{},
