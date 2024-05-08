@@ -15,6 +15,7 @@ swagger/lang/
 swagger/lib/
 swagger.zip
 sga_inscripcion_mid.exe~
+sga_inscripcion_mid
 *.exe
 go.mod
 go.sum
