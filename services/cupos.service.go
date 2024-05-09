@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/models"
@@ -19,10 +20,13 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 	var listado []map[string]interface{}
 	//Definición de el group para las gorutines
 	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
 	if errCupos == nil {
 		wge.SetLimit(-1)
 		for _, c := range cupo {
+			c := c
 			wge.Go(func () error{
 				var cupoContenido = make(map[string]interface{})
 				tipoInscripcionId := c["TipoInscripcionId"].(map[string]interface{})
@@ -48,8 +52,10 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 				} else {
 				}
 
+				mutex.Lock()
 				listado = append(listado, cupoContenido)
-
+				mutex.Unlock()
+				
 				return errtipocupo
 			})
 		}
