@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -422,12 +423,15 @@ func GetFormacionAcademicaByIdTercero(idTercero string) (APIResponseDTO requestr
 	var DataMap []map[string]interface{}
 	var errorGetAll bool
 	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+
 
 	errData := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?query=TerceroId__Id:"+idTercero+",InfoComplementariaId__CodigoAbreviacion:FORM_ACADEMICA,Activo:true&limit=0&sortby=Id&order=asc", &DataMap)
 	if errData == nil {
 		if DataMap != nil && fmt.Sprintf("%v", DataMap) != "[map[]]" {
 			wge.SetLimit(-1)
 			for _, Data := range DataMap {
+				Data := Data
 				wge.Go(func () error{
 					resultadoAux := make(map[string]interface{})
 					var formacion map[string]interface{}
@@ -523,8 +527,10 @@ func GetFormacionAcademicaByIdTercero(idTercero string) (APIResponseDTO requestr
 									return errors.New("No data found")
 								}
 							}
-	
+							
+							mutex.Lock()
 							resultado = append(resultado, resultadoAux)
+							mutex.Unlock()
 						}
 					} else {
 						return errors.New("No data found")
