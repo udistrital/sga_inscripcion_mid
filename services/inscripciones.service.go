@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -467,6 +468,8 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 	var resultado []map[string]interface{}
 	var EventosInscripcionMap []map[string]interface{}
 	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+
 
 	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcionMap)
 	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcionMap[0]) != "[map[]]" {
@@ -476,6 +479,7 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 			var Proyectos_academicos_Get []map[string]interface{}
 			wge.SetLimit(-1)
 			for _, EventosInscripcion := range EventosInscripcionMap {
+				EventosInscripcion = EventosInscripcion
 				wge.Go(func () error{
 
 					if len(EventosInscripcion) > 0 {
@@ -505,8 +509,9 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 							return erreproyectos
 						}
-	
+						mutex.Lock()
 						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
+						mutex.Unlock()
 	
 					}else {
 						return errors.New("No data found")
