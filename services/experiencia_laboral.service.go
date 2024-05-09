@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -302,6 +303,8 @@ func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestres
 	var empresaTercero map[string]interface{}
 	var errorGetAll bool
 	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+
 	var DataMap []map[string]interface{}
 
 	fmt.Println("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero?query=TerceroId__Id:" + fmt.Sprintf("%v", idTercero) + ",InfoComplementariaId__CodigoAbreviacion:EXP_LABORAL,Activo:true&limit=0&sortby=Id&order=asc")
@@ -310,6 +313,7 @@ func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestres
 		if DataMap != nil && fmt.Sprintf("%v", DataMap) != "[map[]]" {
 			wge.SetLimit(-1)
 			for _, Data := range DataMap {
+				Data := Data
 				wge.Go(func () error{
 					var experiencia map[string]interface{}
 					resultadoAux := make(map[string]interface{})
@@ -462,8 +466,9 @@ func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestres
 						} else {
 							return errDatosIdentificacion
 						}
-	
+						mutex.Lock()
 						resultado = append(resultado, resultadoAux)
+						mutex.Unlock()
 					} else {
 						return errors.New("No data found")
 					}
