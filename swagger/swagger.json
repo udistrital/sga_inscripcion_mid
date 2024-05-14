@@ -1074,7 +1074,7 @@
                 }
             }
         },
-        "/inscripciones/estado-recibos": {
+        "/inscripciones/estado_recibos/{persona_id}/{id_periodo}": {
             "get": {
                 "tags": [
                     "inscripciones"

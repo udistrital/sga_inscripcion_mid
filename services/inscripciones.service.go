@@ -907,6 +907,9 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 
 		if SolicitudInscripcion["Nivel"].(float64) == 1 {
 			TipoParametro = "13"
+			id_periodo := int(SolicitudInscripcion["PeriodoId"].(float64))
+			credencial := helpers.GenerarCredencialInscripcionPregrado(float64(id_periodo))
+			inscripcion["Credencial"] = credencial
 		} else if SolicitudInscripcion["Nivel"].(float64) == 2 {
 			TipoParametro = "12"
 		}
@@ -949,6 +952,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 		errInscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &inscripcionRealizada, inscripcion)
 		if errInscripcion == nil && inscripcionRealizada["Status"] != "400" {
 			errParam := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro_periodo?query=Activo:true,ParametroId.TipoParametroId.Id:2,ParametroId.CodigoAbreviacion:"+TipoParametro+",PeriodoId.Year:"+fmt.Sprintf("%v", objTransaccion["aniopago"])+",PeriodoId.CodigoAbreviacion:VG", &parametro)
+			fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAA", parametro)
 			if errParam == nil && fmt.Sprintf("%v", parametro["Data"].([]interface{})[0]) != "map[]" {
 				Dato := parametro["Data"].([]interface{})[0]
 				if errJson := json.Unmarshal([]byte(Dato.(map[string]interface{})["Valor"].(string)), &Valor); errJson == nil {

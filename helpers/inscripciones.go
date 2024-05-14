@@ -168,3 +168,25 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 
 	return resultado, Error
 }
+
+// Generacion credencial inscripciones pregrado
+func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
+	var parametros []map[string]interface{}
+	periodoIdInt := int(periodoId)
+
+	errParam := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?limit=1&query=PeriodoId:"+fmt.Sprintf("%d", periodoIdInt)+"&fields=Credencial&sortby=Credencial&order=desc", &parametros)
+	if errParam == nil {
+
+		credencialMaxima := parametros[0]["Credencial"].(float64)
+
+		if credencialMaxima > 100 {
+			credencial = int(credencialMaxima + 1)
+		} else {
+			credencial = 101
+		}
+
+		return credencial
+	} else {
+		return 0
+	}
+}
