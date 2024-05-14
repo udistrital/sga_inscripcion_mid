@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/udistrital/sga_inscripcion_mid/services"
 	"github.com/udistrital/utils_oas/errorhandler"
@@ -16,7 +17,8 @@ type LegalizacionController struct {
 func (c *LegalizacionController) URLMapping() {
 	c.Mapping("Post", c.PostBaseLegalizacionMatricula)
 	c.Mapping("GetInfoLegalizacionMatricula", c.GetInfoLegalizacionMatricula)
-	c.Mapping("Post", c.Post)
+	c.Mapping("PutInfoLegalizacionMatricula", c.PutInfoLegalizacionMatricula)
+	//c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
@@ -60,6 +62,27 @@ func (c *LegalizacionController) GetInfoLegalizacionMatricula() {
 	fmt.Println(persona_id)
 
 	respuesta := services.GetInfoLegalizacionTercero(persona_id)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
+	c.ServeJSON()
+}
+
+// PutInfoLegalizacionMatricula ...
+// @Title PutInfoLegalizacionMatricula
+// @Description Actualiza la información de legalización de matricula de un aspirante
+// @Param   body        body    {}  true		"body for Legalizacion content"
+// @Success 201 {int}
+// @Failure 400 the request contains incorrect syntax
+// @router /actualizar-info-legalizacion [put]
+func (c *LegalizacionController) PutInfoLegalizacionMatricula() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.ActualizarInfolegalizacionMatricula(data)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 

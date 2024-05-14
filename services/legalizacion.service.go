@@ -252,6 +252,146 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 	var errorGetAll bool
 	count := 0
 
+	// Recuperación del estrato de la persona que costea
+	IdEstratoCostea, _ := helpers.IdInfoCompTercero("1654", "est-c")
+	var resultadoEstratoCostea []map[string]interface{}
+	errEstratoCostea := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdEstratoCostea+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoEstratoCostea)
+	if errEstratoCostea == nil && fmt.Sprintf("%v", resultadoEstratoCostea[0]["System"]) != "map[]" {
+		if resultadoEstratoCostea[0]["Status"] != 404 && resultadoEstratoCostea[0]["Id"] != nil {
+			// unmarshall dato
+			var direccionJson map[string]interface{}
+			if err := json.Unmarshal([]byte(resultadoEstratoCostea[0]["Dato"].(string)), &direccionJson); err != nil {
+				resultado["estratoCostea"] = nil
+			} else {
+				resultado["estratoCostea"] = direccionJson["dato"]
+			}
+		} else {
+			if resultadoEstratoCostea[0]["Message"] == "Not found resource" {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			} else {
+				count += 1
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errEstratoCostea)
+	}
+
+	// Recuperación de la ubicación residencia de quien costea
+	IdUbicacionResidenciaCostea, _ := helpers.IdInfoCompTercero("1654", "ubi-rc")
+	var resultadoUbicacionResidenciaCostea []map[string]interface{}
+	errUbicacionResidenciaCostea := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdUbicacionResidenciaCostea+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoUbicacionResidenciaCostea)
+	if errUbicacionResidenciaCostea == nil && fmt.Sprintf("%v", resultadoUbicacionResidenciaCostea[0]["System"]) != "map[]" {
+		if resultadoUbicacionResidenciaCostea[0]["Status"] != 404 && resultadoUbicacionResidenciaCostea[0]["Id"] != nil {
+			// unmarshall dato
+			var direccionJson map[string]interface{}
+			if err := json.Unmarshal([]byte(resultadoUbicacionResidenciaCostea[0]["Dato"].(string)), &direccionJson); err != nil {
+				resultado["ubicacionResidenciaCostea"] = nil
+			} else {
+				resultado["ubicacionResidenciaCostea"] = direccionJson["dato"]
+			}
+		} else {
+			if resultadoUbicacionResidenciaCostea[0]["Message"] == "Not found resource" {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			} else {
+				count += 1
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errUbicacionResidenciaCostea)
+	}
+
+	// Recuperación de los ingresos del año anterior en salarios minimos de quien costea
+	IdIngresosSMCostea, _ := helpers.IdInfoCompTercero("1654", "ing-sm-ac")
+	var resultadoIngresosSMCostea []map[string]interface{}
+	errIngresosSMCostea := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdIngresosSMCostea+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoIngresosSMCostea)
+	if errIngresosSMCostea == nil && fmt.Sprintf("%v", resultadoIngresosSMCostea[0]["System"]) != "map[]" {
+		if resultadoIngresosSMCostea[0]["Status"] != 404 && resultadoIngresosSMCostea[0]["Id"] != nil {
+			// unmarshall dato
+			var direccionJson map[string]interface{}
+			if err := json.Unmarshal([]byte(resultadoIngresosSMCostea[0]["Dato"].(string)), &direccionJson); err != nil {
+				resultado["ingresosSMCostea"] = nil
+			} else {
+				resultado["ingresosSMCostea"] = direccionJson["dato"]
+			}
+		} else {
+			if resultadoIngresosSMCostea[0]["Message"] == "Not found resource" {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			} else {
+				count += 1
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errIngresosSMCostea)
+	}
+
+	// Recuperación de la localidad
+	IdLocalidad, _ := helpers.IdInfoCompTercero("9", "localidad")
+	var resultadoLocalidad []map[string]interface{}
+	errLocalidad := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdLocalidad+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoLocalidad)
+	if errLocalidad == nil && fmt.Sprintf("%v", resultadoLocalidad[0]["System"]) != "map[]" {
+		if resultadoLocalidad[0]["Status"] != 404 && resultadoLocalidad[0]["Id"] != nil {
+			// unmarshall dato
+			var direccionJson map[string]interface{}
+			if err := json.Unmarshal([]byte(resultadoLocalidad[0]["Dato"].(string)), &direccionJson); err != nil {
+				resultado["localidad"] = nil
+			} else {
+				resultado["localidad"] = direccionJson["dato"]
+			}
+		} else {
+			if resultadoLocalidad[0]["Message"] == "Not found resource" {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			} else {
+				count += 1
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errLocalidad)
+	}
+
+	// Recuperación de la pensión pagada en grado 11 en salarios minimos
+	IdPensionSM11, _ := helpers.IdInfoCompTercero("9", "pens-11-sm")
+	var resultadoPensionSM11 []map[string]interface{}
+	errPensionSM11 := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdPensionSM11+",TerceroId:"+idTercero+"&sortby=Id&order=desc&limit=1", &resultadoPensionSM11)
+	if errPensionSM11 == nil && fmt.Sprintf("%v", resultadoPensionSM11[0]["System"]) != "map[]" {
+		if resultadoPensionSM11[0]["Status"] != 404 && resultadoPensionSM11[0]["Id"] != nil {
+			// unmarshall dato
+			var direccionJson map[string]interface{}
+			if err := json.Unmarshal([]byte(resultadoPensionSM11[0]["Dato"].(string)), &direccionJson); err != nil {
+				resultado["pensionSM11"] = nil
+			} else {
+				resultado["pensionSM11"] = direccionJson["dato"]
+			}
+		} else {
+			if resultadoPensionSM11[0]["Message"] == "Not found resource" {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			} else {
+				count += 1
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not found resource")
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errPensionSM11)
+	}
+
 	// Recuperación de la dirección
 	IdDirResidencia, _ := helpers.IdInfoCompTercero("9", "dir-residencia")
 	var resultadoDirResidencia []map[string]interface{}
@@ -644,10 +784,120 @@ func GetInfoLegalizacionTercero(idTercero string) (APIResponseDTO requestrespons
 	if !errorGetAll {
 		return requestresponse.APIResponseDTO(true, 200, resultado, nil)
 	} else {
-		if count == 13 {
+		if count == 18 {
 			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No existe legalizacion", nil)
 		}
 		return APIResponseDTO
 	}
 }
 
+func ActualizarInfolegalizacionMatricula(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var legalizacionMatriculaRequest map[string]interface{}
+	var errorGetAll bool = false
+	var resultado []map[string]interface{}
+
+	if err := json.Unmarshal(data, &legalizacionMatriculaRequest); err == nil {
+		idTercero := legalizacionMatriculaRequest["personaId"].(float64)
+
+		IdEstratoCostea, _ := helpers.IdInfoCompTercero("1654", "est-c")
+		IdUbicacionResidenciaCostea, _ := helpers.IdInfoCompTercero("1654", "ubi-rc")
+		IdIngresosSMCostea, _ := helpers.IdInfoCompTercero("1654", "ing-sm-ac")
+		IdPensionSM11, _ := helpers.IdInfoCompTercero("9", "pens-11-sm")
+		IdNucleoFam, _ := helpers.IdInfoCompTercero("9", "nuc-f")
+		IdSituacionLab, _ := helpers.IdInfoCompTercero("9", "sit-l")
+		IdIngresosCostea, _ := helpers.IdInfoCompTercero("1654", "ing-ac")
+		IdPension11, _ := helpers.IdInfoCompTercero("9", "pens-11")
+
+		idsInfoCompActualizar := map[string]interface{}{
+			"estratoCostea":              IdEstratoCostea,
+			"ubicacionResidencia":        IdUbicacionResidenciaCostea,
+			"valorMatriculaUltimoAnio":   IdPension11,
+			"valorMatriculaUltimoAnioSM": IdPensionSM11,
+			"ingresosBrutosFam":          IdIngresosCostea,
+			"ingresosBrutosFamSM":        IdIngresosSMCostea,
+			"nucleoFamiliar":             IdNucleoFam,
+			"situacionLaboral":           IdSituacionLab,
+		}
+
+		for key, value := range idsInfoCompActualizar {
+			fmt.Println("Key:", key, "Value:", value)
+
+			if stringValue, ok := value.(string); ok {
+				if resInfoComp, errInfoComp := ObtenerInfoComplementariaActual(idTercero, stringValue, legalizacionMatriculaRequest, key); errInfoComp == nil {
+					fmt.Println("ENTRADA PRINCIPAL OK:", resInfoComp)
+					resultado = append(resultado, resInfoComp)
+				} else {
+					fmt.Println("ENTRADA PRINCIPAL MAL:", resInfoComp, errInfoComp)
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInfoComp.Error())
+					return APIResponseDTO
+				}
+			}
+		}
+	} else {
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+	} else {
+		return APIResponseDTO
+	}
+	return APIResponseDTO
+}
+
+func ObtenerInfoComplementariaActual(idTercero float64, IdInfoComp string, legalizacionMatriculaRequest map[string]interface{}, stringInfoComp string) (map[string]interface{}, error) {
+	var resultadoInfoComp []map[string]interface{}
+	errInfoComp := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+IdInfoComp+",TerceroId:"+fmt.Sprintf("%.f", idTercero)+"&sortby=Id&order=desc&limit=1", &resultadoInfoComp)
+	if errInfoComp == nil && fmt.Sprintf("%v", resultadoInfoComp[0]["System"]) != "map[]" {
+		if resultadoInfoComp[0]["Status"] != 404 && resultadoInfoComp[0]["Id"] != nil {
+			id := resultadoInfoComp[0]["Id"].(float64)
+
+			if infoComplementariaIdMap, ok := resultadoInfoComp[0]["InfoComplementariaId"].(map[string]interface{}); ok {
+
+				TerceroId := map[string]interface{}{
+					"Id": idTercero,
+				}
+				InfoComplementariaId := map[string]interface{}{
+					"Id": infoComplementariaIdMap["Id"],
+				}
+				Dato := map[string]interface{}{
+					"dato": legalizacionMatriculaRequest[stringInfoComp],
+				}
+				jsonDato, _ := json.Marshal(Dato)
+				infoComp := map[string]interface{}{
+					"TerceroId":            TerceroId,
+					"InfoComplementariaId": InfoComplementariaId,
+					"Activo":               true,
+					"Dato":                 string(jsonDato),
+				}
+
+				if resInfoComp, errInfoComp := ActualizarInfoComplementaria(infoComp, id); errInfoComp == nil {
+					return resInfoComp, nil
+				} else {
+					return resInfoComp, errInfoComp
+				}
+			} else {
+				return infoComplementariaIdMap, fmt.Errorf("Not found resource in Info Complemenaria ID")
+			}
+		} else {
+			if resultadoInfoComp[0]["Message"] == "Not found resource" {
+				return resultadoInfoComp[0], fmt.Errorf("Not found resource")
+			} else {
+				return resultadoInfoComp[0], fmt.Errorf("Not found resource")
+			}
+		}
+	} else {
+		return resultadoInfoComp[0], errInfoComp
+	}
+}
+
+func ActualizarInfoComplementaria(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {
+	var resp map[string]interface{}
+	errPutInfoComp := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero/"+fmt.Sprintf("%.f", id), "PUT", &resp, infoComp)
+	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
+		return resp, nil
+	} else {
+		return resp, errPutInfoComp
+	}
+}
