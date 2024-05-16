@@ -496,7 +496,7 @@ func GetDescuentoByTerceroPeriodoDependencia(idTercero string, idPeriodo string,
 			// c.Data["json"] = resultado
 		} else {
 			errorGetAll = true
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay descuentos académicos registrados")
 		}
 	} else {
 		errorGetAll = true

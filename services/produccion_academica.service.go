@@ -265,7 +265,6 @@ func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIRespon
 	var errorGetAll bool
 
 	errProduccion := request.GetJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"tr_produccion_academica/"+idTercero, &producciones)
-	fmt.Println("//////////// ProduccionAcademicaService() Err: ", errProduccion, "Resp: ", producciones)
 	if fmt.Sprintf("%v", producciones) != "" || fmt.Sprintf("%v", producciones) != "[map[]]" {
 		if errProduccion == nil && fmt.Sprintf("%v", producciones[0]["System"]) != "map[]" {
 			if producciones[0]["Status"] != 404 && producciones[0]["Id"] != nil {
@@ -280,7 +279,6 @@ func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIRespon
 						var autorProduccion map[string]interface{}
 
 						errAutor := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"/tercero/"+fmt.Sprintf("%v", autor["Persona"]), &autorProduccion)
-						fmt.Println("//////////// TercerosService() Err: ", errAutor, "Resp: ", autorProduccion)
 						if errAutor == nil && fmt.Sprintf("%v", autorProduccion["System"]) != "map[]" {
 							if autorProduccion["Status"] != 404 {
 								autor["Nombre"] = autorProduccion["NombreCompleto"].(string)
@@ -297,7 +295,7 @@ func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIRespon
 				resultado = producciones
 			} else {
 				errorGetAll = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay producciones académicas registradas")
 			}
 		} else {
 			errorGetAll = true
@@ -354,7 +352,7 @@ func GetProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse
 				}
 			}
 			resultado = producciones
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay producción académica registrada")
 		} else {
 			if producciones[0]["Message"] == "Not found resource" {
 				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "Not dound resource")
@@ -367,7 +365,7 @@ func GetProduccion(idTercero string) (APIResponseDTO requestresponse.APIResponse
 		}
 	} else {
 		logs.Error(producciones)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errProduccion)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "errProduccion")
 		return APIResponseDTO
 	}
 	return APIResponseDTO

@@ -56,7 +56,7 @@ func CreateExperienciaLaboral(data []byte) (APIResponseDTO requestresponse.APIRe
 			}
 		} else {
 			logs.Error(errIdInfo)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errIdInfo)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errIdInfo)
 			return APIResponseDTO
 		}
 		intVar, _ := strconv.Atoi(idInfoExperencia)
@@ -86,18 +86,18 @@ func CreateExperienciaLaboral(data []byte) (APIResponseDTO requestresponse.APIRe
 				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, respuesta, nil)
 			} else {
 				logs.Error(ExperienciaLaboralPost)
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 400, nil ,ExperienciaLaboralPost)
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 400, nil, ExperienciaLaboralPost)
 				return APIResponseDTO
 			}
 		} else {
 			logs.Error(errExperiencia)
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,errExperiencia)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errExperiencia)
 			return APIResponseDTO
 		}
 
 	} else {
 		logs.Error(err)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,err)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
 		return APIResponseDTO
 	}
 	return APIResponseDTO
@@ -288,7 +288,7 @@ func GetInfoEmpresa(idEmpresa string) (APIResponseDTO requestresponse.APIRespons
 		}
 	} else {
 		logs.Error(errNit)
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,empresa)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, empresa)
 		return APIResponseDTO
 	}
 
@@ -481,11 +481,11 @@ func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestres
 			}
 		} else {
 			errorGetAll = true
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay experiencia laboral registrada")
 		}
 	} else {
 		errorGetAll = true
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, resultado, "No data found")
 	}
 
 	if !errorGetAll {
@@ -549,7 +549,7 @@ func ActualizarExperienciaLaboral(idTercero string, data []byte) (APIResponseDTO
 		}
 
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil ,ExperienciaLaboral)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, ExperienciaLaboral)
 	}
 
 	if !errorGetAll {
@@ -583,14 +583,14 @@ func GetExperienciaLaboralById(idExperiencia string) (APIResponseDTO requestresp
 					} else {
 						logs.Error(soporte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 404,nil ,errSoporte)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 						return APIResponseDTO
 					}
 				}
 			} else {
 				logs.Error(soporte)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errSoporte)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errSoporte)
 				return APIResponseDTO
 			}
 
@@ -638,14 +638,14 @@ func GetExperienciaLaboralById(idExperiencia string) (APIResponseDTO requestresp
 			} else {
 				logs.Error(experiencia)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errExperiencia)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errExperiencia)
 				return APIResponseDTO
 			}
 		}
 	} else {
 		logs.Error(experiencia)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil ,errExperiencia)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errExperiencia)
 		return APIResponseDTO
 	}
 
@@ -685,7 +685,7 @@ func DeleteExperienciaById(idExperiencia string) (APIResponseDTO requestresponse
 	if !errorGetAll {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
 		return APIResponseDTO
-	}else {
+	} else {
 		return APIResponseDTO
 	}
 
