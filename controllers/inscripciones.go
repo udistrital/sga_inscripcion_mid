@@ -36,13 +36,16 @@ func (c *InscripcionesController) URLMapping() {
 // @Param	id-periodo	query	string	false	"Id del ultimo periodo"
 // @Success 200 {}
 // @Failure 403 body is empty
-// @router /estado-recibos [get]
+// @router /estado_recibos/:persona_id/:id_periodo [get]
 func (c *InscripcionesController) GetEstadoInscripcion() {
 
 	defer errorhandler.HandlePanic(&c.Controller)
 
-	terceroId := c.GetString("persona-id")
-	idPeriodo := c.GetString("id-periodo")
+	// terceroId := c.GetString("persona-id")
+	// idPeriodo := c.GetString("id-periodo")
+
+	terceroId := c.Ctx.Input.Param(":persona_id")
+	idPeriodo := c.Ctx.Input.Param(":id_periodo")
 
 	respuesta := services.EstadoInscripcion(terceroId, idPeriodo)
 
