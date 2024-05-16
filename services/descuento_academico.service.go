@@ -3,12 +3,14 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/formatdata"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/k0kubun/pp"
 )
@@ -290,20 +292,34 @@ func GetDescuentoByDpendencia(idDependencia string) (APIResponseDTO requestrespo
 	//var alerta models.Alert
 	var errorGetAll bool
 	alertas := append([]interface{}{"Data:"})
+	//Definición de el group para las gorutines
+	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
 	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"descuentos_dependencia?limit=0&query=Activo:true,DependenciaId:"+idDependencia, &solicitud)
 	if errSolicitud == nil && fmt.Sprintf("%v", solicitud[0]["System"]) != "map[]" {
 		if solicitud[0]["Status"] != 404 && len(solicitud[0]) > 1 {
-
-			for u := 0; u < len(solicitud); u++ {
-				var tipoDescuento map[string]interface{}
-				errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solicitud[u]["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
-				if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
-					resultados = append(resultados, tipoDescuento)
-				} else {
-					errorGetAll = true
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
-				}
+			wge.SetLimit(-1)
+			for _, solici := range  solicitud{
+				solici := solici
+				wge.Go(func () error{
+					fmt.Println("Entra hilo")
+					var tipoDescuento map[string]interface{}
+					errDescuento := request.GetJson("http://"+beego.AppConfig.String("DescuentoAcademicoService")+"tipo_descuento/"+fmt.Sprintf("%v", solici["TipoDescuentoId"].(map[string]interface{})["Id"]), &tipoDescuento)
+					if errDescuento == nil && fmt.Sprintf("%v", tipoDescuento["System"]) != "map[]" {
+						mutex.Lock()
+						resultados = append(resultados, tipoDescuento)
+						mutex.Unlock()
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errDescuento.Error())
+					}
+					return errDescuento
+				})
+			}
+			//Si existe error, se realiza
+			if err := wge.Wait(); err != nil {
+				errorGetAll = true
 			}
 		} else {
 			errorGetAll = true

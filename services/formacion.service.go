@@ -2,15 +2,18 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
+	"golang.org/x/sync/errgroup"
 )
 
 func CrearFormacion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
@@ -417,120 +420,127 @@ func GetFormacionAcademicaById(id string) (APIResponseDTO requestresponse.APIRes
 func GetFormacionAcademicaByIdTercero(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
 	var resultado []map[string]interface{}
 	resultado = make([]map[string]interface{}, 0)
-	var Data []map[string]interface{}
+	var DataMap []map[string]interface{}
 	var errorGetAll bool
+	wge := new(errgroup.Group)
+	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
-	errData := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?query=TerceroId__Id:"+idTercero+",InfoComplementariaId__CodigoAbreviacion:FORM_ACADEMICA,Activo:true&limit=0&sortby=Id&order=asc", &Data)
+
+	errData := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?query=TerceroId__Id:"+idTercero+",InfoComplementariaId__CodigoAbreviacion:FORM_ACADEMICA,Activo:true&limit=0&sortby=Id&order=asc", &DataMap)
 	if errData == nil {
-		if Data != nil && fmt.Sprintf("%v", Data) != "[map[]]" {
-			var formacion map[string]interface{}
-			for i := 0; i < len(Data); i++ {
-				resultadoAux := make(map[string]interface{})
-				if err := json.Unmarshal([]byte(Data[i]["Dato"].(string)), &formacion); err == nil {
-					if formacion["ProgramaAcademico"] != "colegio" {
-						resultadoAux["Id"] = Data[i]["Id"]
-						resultadoAux["Nit"] = formacion["NitUniversidad"]
-						resultadoAux["Documento"] = formacion["DocumentoId"]
-						resultadoAux["FechaInicio"] = formacion["FechaInicio"]
-						resultadoAux["FechaFinalizacion"] = formacion["FechaFin"]
-
-						endpoit := "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + fmt.Sprintf("%v", formacion["NitUniversidad"])
-
-						if strings.Contains(fmt.Sprintf("%v", formacion["NitUniversidad"]), "-") {
-							var auxId = strings.Split(fmt.Sprintf("%v", formacion["NitUniversidad"]), "-")
-							endpoit = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + auxId[0] + ",DigitoVerificacion:" + auxId[1]
-						}
-
-						//GET para obtener el ID que relaciona las tablas tipo_documento y tercero
-						var IdTercero []map[string]interface{}
-						errIdTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+endpoit, &IdTercero)
-						if errIdTercero == nil && fmt.Sprintf("%v", IdTercero[0]) != "map[]" && IdTercero[0]["Id"] != nil {
-							if IdTercero[0]["Status"] != "404" {
-								IdTerceroAux := IdTercero[0]["TerceroId"].(map[string]interface{})["Id"]
-
-								// GET para traer el nombre de la universidad y el país
-								var Tercero []map[string]interface{}
-								errTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero?query=Id:"+fmt.Sprintf("%v", IdTerceroAux), &Tercero)
-								if errTercero == nil && fmt.Sprintf("%v", Tercero[0]) != "map[]" && Tercero[0]["Id"] != nil {
-									if Tercero[0]["Status"] != "404" {
-										resultadoAux["NombreCompleto"] = Tercero[0]["NombreCompleto"]
-										var lugar map[string]interface{}
-
-										//GET para traer los datos de la ubicación
-										errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+fmt.Sprintf("%v", Tercero[0]["LugarOrigen"]), &lugar)
-										if errLugar == nil && fmt.Sprintf("%v", lugar) != "map[]" {
-											if lugar["Status"] != "404" {
-												resultadoAux["Ubicacion"] = lugar["PAIS"].(map[string]interface{})["Nombre"]
+		if DataMap != nil && fmt.Sprintf("%v", DataMap) != "[map[]]" {
+			wge.SetLimit(-1)
+			for _, Data := range DataMap {
+				Data := Data
+				wge.Go(func () error{
+					resultadoAux := make(map[string]interface{})
+					var formacion map[string]interface{}
+					if err := json.Unmarshal([]byte(Data["Dato"].(string)), &formacion); err == nil {
+						if formacion["ProgramaAcademico"] != "colegio" {
+							resultadoAux["Id"] = Data["Id"]
+							resultadoAux["Nit"] = formacion["NitUniversidad"]
+							resultadoAux["Documento"] = formacion["DocumentoId"]
+							resultadoAux["FechaInicio"] = formacion["FechaInicio"]
+							resultadoAux["FechaFinalizacion"] = formacion["FechaFin"]
+	
+							endpoit := "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + fmt.Sprintf("%v", formacion["NitUniversidad"])
+	
+							if strings.Contains(fmt.Sprintf("%v", formacion["NitUniversidad"]), "-") {
+								var auxId = strings.Split(fmt.Sprintf("%v", formacion["NitUniversidad"]), "-")
+								endpoit = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + auxId[0] + ",DigitoVerificacion:" + auxId[1]
+							}
+	
+							//GET para obtener el ID que relaciona las tablas tipo_documento y tercero
+							var IdTercero []map[string]interface{}
+							errIdTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+endpoit, &IdTercero)
+							if errIdTercero == nil && fmt.Sprintf("%v", IdTercero[0]) != "map[]" && IdTercero[0]["Id"] != nil {
+								if IdTercero[0]["Status"] != "404" {
+									IdTerceroAux := IdTercero[0]["TerceroId"].(map[string]interface{})["Id"]
+	
+									// GET para traer el nombre de la universidad y el país
+									var Tercero []map[string]interface{}
+									errTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero?query=Id:"+fmt.Sprintf("%v", IdTerceroAux), &Tercero)
+									if errTercero == nil && fmt.Sprintf("%v", Tercero[0]) != "map[]" && Tercero[0]["Id"] != nil {
+										if Tercero[0]["Status"] != "404" {
+											resultadoAux["NombreCompleto"] = Tercero[0]["NombreCompleto"]
+											var lugar map[string]interface{}
+	
+											//GET para traer los datos de la ubicación
+											errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+fmt.Sprintf("%v", Tercero[0]["LugarOrigen"]), &lugar)
+											if errLugar == nil && fmt.Sprintf("%v", lugar) != "map[]" {
+												if lugar["Status"] != "404" {
+													resultadoAux["Ubicacion"] = lugar["PAIS"].(map[string]interface{})["Nombre"]
+												} else {
+													resultadoAux["Ubicacion"] = nil
+													/* errorGetAll = true
+													alertas = append(alertas, errLugar.Error())
+													alerta.Code = "400"
+													alerta.Type = "error"
+													alerta.Body = alertas
+													c.Data["json"] = map[string]interface{}{"Response": alerta} */
+												}
 											} else {
 												resultadoAux["Ubicacion"] = nil
 												/* errorGetAll = true
-												alertas = append(alertas, errLugar.Error())
-												alerta.Code = "400"
+												alertas = append(alertas, "No data found")
+												alerta.Code = "404"
 												alerta.Type = "error"
 												alerta.Body = alertas
 												c.Data["json"] = map[string]interface{}{"Response": alerta} */
 											}
 										} else {
-											resultadoAux["Ubicacion"] = nil
-											/* errorGetAll = true
-											alertas = append(alertas, "No data found")
-											alerta.Code = "404"
-											alerta.Type = "error"
-											alerta.Body = alertas
-											c.Data["json"] = map[string]interface{}{"Response": alerta} */
+											return errTercero
 										}
 									} else {
-										errorGetAll = true
-										APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errTercero.Error())
+										return errors.New("No data found")
 									}
 								} else {
-									errorGetAll = true
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+									return errIdTercero
 								}
 							} else {
-								errorGetAll = true
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errIdTercero.Error())
+								return errors.New("No data found")
 							}
-						} else {
-							errorGetAll = true
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-						}
-
-						NumProyecto := fmt.Sprintf("%v", formacion["ProgramaAcademico"])
-
-						var ProyectoV2 map[string]interface{}
-						errProyectoV2 := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro?query=TipoParametroId__Id:60,Id:"+fmt.Sprintf("%v", NumProyecto)+"&limit=0", &ProyectoV2)
-						if errProyectoV2 == nil && ProyectoV2["Status"] == "200" && fmt.Sprintf("%v", ProyectoV2["Data"]) != "[map[]]" {
-							resultadoAux["ProgramaAcademico"] = map[string]interface{}{
-								"Id":     NumProyecto,
-								"Nombre": ProyectoV2["Data"].([]interface{})[0].(map[string]interface{})["Nombre"],
-							}
-						} else {
-							//GET para consultar el proyecto curricular Modo antiguo
-							var Proyecto []map[string]interface{}
-							errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"proyecto_academico_institucion?query=Id:"+fmt.Sprintf("%v", NumProyecto)+"&limit=0", &Proyecto)
-							if errProyecto == nil && fmt.Sprintf("%v", Proyecto[0]) != "map[]" && Proyecto[0]["Id"] != nil {
-								if Proyecto[0]["Status"] != "404" {
-									resultadoAux["ProgramaAcademico"] = map[string]interface{}{
-										"Id":     NumProyecto,
-										"Nombre": Proyecto[0]["Nombre"],
+	
+							NumProyecto := fmt.Sprintf("%v", formacion["ProgramaAcademico"])
+	
+							var ProyectoV2 map[string]interface{}
+							errProyectoV2 := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro?query=TipoParametroId__Id:60,Id:"+fmt.Sprintf("%v", NumProyecto)+"&limit=0", &ProyectoV2)
+							if errProyectoV2 == nil && ProyectoV2["Status"] == "200" && fmt.Sprintf("%v", ProyectoV2["Data"]) != "[map[]]" {
+								resultadoAux["ProgramaAcademico"] = map[string]interface{}{
+									"Id":     NumProyecto,
+									"Nombre": ProyectoV2["Data"].([]interface{})[0].(map[string]interface{})["Nombre"],
+								}
+							} else {
+								//GET para consultar el proyecto curricular Modo antiguo
+								var Proyecto []map[string]interface{}
+								errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"proyecto_academico_institucion?query=Id:"+fmt.Sprintf("%v", NumProyecto)+"&limit=0", &Proyecto)
+								if errProyecto == nil && fmt.Sprintf("%v", Proyecto[0]) != "map[]" && Proyecto[0]["Id"] != nil {
+									if Proyecto[0]["Status"] != "404" {
+										resultadoAux["ProgramaAcademico"] = map[string]interface{}{
+											"Id":     NumProyecto,
+											"Nombre": Proyecto[0]["Nombre"],
+										}
+									} else {
+										return errProyecto
 									}
 								} else {
-									errorGetAll = true
-									APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errProyecto.Error())
+									return errors.New("No data found")
 								}
-							} else {
-								errorGetAll = true
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 							}
+							
+							mutex.Lock()
+							resultado = append(resultado, resultadoAux)
+							mutex.Unlock()
 						}
-
-						resultado = append(resultado, resultadoAux)
+					} else {
+						return errors.New("No data found")
 					}
-				} else {
-					errorGetAll = true
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-				}
+					return nil
+				})
+			}
+			if err := wge.Wait(); err != nil {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 			}
 		} else {
 			errorGetAll = true
