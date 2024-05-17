@@ -14,6 +14,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/phpdave11/gofpdf"
 	"github.com/phpdave11/gofpdf/contrib/barcode"
+	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 )
 
@@ -28,6 +29,92 @@ func GenerarReciboV2(dataRecibo []byte) (APIResponseDTO requestresponse.APIRespo
 		tipoRecibo := data["Tipo"].(string)
 
 		switch tipoRecibo {
+		case "Inscripcion":
+			if parseErr := json.Unmarshal(dataRecibo, &data); parseErr == nil {
+
+				var ReciboXML map[string]interface{}
+				ReciboInscripcion := data["INSCRIPCION"].(map[string]interface{})["idRecibo"].(string)
+				if ReciboInscripcion != "0/<nil>" {
+					//errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+ReciboInscripcion, &ReciboXML)
+					errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/8702/2021", &ReciboXML)
+					fmt.Println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+					fmt.Println(ReciboXML)
+					fmt.Println("http://" + beego.AppConfig.String("ConsultarReciboJbpmService") + "consulta_recibo/8702/2021")
+					if errRecibo == nil {
+						if ReciboXML != nil && fmt.Sprintf("%v", ReciboXML) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", ReciboXML) != "map[]" {
+							data["PAGO"].(map[string]interface{})["valor"] = ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["valor_extraordinario"].(string)
+							fmt.Println(ReciboXML)
+							/*
+
+								if fecha, exist := ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["fecha_pagado"].(string); exist {
+									if fecha != "" {
+										data["PAGO"].(map[string]interface{})["fechaExiste"] = true
+										data["PAGO"].(map[string]interface{})["fechaRecibo"] = fecha
+									} else {
+										data["PAGO"].(map[string]interface{})["fechaExiste"] = false
+									}
+								} else {
+									data["PAGO"].(map[string]interface{})["fechaExiste"] = false
+								}
+
+								if !data["PAGO"].(map[string]interface{})["fechaExiste"].(bool) {
+									data["PAGO"].(map[string]interface{})["fechaRecibo"] = ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["fecha"].(string)
+								}
+
+								data["PAGO"].(map[string]interface{})["comprobante"] = ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["secuencia"].(string)
+								data["PAGO"].(map[string]interface{})["estado"] = ReciboXML["reciboCollection"].(map[string]interface{})["recibo"].([]interface{})[0].(map[string]interface{})["pago"].(string)
+
+								pdf := generarComprobanteInscripcion(data)
+
+								if pdf.Err() {
+									logs.Error("Failed creating PDF voucher: %s\n", pdf.Error())
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, pdf.Error())
+								}
+
+								if pdf.Ok() {
+									encodedFile := encodePDF(pdf)
+									APIResponseDTO = requestresponse.APIResponseDTO(true, 200, encodedFile, nil)
+									fecha_actual := time.Now()
+									dataEmail := map[string]interface{}{
+										"dia":     fecha_actual.Day(),
+										"mes":     utils.GetNombreMes(fecha_actual.Month()),
+										"anio":    fecha_actual.Year(),
+										"nombre":  data["ASPIRANTE"].(map[string]interface{})["nombre"].(string),
+										"periodo": data["INSCRIPCION"].(map[string]interface{})["periodo"].(string),
+									}
+									fmt.Println("data object", dataEmail)
+									//utils.SendNotificationInscripcionSolicitud(dataEmail, objTransaccion["correo"].(string))
+									attachments := []map[string]interface{}{}
+									attachments = append(attachments, map[string]interface{}{
+										"ContentType": "application/pdf",
+										"FileName":    "Comprobante_inscripcion_" + data["INSCRIPCION"].(map[string]interface{})["nombrePrograma"].(string),
+										"Base64File":  encodedFile,
+									})
+									utils.SendNotificationInscripcionComprobante(dataEmail, data["ASPIRANTE"].(map[string]interface{})["correo"].(string), attachments)
+								}*/
+
+						} else {
+							logs.Error("reciboCollection seems empty", ReciboXML)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboCollection seems empty")
+							return APIResponseDTO
+						}
+					} else {
+						logs.Error(errRecibo)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errRecibo.Error())
+						return APIResponseDTO
+					}
+				} else {
+					logs.Error("ReciboInscripcionId seems empty")
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboInscripcionId seems empty")
+					return APIResponseDTO
+				}
+
+			} else {
+				logs.Error(parseErr)
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, parseErr.Error())
+				return APIResponseDTO
+			}
+			fmt.Println("Inscripción")
 		case "Aspirante":
 			if parseErr := json.Unmarshal(dataRecibo, &data); parseErr == nil {
 
