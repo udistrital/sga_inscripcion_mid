@@ -36,8 +36,8 @@ func GenerarReciboV2(dataRecibo []byte) (APIResponseDTO requestresponse.APIRespo
 				var ReciboXML map[string]interface{}
 				ReciboInscripcion := data["INSCRIPCION"].(map[string]interface{})["idRecibo"].(string)
 				if ReciboInscripcion != "0/<nil>" {
-					//errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+ReciboInscripcion, &ReciboXML)
-					errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/8702/2021", &ReciboXML)
+					errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+ReciboInscripcion, &ReciboXML)
+					//errRecibo := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/8702/2021", &ReciboXML)
 					fmt.Println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 					fmt.Println(ReciboXML)
 					fmt.Println("http://" + beego.AppConfig.String("ConsultarReciboJbpmService") + "consulta_recibo/8702/2021")
