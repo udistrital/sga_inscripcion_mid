@@ -1205,6 +1205,80 @@ func GetSolicitudes() (APIResponseDTO requestresponse.APIResponse) {
 	}
 }
 
+func GetSolicitudesSegunPrograma(programaId string) (APIResponseDTO requestresponse.APIResponse) {
+	var inscripcionGet []map[string]interface{}
+	var nivelGet map[string]interface{}
+	var resultadoAux []map[string]interface{}
+	var resultado []map[string]interface{}
+	var Solicitudes []map[string]interface{}
+	var errorGetAll bool
+
+	// Obtener todas las solicitudes de transferencias y reingresos
+	errSolicitud := request.GetJson("http://"+beego.AppConfig.String("SolicitudDocenteService")+"solicitud?query=EstadoTipoSolicitudId.TipoSolicitud.CodigoAbreviacion:TrnRe&limit=0", &Solicitudes)
+	resultadoAux = make([]map[string]interface{}, 0)
+	if errSolicitud == nil {
+		if len(Solicitudes) > 0 {
+			for _, solicitud := range Solicitudes {
+				var solicitudJson map[string]interface{}
+				referencia := solicitud["Referencia"].(string)
+				if err := json.Unmarshal([]byte(referencia), &solicitudJson); err == nil {
+					errReingreso := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Id:"+fmt.Sprintf("%v", solicitudJson["InscripcionId"]), &inscripcionGet)
+					fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + "inscripcion?query=Id:" + fmt.Sprintf("%v", solicitudJson["InscripcionId"]))
+					if true {
+						if inscripcionGet != nil && len(inscripcionGet) > 0 {
+							ReciboInscripcion := fmt.Sprintf("%v", inscripcionGet[0]["ReciboInscripcion"])
+
+							// Filtrar por programaId
+							programaAcademicoId := fmt.Sprintf("%v", inscripcionGet[0]["ProgramaAcademicoId"])
+							if programaAcademicoId == programaId {
+								errNivel := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"nivel_formacion/"+fmt.Sprintf("%v", inscripcionGet[0]["TipoInscripcionId"].(map[string]interface{})["NivelId"]), &nivelGet)
+								if errNivel == nil {
+									resultadoAux = append(resultadoAux, map[string]interface{}{
+										"Id":                inscripcionGet[0]["Id"],
+										"Programa":          inscripcionGet[0]["ProgramaAcademicoId"],
+										"Concepto":          inscripcionGet[0]["TipoInscripcionId"].(map[string]interface{})["Nombre"],
+										"IdTipoInscripcion": inscripcionGet[0]["TipoInscripcionId"].(map[string]interface{})["Id"],
+										"Recibo":            ReciboInscripcion,
+										"FechaGeneracion":   inscripcionGet[0]["FechaCreacion"],
+										"Estado":            solicitud["EstadoTipoSolicitudId"].(map[string]interface{})["EstadoId"].(map[string]interface{})["Nombre"],
+										"NivelNombre":       nivelGet["Nombre"],
+										"Nivel":             nivelGet["Id"],
+										"SolicitudId":       solicitud["Id"],
+									})
+								} else {
+									errorGetAll = true
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errNivel)
+								}
+							}
+						} else {
+							errorGetAll = true
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+						}
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errReingreso.Error())
+					}
+				}
+			}
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errSolicitud.Error())
+	}
+
+	resultado = resultadoAux
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+		return APIResponseDTO
+	} else {
+		return APIResponseDTO
+	}
+}
+
 func ConsultarPeriodo() (APIResponseDTO requestresponse.APIResponse) {
 	//resultado informacion basica persona
 	var resultado map[string]interface{}

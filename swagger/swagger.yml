@@ -1039,6 +1039,24 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /legalizacion/actualizar-info-legalizacion:
+    put:
+      tags:
+      - legalizacion
+      description: Actualiza la información de legalización de matricula de un aspirante
+      operationId: LegalizacionController.PutInfoLegalizacionMatricula
+      parameters:
+      - in: body
+        name: body
+        description: body for Legalizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
   /legalizacion/base:
     post:
       tags:
@@ -1431,6 +1449,23 @@ paths:
       - transferencia
       description: get Transferencia_reingreso by id
       operationId: Transferencia_reingresoController.GetSolicitudesInscripcion
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/helpers.Transferencia_reingreso'
+  /transferencia/solicitudes/programa/{id}:
+    get:
+      tags:
+      - transferencia
+      description: get solicitudes segun programa
+      operationId: Transferencia_reingresoController.GetSolicitudesInscripcion
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
       responses:
         "200":
           description: ""
