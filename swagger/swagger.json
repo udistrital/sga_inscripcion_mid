@@ -1485,6 +1485,34 @@
                 }
             }
         },
+        "/legalizacion/actualizar-info-legalizacion": {
+            "put": {
+                "tags": [
+                    "legalizacion"
+                ],
+                "description": "Actualiza la información de legalización de matricula de un aspirante",
+                "operationId": "LegalizacionController.PutInfoLegalizacionMatricula",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Legalizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
         "/legalizacion/base": {
             "post": {
                 "tags": [
@@ -1625,6 +1653,37 @@
                     },
                     "403": {
                         "description": "id is empty"
+                    }
+                }
+            }
+        },
+        "/liquidacion/": {
+            "post": {
+                "tags": [
+                    "liquidacion"
+                ],
+                "description": "create Liquidacion",
+                "operationId": "LiquidacionController.Create",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Liquidacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Liquidacion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Liquidacion"
+                        }
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -2250,6 +2309,10 @@
         {
             "name": "legalizacion",
             "description": "LegalizacionController operations for Legalizacion\n"
+        },
+        {
+            "name": "liquidacion",
+            "description": "LiquidacionController operations for Liquidacion\n"
         },
         {
             "name": "cupos",
