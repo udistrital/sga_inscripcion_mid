@@ -298,7 +298,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
         beego.ControllerComments{
             Method: "GetEstadoInscripcion",
-            Router: "/estado_recibos/:persona_id/:id_periodo",
+            Router: "/estado-recibos",
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

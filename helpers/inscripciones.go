@@ -90,7 +90,6 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 	errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PersonaId:"+personaId+",PeriodoId:"+periodoId, &Inscripciones)
 	if errInscripcion == nil {
 		if Inscripciones != nil && fmt.Sprintf("%v", Inscripciones[0]) != "map[]" {
-			fmt.Print(Inscripciones)
 			// Ciclo for que recorre todas las inscripciones del tercero
 			resultadoAux = make([]map[string]interface{}, len(Inscripciones))
 			for i := 0; i < len(Inscripciones); i++ {
@@ -127,12 +126,12 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 								//Estado = "Pago"
 
 								resultadoAux[i] = map[string]interface{}{
-									"Id": Inscripciones[i]["Id"],
-									//"ProgramaAcademicoId": Inscripciones[i]["ProgramaAcademicoId"],
-									"ReciboInscripcion": Inscripciones[i]["ReciboInscripcion"],
-									"FechaCreacion":     Inscripciones[i]["FechaCreacion"],
-									"Estado":            Estado,
-									"EstadoInscripcion": Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
+									"Id":                  Inscripciones[i]["Id"],
+									"ProgramaAcademicoId": Inscripciones[i]["ProgramaAcademicoId"],
+									"ReciboInscripcion":   Inscripciones[i]["ReciboInscripcion"],
+									"FechaCreacion":       Inscripciones[i]["FechaCreacion"],
+									"Estado":              Estado,
+									"EstadoInscripcion":   Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
 								}
 							} else {
 								if fmt.Sprintf("%v", resultadoAux) != "map[]" {
