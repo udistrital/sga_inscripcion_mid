@@ -470,23 +470,22 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
-
 	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcionMap)
 	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcionMap[0]) != "[map[]]" {
 		if EventosInscripcionMap[0]["Status"] != 404 {
-			
+
 			var Proyectos_academicos []map[string]interface{}
 			var Proyectos_academicos_Get []map[string]interface{}
 			wge.SetLimit(-1)
 			for _, EventosInscripcion := range EventosInscripcionMap {
 				EventosInscripcion = EventosInscripcion
-				wge.Go(func () error{
+				wge.Go(func() error {
 
 					if len(EventosInscripcion) > 0 {
 						proyectoacademico := EventosInscripcion["TipoEventoId"].(map[string]interface{})
-	
+
 						var ProyectosAcademicosConEvento map[string]interface{}
-	
+
 						erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
 						if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
 							if ProyectosAcademicosConEvento["Status"] != 404 {
@@ -494,7 +493,7 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 								fmt.Println(periodoevento)
 								ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
 								Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
-	
+
 							} else {
 								if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
 									return errors.New("No data found")
@@ -512,8 +511,8 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 						mutex.Lock()
 						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
 						mutex.Unlock()
-	
-					}else {
+
+					} else {
 						return errors.New("No data found")
 					}
 					return nil
@@ -894,11 +893,11 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
 		objTransaccion := map[string]interface{}{
-			"codigo":   SolicitudInscripcion["Id"].(float64),
-			"nombre":   SolicitudInscripcion["Nombre"].(string),
-			"apellido": SolicitudInscripcion["Apellido"].(string),
-			"correo":   SolicitudInscripcion["Correo"].(string),
-			// "proyecto":            SolicitudInscripcion["ProgramaAcademicoId"].(float64),
+			"codigo":              SolicitudInscripcion["Id"].(float64),
+			"nombre":              SolicitudInscripcion["Nombre"].(string),
+			"apellido":            SolicitudInscripcion["Apellido"].(string),
+			"correo":              SolicitudInscripcion["Correo"].(string),
+			"proyecto":            SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64),
 			"tiporecibo":          15, // se define 15 por que es el id definido en el api de recibos para inscripcion
 			"concepto":            "",
 			"valorordinario":      0,
