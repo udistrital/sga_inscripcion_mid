@@ -470,23 +470,22 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
-
 	erreVentos := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"/calendario_evento/?query=Activo:true,EventoPadreId:"+idEvento+"&limit=0", &EventosInscripcionMap)
 	if erreVentos == nil && fmt.Sprintf("%v", EventosInscripcionMap[0]) != "[map[]]" {
 		if EventosInscripcionMap[0]["Status"] != 404 {
-			
+
 			var Proyectos_academicos []map[string]interface{}
 			var Proyectos_academicos_Get []map[string]interface{}
 			wge.SetLimit(-1)
 			for _, EventosInscripcion := range EventosInscripcionMap {
 				EventosInscripcion = EventosInscripcion
-				wge.Go(func () error{
+				wge.Go(func() error {
 
 					if len(EventosInscripcion) > 0 {
 						proyectoacademico := EventosInscripcion["TipoEventoId"].(map[string]interface{})
-	
+
 						var ProyectosAcademicosConEvento map[string]interface{}
-	
+
 						erreproyectos := request.GetJson("http://"+beego.AppConfig.String("OikosService")+"/dependencia/"+fmt.Sprintf("%v", proyectoacademico["DependenciaId"]), &ProyectosAcademicosConEvento)
 						if erreproyectos == nil && fmt.Sprintf("%v", ProyectosAcademicosConEvento) != "map[]" {
 							if ProyectosAcademicosConEvento["Status"] != 404 {
@@ -494,7 +493,7 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 								fmt.Println(periodoevento)
 								ProyectosAcademicosConEvento["PeriodoId"] = map[string]interface{}{"Id": periodoevento}
 								Proyectos_academicos_Get = append(Proyectos_academicos_Get, ProyectosAcademicosConEvento)
-	
+
 							} else {
 								if ProyectosAcademicosConEvento["Message"] == "Not found resource" {
 									return errors.New("No data found")
@@ -512,8 +511,7 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 						mutex.Lock()
 						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
 						mutex.Unlock()
-	
-					}else {
+					} else {
 						return errors.New("No data found")
 					}
 					return nil
@@ -1050,4 +1048,136 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 	}
 
 	return APIResponseDTO
+}
+
+func ActualizarEstadoMatriculado(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var actualizacionEstadoRequest map[string]interface{}
+	var errorGetAll bool = false
+	var resultado []map[string]interface{}
+
+	if err := json.Unmarshal(data, &actualizacionEstadoRequest); err == nil {
+		idTercero := actualizacionEstadoRequest["personaId"].(float64)
+		idPeriodo := actualizacionEstadoRequest["periodoId"].(float64)
+		idProyecto := actualizacionEstadoRequest["proyectoId"].(float64)
+		fmt.Println("DATA INICIAL")
+		fmt.Println(actualizacionEstadoRequest, idTercero, idPeriodo)
+		var resultadoInscripcion []map[string]interface{}
+
+		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",PersonaId:"+fmt.Sprintf("%.f", idTercero)+"&sortby=Id&order=asc", &resultadoInscripcion)
+		if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
+			if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
+				for _, inscripcion := range resultadoInscripcion {
+					fmt.Println("DATA INSCRIPCION")
+					fmt.Println(inscripcion["ProgramaAcademicoId"])
+					id := inscripcion["Id"].(float64)
+					fmt.Println(inscripcion["Id"])
+
+					if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
+						if inscripcion["ProgramaAcademicoId"] == idProyecto {
+							fmt.Println("PROYECTO ADMITIDO")
+							//fmt.Println(estadoInscripcion["Id"])
+							//estadoInscripcion["Id"] = 11
+
+							InfoEstadoInscripcionId := map[string]interface{}{
+								"Id": 11,
+							}
+							InfoTipoInscripcionId := map[string]interface{}{
+								"Id": tipoInscripcion["Id"],
+							}
+							infoInscripcion := map[string]interface{}{
+								"PersonaId":           inscripcion["PersonaId"],
+								"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
+								"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
+								"PeriodoId":           inscripcion["PeriodoId"],
+								"EnfasisId":           inscripcion["EnfasisId"],
+								"AceptaTerminos":      inscripcion["AceptaTerminos"],
+								"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
+								"Activo":              true,
+								"EstadoInscripcionId": InfoEstadoInscripcionId,
+								"TipoInscripcionId":   InfoTipoInscripcionId,
+								"NotaFinal":           inscripcion["NotaFinal"],
+								"Credencial":          inscripcion["Credencial"],
+								"Opcion":              inscripcion["Opcion"],
+							}
+
+							fmt.Println(infoInscripcion)
+							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+								resultado = append(resultado, resInsc)
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+							}
+						} else {
+							fmt.Println("PROYECTO NO ADMITIDO")
+							//fmt.Println(estadoInscripcion["Id"])
+							//estadoInscripcion["Id"] = 4
+
+							InfoEstadoInscripcionId := map[string]interface{}{
+								"Id": 4,
+							}
+							InfoTipoInscripcionId := map[string]interface{}{
+								"Id": tipoInscripcion["Id"],
+							}
+							infoInscripcion := map[string]interface{}{
+								"PersonaId":           inscripcion["PersonaId"],
+								"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
+								"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
+								"PeriodoId":           inscripcion["PeriodoId"],
+								"EnfasisId":           inscripcion["EnfasisId"],
+								"AceptaTerminos":      inscripcion["AceptaTerminos"],
+								"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
+								"Activo":              true,
+								"EstadoInscripcionId": InfoEstadoInscripcionId,
+								"TipoInscripcionId":   InfoTipoInscripcionId,
+								"NotaFinal":           inscripcion["NotaFinal"],
+								"Credencial":          inscripcion["Credencial"],
+								"Opcion":              inscripcion["Opcion"],
+							}
+
+							fmt.Println(infoInscripcion)
+							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+								resultado = append(resultado, resInsc)
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+							}
+						}
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+					}
+				}
+			} else {
+				if resultadoInscripcion[0]["Message"] == "Not found resource" {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+				} else {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+				}
+			}
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcion)
+		}
+	} else {
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+	} else {
+		return APIResponseDTO
+	}
+	return APIResponseDTO
+}
+
+func ActualizarInscripcion(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {
+	var resp map[string]interface{}
+	errPutInfoComp := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/"+fmt.Sprintf("%.f", id), "PUT", &resp, infoComp)
+	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
+		return resp, nil
+	} else {
+		return resp, errPutInfoComp
+	}
 }
