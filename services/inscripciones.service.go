@@ -910,8 +910,8 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 		}
 
 		inscripcion := map[string]interface{}{
-			"PersonaId": SolicitudInscripcion["PersonaId"].(float64),
-			//"ProgramaAcademicoId": SolicitudInscripcion["ProgramaAcademicoId"].(float64),
+			"PersonaId":           SolicitudInscripcion["PersonaId"].(float64),
+			"ProgramaAcademicoId": SolicitudInscripcion["ProgramaAcademicoId"].(float64),
 			"ReciboInscripcion":   "",
 			"PeriodoId":           SolicitudInscripcion["PeriodoId"].(float64),
 			"AceptaTerminos":      true,
