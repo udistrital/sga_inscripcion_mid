@@ -28,6 +28,7 @@ func (c *InscripcionesController) URLMapping() {
 	c.Mapping("GetEstadoInscripcion", c.GetEstadoInscripcion)
 	c.Mapping("PostGenerarInscripcion", c.PostGenerarInscripcion)
 	c.Mapping("ActualizarEstadoEstudianteMatriculado", c.ActualizarEstadoEstudianteMatriculado)
+	c.Mapping("ActualizarCuposAdmitidosOpcionado", c.ActualizarCuposAdmitidosOpcionado)
 }
 
 // GetEstadoInscripcion ...
@@ -333,6 +334,27 @@ func (c *InscripcionesController) ActualizarEstadoEstudianteMatriculado() {
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.ActualizarEstadoMatriculado(data)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
+	c.ServeJSON()
+}
+
+// ActualizarCuposAdmitidosOpcionado ...
+// @Title ActualizarCuposAdmitidosOpcionado
+// @Description Actualiza los cupos, los admitidos y opcionados de un proyecto
+// @Param   body        body    {}  true		"body for actualizar cupos admitidos opcionados content"
+// @Success 201 {int}
+// @Failure 400 the request contains incorrect syntax
+// @router /actualizar-cupos-admitidos-opcionados [put]
+func (c *InscripcionesController) ActualizarCuposAdmitidosOpcionado() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.ActualizarCupos(data)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
