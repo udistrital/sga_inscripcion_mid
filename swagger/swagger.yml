@@ -1093,6 +1093,26 @@ paths:
           description: '{}'
         "404":
           description: not found resource
+  /liquidacion/:
+    post:
+      tags:
+      - liquidacion
+      description: create Liquidacion
+      operationId: LiquidacionController.Create
+      parameters:
+      - in: body
+        name: body
+        description: body for Liquidacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Liquidacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Liquidacion'
+        "403":
+          description: body is empty
   /recibos/comprobante-inscripcion:
     post:
       tags:
@@ -1521,6 +1541,9 @@ tags:
 - name: legalizacion
   description: |
     LegalizacionController operations for Legalizacion
+- name: liquidacion
+  description: |
+    LiquidacionController operations for Liquidacion
 - name: cupos
   description: |
     CuposController operations for Cupos

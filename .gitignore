@@ -19,3 +19,4 @@ sga_inscripcion_mid
 *.exe
 go.mod
 go.sum
+.env
