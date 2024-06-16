@@ -898,7 +898,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			"nombre":   SolicitudInscripcion["Nombre"].(string),
 			"apellido": SolicitudInscripcion["Apellido"].(string),
 			"correo":   SolicitudInscripcion["Correo"].(string),
-			// "proyecto":            SolicitudInscripcion["ProgramaAcademicoId"].(float64),
+			"proyecto":            SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64),
 			"tiporecibo":          15, // se define 15 por que es el id definido en el api de recibos para inscripcion
 			"concepto":            "",
 			"valorordinario":      0,
@@ -998,7 +998,6 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			errInscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &inscripcionRealizada, inscripcion)
 			if errInscripcion == nil && inscripcionRealizada["Status"] != "400" {
 				errParam := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro_periodo?query=Activo:true,ParametroId.TipoParametroId.Id:2,ParametroId.CodigoAbreviacion:"+TipoParametro+",PeriodoId.Year:"+fmt.Sprintf("%v", objTransaccion["aniopago"])+",PeriodoId.CodigoAbreviacion:VG", &parametro)
-				fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAA", parametro)
 				if errParam == nil && fmt.Sprintf("%v", parametro["Data"].([]interface{})[0]) != "map[]" {
 					Dato := parametro["Data"].([]interface{})[0]
 					if errJson := json.Unmarshal([]byte(Dato.(map[string]interface{})["Valor"].(string)), &Valor); errJson == nil {

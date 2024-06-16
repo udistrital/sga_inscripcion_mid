@@ -1408,7 +1408,7 @@ func ConsultarParametros(idCalendario string, idPersona string) (APIResponseDTO 
 								}
 							}
 
-							errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"proyecto_academico_institucion?query=NivelFormacionId.Id:"+fmt.Sprintf("%v", calendario["Nivel"]), &proyectoGet)
+							errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"proyecto_academico_institucion?query=NivelFormacionId.Id:"+fmt.Sprintf("%v", calendario["Nivel"])+",Activo:true&limit=0", &proyectoGet)
 							if errProyecto == nil && fmt.Sprintf("%v", proyectoGet[0]) != "map[]" {
 								if calendario["DependenciaId"] != nil {
 									for _, proyectoAux := range proyectoGet {
