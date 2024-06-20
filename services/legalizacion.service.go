@@ -901,3 +901,104 @@ func ActualizarInfoComplementaria(infoComp map[string]interface{}, id float64) (
 		return resp, errPutInfoComp
 	}
 }
+
+func ActualizarInfoSoportelegalizacionMatricula(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var legalizacionMatriculaRequest map[string]interface{}
+	var errorGetAll bool = false
+	var resultado []map[string]interface{}
+
+	if err := json.Unmarshal(data, &legalizacionMatriculaRequest); err == nil {
+		idTercero := legalizacionMatriculaRequest["terceroId"].(float64)
+
+		arvivosActualizar, ok := legalizacionMatriculaRequest["arvivosActualizar"].([]interface{})
+		if ok {
+			for _, item := range arvivosActualizar {
+				archivo, ok := item.(map[string]interface{})
+				if ok {
+					idInfoComp := archivo["infoComplementariId"].(float64)
+					dato := archivo["dato"]
+					var resultadoInfoComp []map[string]interface{}
+					fmt.Println("//**************************************//")
+					fmt.Println("INFO COMPLEMENTARIA ID Y EL DATO")
+					fmt.Println(idInfoComp, dato)
+
+					if resInscripcion, err := recuperarInfoComplementariaByTerceroInfoCompId(idTercero, idInfoComp); err == nil {
+						resultadoInfoComp = resInscripcion
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+						return APIResponseDTO
+					}
+
+					idInfo := resultadoInfoComp[0]["Id"].(float64)
+
+					if infoComplementariaIdMap, ok := resultadoInfoComp[0]["InfoComplementariaId"].(map[string]interface{}); ok {
+
+						TerceroId := map[string]interface{}{
+							"Id": idTercero,
+						}
+						InfoComplementariaId := map[string]interface{}{
+							"Id": infoComplementariaIdMap["Id"],
+						}
+						Dato := map[string]interface{}{
+							"dato": dato,
+						}
+						jsonDato, _ := json.Marshal(Dato)
+						infoComp := map[string]interface{}{
+							"TerceroId":            TerceroId,
+							"InfoComplementariaId": InfoComplementariaId,
+							"Activo":               true,
+							"Dato":                 string(jsonDato),
+						}
+						fmt.Println("INFO COMPLEMENTARIA ACTUALIZADA")
+						fmt.Println(infoComp)
+
+						if resInfoComp, errInfoComp := ActualizarInfoComplementaria(infoComp, idInfo); errInfoComp == nil {
+							resultado = append(resultado, resInfoComp)
+						} else {
+							errorGetAll = true
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInfoComp)
+						}
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource in Info Complemenaria ID"))
+					}
+				} else {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Error al convertir el elemento a tipo map"))
+				}
+			}
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Archivos a actualizar esperaba ser tipo []interface{}"))
+		}
+	} else {
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+	} else {
+		return APIResponseDTO
+	}
+	return APIResponseDTO
+}
+
+func recuperarInfoComplementariaByTerceroInfoCompId(idTercero float64, IdInfoComp float64) ([]map[string]interface{}, error) {
+	var resultadoInfoComp []map[string]interface{}
+
+	errInfoComp := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:"+fmt.Sprintf("%.f", IdInfoComp)+",TerceroId:"+fmt.Sprintf("%.f", idTercero)+"&sortby=Id&order=desc&limit=1", &resultadoInfoComp)
+	if errInfoComp == nil && fmt.Sprintf("%v", resultadoInfoComp[0]["System"]) != "map[]" {
+		if resultadoInfoComp[0]["Status"] != 404 && resultadoInfoComp[0]["Id"] != nil {
+			return resultadoInfoComp, nil
+		} else {
+			if resultadoInfoComp[0]["Message"] == "Not found resource" {
+				return nil, fmt.Errorf("Not found resource")
+			} else {
+				return nil, fmt.Errorf("Not found resource")
+			}
+		}
+	} else {
+		return nil, errInfoComp
+	}
+}

@@ -189,3 +189,36 @@ func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
 		return 0
 	}
 }
+
+func ValidarCodigoSnies(idProyecto string, codigoProyecto string) bool {
+	coincideCodigoSnies := false
+
+	var proyectos []map[string]interface{}
+	errproyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+"/tr_proyecto_academico/"+idProyecto, &proyectos)
+
+	if errproyecto == nil {
+		proyecto := proyectos[0]
+		proyectoAcademico := proyecto["ProyectoAcademico"].(map[string]interface{})
+		codigoSnies := proyectoAcademico["CodigoSnies"].(string)
+
+		var HomologacionXML map[string]interface{}
+		errHomologacion := request.GetJsonWSO2("http://"+beego.AppConfig.String("HomologacionDependenciaService")+"proyecto_acad_snies/"+codigoSnies, &HomologacionXML)
+		resultadoHomologacion := HomologacionXML["proyecto_snies"].(map[string]interface{})
+
+		if errHomologacion == nil && fmt.Sprintf("%v", resultadoHomologacion) != "map[]" {
+			proyectosSnies := resultadoHomologacion["proyectos"].([]interface{})
+
+			for _, proyectoSnies := range proyectosSnies {
+				proyectoSnies := proyectoSnies.(map[string]interface{})
+				codigoProyectoHomologacion := fmt.Sprintf("%d", int(proyectoSnies["codigo_proyecto"].(float64)))
+				coincideCodigoSnies = codigoProyectoHomologacion == codigoProyecto
+
+				if coincideCodigoSnies {
+					break
+				}
+			}
+		}
+	}
+
+	return coincideCodigoSnies
+}
