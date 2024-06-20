@@ -513,6 +513,7 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 						mutex.Lock()
 						Proyectos_academicos = append(Proyectos_academicos, proyectoacademico)
 						mutex.Unlock()
+
 					} else {
 						return errors.New("No data found")
 					}
@@ -895,11 +896,11 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
 
 		objTransaccion := map[string]interface{}{
-			"codigo":   SolicitudInscripcion["Id"].(float64),
-			"nombre":   SolicitudInscripcion["Nombre"].(string),
-			"apellido": SolicitudInscripcion["Apellido"].(string),
-			"correo":   SolicitudInscripcion["Correo"].(string),
-			//"proyecto":            SolicitudInscripcion["ProgramaAcademicoId"].(float64),
+			"codigo":              SolicitudInscripcion["Id"].(float64),
+			"nombre":              SolicitudInscripcion["Nombre"].(string),
+			"apellido":            SolicitudInscripcion["Apellido"].(string),
+			"correo":              SolicitudInscripcion["Correo"].(string),
+			"proyecto":            SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64),
 			"tiporecibo":          15, // se define 15 por que es el id definido en el api de recibos para inscripcion
 			"concepto":            "",
 			"valorordinario":      0,
@@ -931,7 +932,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			credencial := helpers.GenerarCredencialInscripcionPregrado(float64(id_periodo))
 			inscripcion["Credencial"] = credencial
 		} else if SolicitudInscripcion["Nivel"].(float64) == 2 {
-			objTransaccion["proyecto"] = SolicitudInscripcion["ProgramaAcademicoId"].(float64)
+			objTransaccion["proyecto"] = SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64)
 			inscripcion["ProgramaAcademicoId"] = SolicitudInscripcion["ProgramaAcademicoId"].(float64)
 			TipoParametro = "12"
 		}
