@@ -2208,6 +2208,32 @@
                 }
             }
         },
+        "/transferencia/solicitudes/programa/{id}": {
+            "get": {
+                "tags": [
+                    "transferencia"
+                ],
+                "description": "get solicitudes segun programa",
+                "operationId": "Transferencia_reingresoController.GetSolicitudesInscripcion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Transferencia_reingreso"
+                        }
+                    }
+                }
+            }
+        },
         "/transferencia/{id}": {
             "put": {
                 "tags": [

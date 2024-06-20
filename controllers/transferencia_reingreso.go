@@ -162,6 +162,25 @@ func (c *Transferencia_reingresoController) GetSolicitudesInscripcion() {
 	c.ServeJSON()
 }
 
+// GetSolicitudesInscripcion ...
+// @Title GetSolicitudesInscripcionSegunPrograma
+// @Description get solicitudes segun programa
+// @Success 200 {object} helpers.Transferencia_reingreso
+// @Param	id		path 	string	true		"The key for staticblock"
+// @router /solicitudes/programa/:id [get]
+func (c *Transferencia_reingresoController) GetSolicitudesInscripcionSegunPrograma() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	idPrograma := c.Ctx.Input.Param(":id")
+	respuesta := services.GetSolicitudesSegunPrograma(idPrograma)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
+	c.ServeJSON()
+}
+
 // GetConsultarPeriodo ...
 // @Title GetConsultarPeriodo
 // @Description get información necesaria para crear un solicitud de transferencias

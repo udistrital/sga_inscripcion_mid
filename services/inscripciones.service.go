@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -882,16 +884,17 @@ func ActualizarInfoContact(data []byte) (APIResponseDTO requestresponse.APIRespo
 }
 
 func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
-	// var reciboVencido bool
+	var reciboVencido bool
 	var SolicitudInscripcion map[string]interface{}
 	var TipoParametro string
 	var parametro map[string]interface{}
 	var Valor map[string]interface{}
 	var NuevoRecibo map[string]interface{}
 	var inscripcionRealizada map[string]interface{}
-	// var contadorRecibos int
+	var contadorRecibos int
 
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
+
 		objTransaccion := map[string]interface{}{
 			"codigo":              SolicitudInscripcion["Id"].(float64),
 			"nombre":              SolicitudInscripcion["Nombre"].(string),
@@ -922,126 +925,130 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 		}
 
 		if SolicitudInscripcion["Nivel"].(float64) == 1 {
+			objTransaccion["proyecto"] = 999
+			inscripcion["ProgramaAcademicoId"] = 999
 			TipoParametro = "13"
 			id_periodo := int(SolicitudInscripcion["PeriodoId"].(float64))
 			credencial := helpers.GenerarCredencialInscripcionPregrado(float64(id_periodo))
 			inscripcion["Credencial"] = credencial
 		} else if SolicitudInscripcion["Nivel"].(float64) == 2 {
+			objTransaccion["proyecto"] = SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64)
+			inscripcion["ProgramaAcademicoId"] = SolicitudInscripcion["ProgramaAcademicoId"].(float64)
 			TipoParametro = "12"
 		}
 
-		// persona_id := fmt.Sprintf("%d", int(SolicitudInscripcion["PersonaId"].(float64)))
-		// id_periodo := fmt.Sprintf("%d", int(SolicitudInscripcion["PeriodoId"].(float64)))
-		// //id_programa_academico := fmt.Sprintf("%d", int(SolicitudInscripcion["ProgramaAcademicoId"].(float64)))
+		persona_id := fmt.Sprintf("%d", int(SolicitudInscripcion["PersonaId"].(float64)))
+		id_periodo := fmt.Sprintf("%d", int(SolicitudInscripcion["PeriodoId"].(float64)))
+		id_programa_academico := fmt.Sprintf("%d", int(SolicitudInscripcion["ProgramaAcademicoId"].(float64)))
 
-		// recibosResultado, err := helpers.VerificarRecibos(persona_id, id_periodo)
+		recibosResultado, err := helpers.VerificarRecibos(persona_id, id_periodo)
 
-		// if err == "" {
-		// if inscripciones, ok := recibosResultado["Inscripciones"]; ok {
-		// 	// Convertir la variable de tipo interface{} a un slice de mapas
-		// 	inscripcionesMap, ok := inscripciones.([]map[string]interface{})
-		// 	if len(inscripcionesMap) > 0 && ok {
-		// 		for i := 0; i < len(inscripcionesMap); i++ {
-		// 			if inscripcionesMap[i]["ProgramaAcademicoId"] != nil {
-		// 				// id_programa_inscripciones := fmt.Sprintf("%d", int(inscripcionesMap[i]["ProgramaAcademicoId"].(float64)))
-		// 				estado_recibo_inscripciones := inscripcionesMap[i]["Estado"].(string)
-		// 				// if id_programa_inscripciones == id_programa_academico {
-		// 				if estado_recibo_inscripciones == "Vencido" {
-		// 					reciboVencido = true
-		// 				} else {
-		// 					reciboVencido = false
-		// 				}
-		// 				// } else {
-		// 				// 	contadorRecibos++
-		// 				// }
-		// 			}
-		// 		}
-		// 		if contadorRecibos == len(inscripcionesMap) {
-		// 			reciboVencido = true
-		// 		}
-		// 	}
-
-		// }
-
-		//Verificar si existe un recibo vencido o es la primera vez que inscribe el postgrado
-		// if reciboVencido || fmt.Sprintf("%v", recibosResultado) == "map[]" {
-		errInscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &inscripcionRealizada, inscripcion)
-		if errInscripcion == nil && inscripcionRealizada["Status"] != "400" {
-			errParam := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro_periodo?query=Activo:true,ParametroId.TipoParametroId.Id:2,ParametroId.CodigoAbreviacion:"+TipoParametro+",PeriodoId.Year:"+fmt.Sprintf("%v", objTransaccion["aniopago"])+",PeriodoId.CodigoAbreviacion:VG", &parametro)
-			fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAA", parametro)
-			if errParam == nil && fmt.Sprintf("%v", parametro["Data"].([]interface{})[0]) != "map[]" {
-				Dato := parametro["Data"].([]interface{})[0]
-				if errJson := json.Unmarshal([]byte(Dato.(map[string]interface{})["Valor"].(string)), &Valor); errJson == nil {
-					objTransaccion["valorordinario"] = Valor["Costo"].(float64)
-					objTransaccion["valorextraordinario"] = Valor["Costo"].(float64)
-					//objTransaccion["tiporecibo"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["CodigoAbreviacion"].(string)
-					objTransaccion["concepto"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["Nombre"].(string)
-
-					SolicitudRecibo := objTransaccion
-
-					reciboSolicitud := httplib.Post("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibos_pago_proxy")
-					reciboSolicitud.Header("Accept", "application/json")
-					reciboSolicitud.Header("Content-Type", "application/json")
-					reciboSolicitud.JSONBody(SolicitudRecibo)
-					//errRecibo := request.SendJson("http://"+beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, SolicitudRecibo)
-					//fmt.Println("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibosPagoProxy")
-
-					if errRecibo := reciboSolicitud.ToJSON(&NuevoRecibo); errRecibo == nil {
-						inscripcionRealizada["ReciboInscripcion"] = fmt.Sprintf("%v/%v", NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["secuencia"], NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["anio"])
-						var inscripcionUpdate map[string]interface{}
-						errInscripcionUpdate := request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "PUT", &inscripcionUpdate, inscripcionRealizada)
-						if errInscripcionUpdate == nil {
-							APIResponseDTO = requestresponse.APIResponseDTO(true, 200, inscripcionUpdate, nil)
-
-							fecha_actual := time.Now()
-							dataEmail := map[string]interface{}{
-								"dia":    fecha_actual.Day(),
-								"mes":    utils.GetNombreMes(fecha_actual.Month()),
-								"anio":   fecha_actual.Year(),
-								"nombre": SolicitudInscripcion["Nombre"].(string) + " " + SolicitudInscripcion["Apellido"].(string),
-								"estado": "inscripción solicitada",
+		if err == "" {
+			if inscripciones, ok := recibosResultado["Inscripciones"]; ok {
+				// Convertir la variable de tipo interface{} a un slice de mapas
+				inscripcionesMap, ok := inscripciones.([]map[string]interface{})
+				if len(inscripcionesMap) > 0 && ok {
+					for i := 0; i < len(inscripcionesMap); i++ {
+						if inscripcionesMap[i]["ProgramaAcademicoId"] != nil {
+							id_programa_inscripciones := fmt.Sprintf("%d", int(inscripcionesMap[i]["ProgramaAcademicoId"].(float64)))
+							estado_recibo_inscripciones := inscripcionesMap[i]["Estado"].(string)
+							if id_programa_inscripciones == id_programa_academico {
+								if estado_recibo_inscripciones == "Vencido" {
+									reciboVencido = true
+								} else {
+									reciboVencido = false
+								}
+							} else {
+								contadorRecibos++
 							}
-							fmt.Println(dataEmail)
-							//utils.SendNotificationInscripcionSolicitud(dataEmail, objTransaccion["correo"].(string))
+						}
+					}
+					if contadorRecibos == len(inscripcionesMap) {
+						reciboVencido = true
+					}
+				}
+
+			}
+
+			//Verificar si existe un recibo vencido o es la primera vez que inscribe el postgrado
+			if reciboVencido || fmt.Sprintf("%v", recibosResultado) == "map[]" {
+				errInscripcion := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion", "POST", &inscripcionRealizada, inscripcion)
+				if errInscripcion == nil && inscripcionRealizada["Status"] != "400" {
+					errParam := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro_periodo?query=Activo:true,ParametroId.TipoParametroId.Id:2,ParametroId.CodigoAbreviacion:"+TipoParametro+",PeriodoId.Year:"+fmt.Sprintf("%v", objTransaccion["aniopago"])+",PeriodoId.CodigoAbreviacion:VG", &parametro)
+					fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAA", parametro)
+					if errParam == nil && fmt.Sprintf("%v", parametro["Data"].([]interface{})[0]) != "map[]" {
+						Dato := parametro["Data"].([]interface{})[0]
+						if errJson := json.Unmarshal([]byte(Dato.(map[string]interface{})["Valor"].(string)), &Valor); errJson == nil {
+							objTransaccion["valorordinario"] = Valor["Costo"].(float64)
+							objTransaccion["valorextraordinario"] = Valor["Costo"].(float64)
+							//objTransaccion["tiporecibo"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["CodigoAbreviacion"].(string)
+							objTransaccion["concepto"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["Nombre"].(string)
+
+							SolicitudRecibo := objTransaccion
+
+							reciboSolicitud := httplib.Post("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibos_pago_proxy")
+							reciboSolicitud.Header("Accept", "application/json")
+							reciboSolicitud.Header("Content-Type", "application/json")
+							reciboSolicitud.JSONBody(SolicitudRecibo)
+							//errRecibo := request.SendJson("http://"+beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, SolicitudRecibo)
+							//fmt.Println("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibosPagoProxy")
+
+							if errRecibo := reciboSolicitud.ToJSON(&NuevoRecibo); errRecibo == nil {
+								inscripcionRealizada["ReciboInscripcion"] = fmt.Sprintf("%v/%v", NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["secuencia"], NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["anio"])
+								var inscripcionUpdate map[string]interface{}
+								errInscripcionUpdate := request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "PUT", &inscripcionUpdate, inscripcionRealizada)
+								if errInscripcionUpdate == nil {
+									APIResponseDTO = requestresponse.APIResponseDTO(true, 200, inscripcionUpdate, nil)
+
+									fecha_actual := time.Now()
+									dataEmail := map[string]interface{}{
+										"dia":    fecha_actual.Day(),
+										"mes":    utils.GetNombreMes(fecha_actual.Month()),
+										"anio":   fecha_actual.Year(),
+										"nombre": SolicitudInscripcion["Nombre"].(string) + " " + SolicitudInscripcion["Apellido"].(string),
+										"estado": "inscripción solicitada",
+									}
+									fmt.Println(dataEmail)
+									//utils.SendNotificationInscripcionSolicitud(dataEmail, objTransaccion["correo"].(string))
+								} else {
+									logs.Error(errInscripcionUpdate)
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcionUpdate.Error())
+								}
+							} else {
+								//var resDelete string
+								//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
+								helpers.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
+								logs.Error(errRecibo)
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errRecibo.Error())
+							}
 						} else {
-							logs.Error(errInscripcionUpdate)
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcionUpdate.Error())
+							//var resDelete string
+							//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
+							helpers.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
+							logs.Error(errJson)
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 403, nil, errJson.Error())
 						}
 					} else {
 						//var resDelete string
 						//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
 						helpers.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
-						logs.Error(errRecibo)
-						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errRecibo.Error())
+						logs.Error(errParam)
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errParam.Error())
 					}
+
 				} else {
-					//var resDelete string
-					//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
-					helpers.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
-					logs.Error(errJson)
-					APIResponseDTO = requestresponse.APIResponseDTO(false, 403, nil, errJson.Error())
+					logs.Error(errInscripcion)
+					APIResponseDTO = requestresponse.APIResponseDTO(true, 204, nil, errInscripcion.Error())
 				}
 			} else {
-				//var resDelete string
-				//request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "DELETE", &resDelete, nil)
-				helpers.SetInactivo(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]))
-				logs.Error(errParam)
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errParam.Error())
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 204, nil, "Recipe already exist")
 			}
 
+			// } else if err == "400" {
+			// 	APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Bad request")
 		} else {
-			logs.Error(errInscripcion)
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 204, nil, errInscripcion.Error())
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 		}
-		// } else {
-		// 	APIResponseDTO = requestresponse.APIResponseDTO(true, 204, nil, "Recipe already exist")
-		// }
-
-		// } else if err == "400" {
-		// 	APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "Bad request")
-		// } else {
-		// 	APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
-		// }
 
 	} else {
 		logs.Error(err)
@@ -1049,4 +1056,550 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 	}
 
 	return APIResponseDTO
+}
+
+func ActualizarEstadoMatriculado(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var actualizacionEstadoRequest map[string]interface{}
+	var errorGetAll bool = false
+	var resultado []map[string]interface{}
+
+	if err := json.Unmarshal(data, &actualizacionEstadoRequest); err == nil {
+		idTercero := actualizacionEstadoRequest["personaId"].(float64)
+		idPeriodo := actualizacionEstadoRequest["periodoId"].(float64)
+		idProyecto := actualizacionEstadoRequest["proyectoId"].(float64)
+		fmt.Println("DATA INICIAL")
+		fmt.Println(actualizacionEstadoRequest, idTercero, idPeriodo)
+		var resultadoInscripcion []map[string]interface{}
+
+		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",PersonaId:"+fmt.Sprintf("%.f", idTercero)+"&sortby=Id&order=asc", &resultadoInscripcion)
+		if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
+			if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
+				for _, inscripcion := range resultadoInscripcion {
+					fmt.Println("DATA INSCRIPCION")
+					fmt.Println(inscripcion["ProgramaAcademicoId"])
+					id := inscripcion["Id"].(float64)
+					fmt.Println(inscripcion["Id"])
+
+					if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
+						if inscripcion["ProgramaAcademicoId"] == idProyecto {
+							fmt.Println("PROYECTO ADMITIDO")
+							//fmt.Println(estadoInscripcion["Id"])
+							//estadoInscripcion["Id"] = 11
+
+							// InfoEstadoInscripcionId := map[string]interface{}{
+							// 	"Id": 11,
+							// }
+							// InfoTipoInscripcionId := map[string]interface{}{
+							// 	"Id": tipoInscripcion["Id"],
+							// }
+							// infoInscripcion := map[string]interface{}{
+							// 	"PersonaId":           inscripcion["PersonaId"],
+							// 	"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
+							// 	"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
+							// 	"PeriodoId":           inscripcion["PeriodoId"],
+							// 	"EnfasisId":           inscripcion["EnfasisId"],
+							// 	"AceptaTerminos":      inscripcion["AceptaTerminos"],
+							// 	"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
+							// 	"Activo":              true,
+							// 	"EstadoInscripcionId": InfoEstadoInscripcionId,
+							// 	"TipoInscripcionId":   InfoTipoInscripcionId,
+							// 	"NotaFinal":           inscripcion["NotaFinal"],
+							// 	"Credencial":          inscripcion["Credencial"],
+							// 	"Opcion":              inscripcion["Opcion"],
+							// }
+
+							infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(11, inscripcion, tipoInscripcion)
+
+							fmt.Println(infoInscripcion)
+							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+								resultado = append(resultado, resInsc)
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+							}
+						} else {
+							fmt.Println("PROYECTO NO ADMITIDO")
+							//fmt.Println(estadoInscripcion["Id"])
+							//estadoInscripcion["Id"] = 4
+
+							// InfoEstadoInscripcionId := map[string]interface{}{
+							// 	"Id": 4,
+							// }
+							// InfoTipoInscripcionId := map[string]interface{}{
+							// 	"Id": tipoInscripcion["Id"],
+							// }
+							// infoInscripcion := map[string]interface{}{
+							// 	"PersonaId":           inscripcion["PersonaId"],
+							// 	"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
+							// 	"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
+							// 	"PeriodoId":           inscripcion["PeriodoId"],
+							// 	"EnfasisId":           inscripcion["EnfasisId"],
+							// 	"AceptaTerminos":      inscripcion["AceptaTerminos"],
+							// 	"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
+							// 	"Activo":              true,
+							// 	"EstadoInscripcionId": InfoEstadoInscripcionId,
+							// 	"TipoInscripcionId":   InfoTipoInscripcionId,
+							// 	"NotaFinal":           inscripcion["NotaFinal"],
+							// 	"Credencial":          inscripcion["Credencial"],
+							// 	"Opcion":              inscripcion["Opcion"],
+							// }
+
+							infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
+
+							fmt.Println(infoInscripcion)
+							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+								resultado = append(resultado, resInsc)
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+							}
+						}
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+					}
+				}
+			} else {
+				if resultadoInscripcion[0]["Message"] == "Not found resource" {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+				} else {
+					errorGetAll = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+				}
+			}
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcion)
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+	} else {
+		return APIResponseDTO
+	}
+	return APIResponseDTO
+}
+
+func ActualizarInscripcion(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {
+	var resp map[string]interface{}
+	errPutInfoComp := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/"+fmt.Sprintf("%.f", id), "PUT", &resp, infoComp)
+	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
+		return resp, nil
+	} else {
+		return resp, errPutInfoComp
+	}
+}
+
+func ActualizarCupoInscripcion(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {
+	var resp map[string]interface{}
+	errPutInfoComp := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"cupo_inscripcion/"+fmt.Sprintf("%.f", id), "PUT", &resp, infoComp)
+	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
+		return resp, nil
+	} else {
+		return resp, errPutInfoComp
+	}
+}
+
+func GenerarCuerpoActualizacionEstadoInscripcion(nuevoEstado int, inscripcion map[string]interface{}, tipoInscripcion map[string]interface{}) map[string]interface{} {
+	InfoEstadoInscripcionId := map[string]interface{}{
+		"Id": nuevoEstado,
+	}
+	InfoTipoInscripcionId := map[string]interface{}{
+		"Id": tipoInscripcion["Id"],
+	}
+	bodyInscripcion := map[string]interface{}{
+		"PersonaId":           inscripcion["PersonaId"],
+		"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
+		"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
+		"PeriodoId":           inscripcion["PeriodoId"],
+		"EnfasisId":           inscripcion["EnfasisId"],
+		"AceptaTerminos":      inscripcion["AceptaTerminos"],
+		"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
+		"Activo":              true,
+		"EstadoInscripcionId": InfoEstadoInscripcionId,
+		"TipoInscripcionId":   InfoTipoInscripcionId,
+		"NotaFinal":           inscripcion["NotaFinal"],
+		"Credencial":          inscripcion["Credencial"],
+		"Opcion":              inscripcion["Opcion"],
+	}
+	return bodyInscripcion
+}
+
+func GenerarCuerpoActualizarCupoInscripcion(CupoInscripcion map[string]interface{}, cuposHabilitados float64, tipoInscripcion map[string]interface{}) map[string]interface{} {
+	InfoTipoInscripcionId := map[string]interface{}{
+		"Id": tipoInscripcion["Id"],
+	}
+	bodyCupoInscripcion := map[string]interface{}{
+		"Activo":              CupoInscripcion["Activo"],
+		"CuposHabilitados":    cuposHabilitados,
+		"CuposOpcionados":     CupoInscripcion["CuposOpcionados"],
+		"PeriodoId":           CupoInscripcion["PeriodoId"],
+		"ProgramaAcademicoId": CupoInscripcion["ProgramaAcademicoId"],
+		"TipoInscripcionId":   InfoTipoInscripcionId,
+		"CupoId":              CupoInscripcion["CupoId"],
+	}
+	return bodyCupoInscripcion
+}
+
+func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var actualizacionCuposRequest map[string]interface{}
+	var errorGetAll bool = false
+	var resultado []map[string]interface{}
+
+	if err := json.Unmarshal(data, &actualizacionCuposRequest); err == nil {
+		fmt.Println("DATA INICIAL")
+		fmt.Println(actualizacionCuposRequest)
+		idPeriodo := actualizacionCuposRequest["periodoId"].(float64)
+		//var resultadoCuposInscripcion []map[string]interface{}
+		var fechaActualCiclo int
+		var cicloActual string
+		var cuposInscripcion []map[string]interface{}
+
+		// RECUPERACIÓN DEL CICLO Y FECHA DEL CICLO ACTUAL
+		if fecha, ciclo, err := RecuperarFechaCicloActual(idPeriodo); err == nil {
+			fechaActualCiclo = fecha
+			cicloActual = ciclo
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+			return APIResponseDTO
+		}
+
+		fmt.Println("FECHAS CICLOS")
+		fmt.Println(fechaActualCiclo, cicloActual)
+
+		// RECUPERACIÓN DE LOS PROGRAMAS ACADEMICOS QUE TIENEN CUPOS EN CIERTO PERIODO
+		if resInscripcion, err := RecuperarProgramasPeriodo(idPeriodo); err == nil {
+			cuposInscripcion = resInscripcion
+		} else {
+			errorGetAll = true
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+			return APIResponseDTO
+		}
+
+		for _, CupoInscripcion := range cuposInscripcion {
+			fmt.Println("///**************************************************///")
+			// fmt.Println("CUPOS INSCRIPCION")
+			// fmt.Println(CupoInscripcion)
+			fmt.Println("PROGRAMA ACADÉMICO")
+			fmt.Println(CupoInscripcion["ProgramaAcademicoId"])
+			idprograma := CupoInscripcion["ProgramaAcademicoId"].(float64)
+			cuposHabilitadosPrograma := CupoInscripcion["CuposHabilitados"].(float64)
+			cuposOriginales := cuposHabilitadosPrograma
+			//var inscripcionesCambio int = 0
+			//cuposOpcionadosPrograma := CupoInscripcion["CuposOpcionados"].(float64)
+			var resultadoInscripcion []map[string]interface{}
+
+			errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",ProgramaAcademicoId:"+fmt.Sprintf("%.f", idprograma)+",Opcion:"+cicloActual+"&sortby=Id&order=asc", &resultadoInscripcion)
+			if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
+				if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
+					// fmt.Println("INSCRIPCIONES ASOCIADAS AL CICLO ACTUAL")
+					// fmt.Println(resultadoInscripcion)
+					fmt.Println("CUPOS HABILITADOS ANTES DE BARRIDA")
+					fmt.Println(cuposHabilitadosPrograma)
+					for _, inscripcion := range resultadoInscripcion {
+						if estadoInscripcion, ok := inscripcion["EstadoInscripcionId"].(map[string]interface{}); ok {
+							fmt.Println("ESTADO INSCRIPCION")
+							fmt.Println(estadoInscripcion["Id"])
+							idEstadoInscripcion := estadoInscripcion["Id"].(float64)
+
+							if idEstadoInscripcion == 11 {
+								// BUSCAR LAS INSCRIPCIONES QUE FUERON ADMITIDAS
+								cuposHabilitadosPrograma = cuposHabilitadosPrograma - 1
+							} else if idEstadoInscripcion == 2 || idEstadoInscripcion == 8 || idEstadoInscripcion == 10 {
+								// BUSCAR LAS INSCRIPCIONES ADMITIDAS QUE NO REALIZARON EL PROCESO
+								// fmt.Println("ENTRA A ESTUDIANTE QUE NO SIGUIO EL PROCESO")
+								// TODO: ACRUALIZAR ESTADO INSCRIPCIÓN DE LAS INSCRIPCIONES QUE ENTRAN ACÁ CON 2
+								if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
+									id := inscripcion["Id"].(float64)
+									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
+
+									fmt.Println(infoInscripcion)
+
+									if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+										resultado = append(resultado, resInsc)
+										//inscripcionesCambio = inscripcionesCambio + 1
+									} else {
+										errorGetAll = true
+										APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+									}
+								}
+							}
+						}
+					}
+					fmt.Println("CUPOS HABILITADOS DESPUÉS DE BARRIDA")
+					fmt.Println(cuposHabilitadosPrograma)
+					// fmt.Println("INSCRIPCIONES QUE REQUIEREN CAMBIO")
+					// fmt.Println(inscripcionesCambio)
+
+					// TODO: ACTUALIZAR FILA CUPO_INSCRIPCION CON LOS CUPOS HABILITADOS, SI ES QUE SE REQUIERE
+					if cuposOriginales != cuposHabilitadosPrograma {
+						fmt.Println("ENTRÓ A ACTUALIZAR CUPO_INSCRIPCION")
+						fmt.Println("CUPO_INSCRIPCION ANTES")
+						fmt.Println(CupoInscripcion)
+						if tipoInscripcion, ok := CupoInscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
+							id := CupoInscripcion["Id"].(float64)
+							infoCupoInscripcion := GenerarCuerpoActualizarCupoInscripcion(CupoInscripcion, cuposHabilitadosPrograma, tipoInscripcion)
+							fmt.Println("CUPO_INSCRIPCION DESPUÉS")
+							fmt.Println(infoCupoInscripcion)
+							if resCupoInsc, errCupoInsc := ActualizarCupoInscripcion(infoCupoInscripcion, id); errCupoInsc == nil {
+								resultado = append(resultado, resCupoInsc)
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupoInsc)
+							}
+						}
+					}
+
+					// EN CASO DE SER LA PRIMERA FECHA SE CAMBIAN LOS OPCIONADOS A ADMITIDOS, SI QUEDAN CUPOS DISPONIBLES
+					if fechaActualCiclo == 1 {
+						fmt.Println("REQUIERE ACTUALIZAR CUPOS ADMITIDOS")
+						var inscripcionesOpcionados []map[string]interface{}
+						// SE RECUPERAN LOS ASPIRANTES OPCIONADOS
+						if resInscripcion, err := RecuperarInscripcionesOpcionadas(idPeriodo, idprograma); err == nil {
+							inscripcionesOpcionados = resInscripcion
+							fmt.Println("INSCRIPCIONES OPCIONADAS")
+							fmt.Println(inscripcionesOpcionados)
+						} else {
+							errorGetAll = true
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+							return APIResponseDTO
+						}
+
+						for _, inscripcionOpcionada := range inscripcionesOpcionados {
+							if cuposHabilitadosPrograma == 0 {
+								break
+							}
+							opcion := inscripcionOpcionada["Opcion"].(float64)
+							if ciclo, err := strconv.ParseFloat(cicloActual, 64); err == nil {
+								if opcion > ciclo {
+									continue
+								}
+							} else {
+								errorGetAll = true
+								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+								return APIResponseDTO
+							}
+
+							fmt.Println("ITERANDO")
+							fmt.Println(inscripcionOpcionada)
+							if tipoInscripcion, ok := inscripcionOpcionada["TipoInscripcionId"].(map[string]interface{}); ok {
+								id := inscripcionOpcionada["Id"].(float64)
+								infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(2, inscripcionOpcionada, tipoInscripcion)
+
+								fmt.Println(infoInscripcion)
+								if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
+									resultado = append(resultado, resInsc)
+									cuposHabilitadosPrograma = cuposHabilitadosPrograma - 1
+								} else {
+									errorGetAll = true
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
+								}
+								// SE ACTUALIZA UN ASPIRANTE
+							}
+						}
+					}
+				} else {
+					if resultadoInscripcion[0]["Message"] == "Not found resource" {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+					} else {
+						errorGetAll = true
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+					}
+				}
+			} else {
+				errorGetAll = true
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInscripcion)
+			}
+		}
+	} else {
+		errorGetAll = true
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+
+	if !errorGetAll {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+	} else {
+		return APIResponseDTO
+	}
+	return APIResponseDTO
+}
+
+// Función encargada de recuperar la fecha y el ciclo actual del proceso de admisión
+func RecuperarFechaCicloActual(idPeriodo float64) (int, string, error) {
+	var resultadoCalendario []map[string]interface{}
+	var fechaActualCiclo int
+	var cicloActual string
+	fechaActual := time.Now()
+
+	errCalendario := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"calendario?query=Nivel:1,Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+"&sortby=Id&order=asc", &resultadoCalendario)
+	if errCalendario == nil && fmt.Sprintf("%v", resultadoCalendario[0]["System"]) != "map[]" {
+		if resultadoCalendario[0]["Status"] != 404 && resultadoCalendario[0]["Id"] != nil {
+			idCalendario := resultadoCalendario[0]["Id"].(float64)
+			var resultadoTipoEvento []map[string]interface{}
+
+			errTipoEvento := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"tipo_evento?query=CodigoAbreviacion:CIAD,Activo:true,CalendarioID.Id:"+fmt.Sprintf("%.f", idCalendario)+"&sortby=Id&order=asc", &resultadoTipoEvento)
+			if errTipoEvento == nil && fmt.Sprintf("%v", resultadoTipoEvento[0]["System"]) != "map[]" {
+				if resultadoTipoEvento[0]["Status"] != 404 && resultadoTipoEvento[0]["Id"] != nil {
+					idTipoEventoCiclos := resultadoTipoEvento[0]["Id"].(float64)
+					var resultadoCalendarioEvento []map[string]interface{}
+
+					errCalendarioEvento := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"calendario_evento?query=Activo:true,TipoEventoId.Id:"+fmt.Sprintf("%.f", idTipoEventoCiclos)+"&sortby=Id&order=asc", &resultadoCalendarioEvento)
+					if errCalendarioEvento == nil && fmt.Sprintf("%v", resultadoCalendarioEvento[0]["System"]) != "map[]" {
+						if resultadoCalendarioEvento[0]["Status"] != 404 && resultadoCalendarioEvento[0]["Id"] != nil {
+							for _, evento := range resultadoCalendarioEvento {
+								fechaInicioStr, ok1 := evento["FechaInicio"].(string)
+								fechaFinStr, ok2 := evento["FechaFin"].(string)
+
+								if ok1 && ok2 {
+									fechaInicio, err1 := time.Parse(time.RFC3339, fechaInicioStr)
+									fechaFin, err2 := time.Parse(time.RFC3339, fechaFinStr)
+									if err1 == nil && err2 == nil {
+										if fechaActual.After(fechaInicio) && fechaActual.Before(fechaFin) {
+											if descripcion, ok := evento["Descripcion"].(string); ok {
+												// AQUI SE SETEA EL CICLO ACTUAL
+												cicloActual = descripcion
+												idCicloActual := evento["Id"].(float64)
+												var resultadoFechasCiclo []map[string]interface{}
+
+												errFechasCiclo := request.GetJson("http://"+beego.AppConfig.String("EventoService")+"calendario_evento?query=Activo:true,EventoPadreId.Id:"+fmt.Sprintf("%.f", idCicloActual)+"&sortby=Id&order=asc", &resultadoFechasCiclo)
+												if errFechasCiclo == nil && fmt.Sprintf("%v", resultadoFechasCiclo[0]["System"]) != "map[]" {
+													if resultadoFechasCiclo[0]["Status"] != 404 && resultadoFechasCiclo[0]["Id"] != nil {
+														for _, fecha := range resultadoFechasCiclo {
+															fechaCicloInicioStr, okFecha1 := fecha["FechaInicio"].(string)
+															fechaCicloFinStr, okFecha2 := fecha["FechaFin"].(string)
+
+															if okFecha1 && okFecha2 {
+																fechaInicioCiclo, errFecha1 := time.Parse(time.RFC3339, fechaCicloInicioStr)
+																fechaFinCiclo, errFecha2 := time.Parse(time.RFC3339, fechaCicloFinStr)
+
+																if errFecha1 == nil && errFecha2 == nil {
+																	if fechaActual.After(fechaInicioCiclo) && fechaActual.Before(fechaFinCiclo) {
+																		if tipoEvento, ok := fecha["TipoEventoId"].(map[string]interface{}); ok {
+																			if codigoAbreviacion, ok := tipoEvento["CodigoAbreviacion"].(string); ok {
+																				if strings.TrimSpace(codigoAbreviacion) == "PRAD" {
+																					fechaActualCiclo = 1
+																				} else if strings.TrimSpace(codigoAbreviacion) == "PROP" {
+																					fechaActualCiclo = 2
+																				}
+																			} else {
+																				return 0, "", fmt.Errorf("El valor de CodigoAbreviacion no es una cadena")
+																			}
+																		}
+																	}
+																} else {
+																	return 0, "", fmt.Errorf("Error parsing dates")
+																}
+															} else {
+																return 0, "", fmt.Errorf("Error: FechaInicio o FechaFin no es una cadena")
+															}
+														}
+													} else {
+														if resultadoFechasCiclo[0]["Message"] == "Not found resource" {
+															return 0, "", fmt.Errorf("Not found resource")
+														} else {
+															return 0, "", fmt.Errorf("Not found resource")
+														}
+													}
+												} else {
+													return 0, "", errFechasCiclo
+												}
+											}
+										}
+									} else {
+										return 0, "", fmt.Errorf("Error parsing dates")
+									}
+								} else {
+									return 0, "", fmt.Errorf("Error: FechaInicio o FechaFin no es una cadena")
+								}
+							}
+						} else {
+							if resultadoCalendarioEvento[0]["Message"] == "Not found resource" {
+								return 0, "", fmt.Errorf("Not found resource")
+							} else {
+								return 0, "", fmt.Errorf("Not found resource")
+							}
+						}
+					} else {
+						return 0, "", errCalendarioEvento
+					}
+				} else {
+					if resultadoTipoEvento[0]["Message"] == "Not found resource" {
+						return 0, "", fmt.Errorf("Not found resource")
+					} else {
+						return 0, "", fmt.Errorf("Not found resource")
+					}
+				}
+			} else {
+				return 0, "", errTipoEvento
+			}
+		} else {
+			if resultadoCalendario[0]["Message"] == "Not found resource" {
+				return 0, "", fmt.Errorf("Not found resource")
+			} else {
+				return 0, "", fmt.Errorf("Not found resource")
+			}
+		}
+	} else {
+		return 0, "", errCalendario
+	}
+
+	return fechaActualCiclo, cicloActual, nil
+}
+
+// Función encargada de recuperar las filas de la tabla cupo_inscripcion que esten relacionadas a un periodo
+func RecuperarProgramasPeriodo(idPeriodo float64) ([]map[string]interface{}, error) {
+	var resultadoCuposInscripcion []map[string]interface{}
+
+	errCuposInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"cupo_inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+"&sortby=Id&order=asc", &resultadoCuposInscripcion)
+	if errCuposInscripcion == nil && fmt.Sprintf("%v", resultadoCuposInscripcion[0]["System"]) != "map[]" {
+		if resultadoCuposInscripcion[0]["Status"] != 404 && resultadoCuposInscripcion[0]["Id"] != nil {
+			return resultadoCuposInscripcion, nil
+		} else {
+			if resultadoCuposInscripcion[0]["Message"] == "Not found resource" {
+				return nil, fmt.Errorf("Not found resource")
+				// errorGetAll = true
+				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+			} else {
+				return nil, fmt.Errorf("Not found resource")
+				// errorGetAll = true
+				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+			}
+		}
+	} else {
+		return nil, errCuposInscripcion
+		// errorGetAll = true
+		// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCuposInscripcion)
+	}
+}
+
+func RecuperarInscripcionesOpcionadas(idPeriodo float64, idprograma float64) ([]map[string]interface{}, error) {
+	var resultadoInscripcion []map[string]interface{}
+
+	errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",ProgramaAcademicoId:"+fmt.Sprintf("%.f", idprograma)+",EstadoInscripcionId.Id:3&sortby=Opcion&order=asc", &resultadoInscripcion)
+	if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
+		if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
+			return resultadoInscripcion, nil
+		} else {
+			if resultadoInscripcion[0]["Message"] == "Not found resource" {
+				return nil, fmt.Errorf("Not found resource")
+				// errorGetAll = true
+				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+			} else {
+				return nil, fmt.Errorf("Not found resource")
+				// errorGetAll = true
+				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
+			}
+		}
+	} else {
+		return nil, errInscripcion
+		// errorGetAll = true
+		// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCuposInscripcion)
+	}
 }
