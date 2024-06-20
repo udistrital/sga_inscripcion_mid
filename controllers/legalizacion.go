@@ -18,6 +18,7 @@ func (c *LegalizacionController) URLMapping() {
 	c.Mapping("Post", c.PostBaseLegalizacionMatricula)
 	c.Mapping("GetInfoLegalizacionMatricula", c.GetInfoLegalizacionMatricula)
 	c.Mapping("PutInfoLegalizacionMatricula", c.PutInfoLegalizacionMatricula)
+	c.Mapping("PutInfoSoportesLegalizacionMatricula", c.PutInfoSoportesLegalizacionMatricula)
 	//c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -83,6 +84,27 @@ func (c *LegalizacionController) PutInfoLegalizacionMatricula() {
 	data := c.Ctx.Input.RequestBody
 
 	respuesta := services.ActualizarInfolegalizacionMatricula(data)
+
+	c.Ctx.Output.SetStatus(respuesta.Status)
+
+	c.Data["json"] = respuesta
+
+	c.ServeJSON()
+}
+
+// PutInfoSoportesLegalizacionMatricula ...
+// @Title PutInfoSoportesLegalizacionMatricula
+// @Description Actualiza la información de soportes de legalización de matricula de un aspirante
+// @Param   body        body    {}  true		"body for Legalizacion content"
+// @Success 201 {int}
+// @Failure 400 the request contains incorrect syntax
+// @router /actualizar-info-soportes-legalizacion [put]
+func (c *LegalizacionController) PutInfoSoportesLegalizacionMatricula() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.ActualizarInfoSoportelegalizacionMatricula(data)
 
 	c.Ctx.Output.SetStatus(respuesta.Status)
 
