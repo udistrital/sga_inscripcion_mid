@@ -1067,86 +1067,49 @@ func ActualizarEstadoMatriculado(data []byte) (APIResponseDTO requestresponse.AP
 		idTercero := actualizacionEstadoRequest["personaId"].(float64)
 		idPeriodo := actualizacionEstadoRequest["periodoId"].(float64)
 		idProyecto := actualizacionEstadoRequest["proyectoId"].(float64)
-		fmt.Println("DATA INICIAL")
-		fmt.Println(actualizacionEstadoRequest, idTercero, idPeriodo)
 		var resultadoInscripcion []map[string]interface{}
 
 		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",PersonaId:"+fmt.Sprintf("%.f", idTercero)+"&sortby=Id&order=asc", &resultadoInscripcion)
 		if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
 			if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
 				for _, inscripcion := range resultadoInscripcion {
-					fmt.Println("DATA INSCRIPCION")
-					fmt.Println(inscripcion["ProgramaAcademicoId"])
 					id := inscripcion["Id"].(float64)
-					fmt.Println(inscripcion["Id"])
 
 					if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
 						if inscripcion["ProgramaAcademicoId"] == idProyecto {
-							fmt.Println("PROYECTO ADMITIDO")
-							//fmt.Println(estadoInscripcion["Id"])
-							//estadoInscripcion["Id"] = 11
-
-							// InfoEstadoInscripcionId := map[string]interface{}{
-							// 	"Id": 11,
-							// }
-							// InfoTipoInscripcionId := map[string]interface{}{
-							// 	"Id": tipoInscripcion["Id"],
-							// }
-							// infoInscripcion := map[string]interface{}{
-							// 	"PersonaId":           inscripcion["PersonaId"],
-							// 	"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
-							// 	"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
-							// 	"PeriodoId":           inscripcion["PeriodoId"],
-							// 	"EnfasisId":           inscripcion["EnfasisId"],
-							// 	"AceptaTerminos":      inscripcion["AceptaTerminos"],
-							// 	"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
-							// 	"Activo":              true,
-							// 	"EstadoInscripcionId": InfoEstadoInscripcionId,
-							// 	"TipoInscripcionId":   InfoTipoInscripcionId,
-							// 	"NotaFinal":           inscripcion["NotaFinal"],
-							// 	"Credencial":          inscripcion["Credencial"],
-							// 	"Opcion":              inscripcion["Opcion"],
-							// }
-
 							infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(11, inscripcion, tipoInscripcion)
+							var cuposInscripcion []map[string]interface{}
 
-							fmt.Println(infoInscripcion)
 							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
 								resultado = append(resultado, resInsc)
+
+								if resInscripcion, err := RecuperarProgramasPeriodoProyecto(idPeriodo, idProyecto); err == nil {
+									cuposInscripcion = resInscripcion
+								} else {
+									errorGetAll = true
+									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+									return APIResponseDTO
+								}
+
+								cuposHabilitadosPrograma := cuposInscripcion[0]["CuposHabilitados"].(float64) - 1
+								if tipoInscripcion, ok := cuposInscripcion[0]["TipoInscripcionId"].(map[string]interface{}); ok {
+									id := cuposInscripcion[0]["Id"].(float64)
+									infoCupoInscripcion := GenerarCuerpoActualizarCupoInscripcion(cuposInscripcion[0], cuposHabilitadosPrograma, tipoInscripcion)
+
+									if resCupoInsc, errCupoInsc := ActualizarCupoInscripcion(infoCupoInscripcion, id); errCupoInsc == nil {
+										resultado = append(resultado, resCupoInsc)
+									} else {
+										errorGetAll = true
+										APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupoInsc)
+									}
+								}
 							} else {
 								errorGetAll = true
 								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
 							}
 						} else {
-							fmt.Println("PROYECTO NO ADMITIDO")
-							//fmt.Println(estadoInscripcion["Id"])
-							//estadoInscripcion["Id"] = 4
-
-							// InfoEstadoInscripcionId := map[string]interface{}{
-							// 	"Id": 4,
-							// }
-							// InfoTipoInscripcionId := map[string]interface{}{
-							// 	"Id": tipoInscripcion["Id"],
-							// }
-							// infoInscripcion := map[string]interface{}{
-							// 	"PersonaId":           inscripcion["PersonaId"],
-							// 	"ProgramaAcademicoId": inscripcion["ProgramaAcademicoId"],
-							// 	"ReciboInscripcion":   inscripcion["ReciboInscripcion"],
-							// 	"PeriodoId":           inscripcion["PeriodoId"],
-							// 	"EnfasisId":           inscripcion["EnfasisId"],
-							// 	"AceptaTerminos":      inscripcion["AceptaTerminos"],
-							// 	"FechaAceptaTerminos": inscripcion["FechaAceptaTerminos"],
-							// 	"Activo":              true,
-							// 	"EstadoInscripcionId": InfoEstadoInscripcionId,
-							// 	"TipoInscripcionId":   InfoTipoInscripcionId,
-							// 	"NotaFinal":           inscripcion["NotaFinal"],
-							// 	"Credencial":          inscripcion["Credencial"],
-							// 	"Opcion":              inscripcion["Opcion"],
-							// }
-
 							infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
 
-							fmt.Println(infoInscripcion)
 							if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
 								resultado = append(resultado, resInsc)
 							} else {
@@ -1252,10 +1215,7 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var resultado []map[string]interface{}
 
 	if err := json.Unmarshal(data, &actualizacionCuposRequest); err == nil {
-		fmt.Println("DATA INICIAL")
-		fmt.Println(actualizacionCuposRequest)
 		idPeriodo := actualizacionCuposRequest["periodoId"].(float64)
-		//var resultadoCuposInscripcion []map[string]interface{}
 		var fechaActualCiclo int
 		var cicloActual string
 		var cuposInscripcion []map[string]interface{}
@@ -1270,9 +1230,6 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 			return APIResponseDTO
 		}
 
-		fmt.Println("FECHAS CICLOS")
-		fmt.Println(fechaActualCiclo, cicloActual)
-
 		// RECUPERACIÓN DE LOS PROGRAMAS ACADEMICOS QUE TIENEN CUPOS EN CIERTO PERIODO
 		if resInscripcion, err := RecuperarProgramasPeriodo(idPeriodo); err == nil {
 			cuposInscripcion = resInscripcion
@@ -1283,47 +1240,24 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 		}
 
 		for _, CupoInscripcion := range cuposInscripcion {
-			fmt.Println("///**************************************************///")
-			// fmt.Println("CUPOS INSCRIPCION")
-			// fmt.Println(CupoInscripcion)
-			fmt.Println("PROGRAMA ACADÉMICO")
-			fmt.Println(CupoInscripcion["ProgramaAcademicoId"])
 			idprograma := CupoInscripcion["ProgramaAcademicoId"].(float64)
 			cuposHabilitadosPrograma := CupoInscripcion["CuposHabilitados"].(float64)
-			cuposOriginales := cuposHabilitadosPrograma
-			//var inscripcionesCambio int = 0
-			//cuposOpcionadosPrograma := CupoInscripcion["CuposOpcionados"].(float64)
 			var resultadoInscripcion []map[string]interface{}
 
 			errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+",ProgramaAcademicoId:"+fmt.Sprintf("%.f", idprograma)+",Opcion:"+cicloActual+"&sortby=Id&order=asc", &resultadoInscripcion)
 			if errInscripcion == nil && fmt.Sprintf("%v", resultadoInscripcion[0]["System"]) != "map[]" {
 				if resultadoInscripcion[0]["Status"] != 404 && resultadoInscripcion[0]["Id"] != nil {
-					// fmt.Println("INSCRIPCIONES ASOCIADAS AL CICLO ACTUAL")
-					// fmt.Println(resultadoInscripcion)
-					fmt.Println("CUPOS HABILITADOS ANTES DE BARRIDA")
-					fmt.Println(cuposHabilitadosPrograma)
 					for _, inscripcion := range resultadoInscripcion {
 						if estadoInscripcion, ok := inscripcion["EstadoInscripcionId"].(map[string]interface{}); ok {
-							fmt.Println("ESTADO INSCRIPCION")
-							fmt.Println(estadoInscripcion["Id"])
 							idEstadoInscripcion := estadoInscripcion["Id"].(float64)
 
-							if idEstadoInscripcion == 11 {
-								// BUSCAR LAS INSCRIPCIONES QUE FUERON ADMITIDAS
-								cuposHabilitadosPrograma = cuposHabilitadosPrograma - 1
-							} else if idEstadoInscripcion == 2 || idEstadoInscripcion == 8 || idEstadoInscripcion == 10 {
-								// BUSCAR LAS INSCRIPCIONES ADMITIDAS QUE NO REALIZARON EL PROCESO
-								// fmt.Println("ENTRA A ESTUDIANTE QUE NO SIGUIO EL PROCESO")
-								// TODO: ACRUALIZAR ESTADO INSCRIPCIÓN DE LAS INSCRIPCIONES QUE ENTRAN ACÁ CON 2
+							if idEstadoInscripcion == 2 || idEstadoInscripcion == 8 || idEstadoInscripcion == 10 {
 								if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
 									id := inscripcion["Id"].(float64)
 									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
 
-									fmt.Println(infoInscripcion)
-
 									if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
 										resultado = append(resultado, resInsc)
-										//inscripcionesCambio = inscripcionesCambio + 1
 									} else {
 										errorGetAll = true
 										APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
@@ -1332,39 +1266,12 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 							}
 						}
 					}
-					fmt.Println("CUPOS HABILITADOS DESPUÉS DE BARRIDA")
-					fmt.Println(cuposHabilitadosPrograma)
-					// fmt.Println("INSCRIPCIONES QUE REQUIEREN CAMBIO")
-					// fmt.Println(inscripcionesCambio)
-
-					// TODO: ACTUALIZAR FILA CUPO_INSCRIPCION CON LOS CUPOS HABILITADOS, SI ES QUE SE REQUIERE
-					if cuposOriginales != cuposHabilitadosPrograma {
-						fmt.Println("ENTRÓ A ACTUALIZAR CUPO_INSCRIPCION")
-						fmt.Println("CUPO_INSCRIPCION ANTES")
-						fmt.Println(CupoInscripcion)
-						if tipoInscripcion, ok := CupoInscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
-							id := CupoInscripcion["Id"].(float64)
-							infoCupoInscripcion := GenerarCuerpoActualizarCupoInscripcion(CupoInscripcion, cuposHabilitadosPrograma, tipoInscripcion)
-							fmt.Println("CUPO_INSCRIPCION DESPUÉS")
-							fmt.Println(infoCupoInscripcion)
-							if resCupoInsc, errCupoInsc := ActualizarCupoInscripcion(infoCupoInscripcion, id); errCupoInsc == nil {
-								resultado = append(resultado, resCupoInsc)
-							} else {
-								errorGetAll = true
-								APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupoInsc)
-							}
-						}
-					}
 
 					// EN CASO DE SER LA PRIMERA FECHA SE CAMBIAN LOS OPCIONADOS A ADMITIDOS, SI QUEDAN CUPOS DISPONIBLES
 					if fechaActualCiclo == 1 {
-						fmt.Println("REQUIERE ACTUALIZAR CUPOS ADMITIDOS")
 						var inscripcionesOpcionados []map[string]interface{}
-						// SE RECUPERAN LOS ASPIRANTES OPCIONADOS
 						if resInscripcion, err := RecuperarInscripcionesOpcionadas(idPeriodo, idprograma); err == nil {
 							inscripcionesOpcionados = resInscripcion
-							fmt.Println("INSCRIPCIONES OPCIONADAS")
-							fmt.Println(inscripcionesOpcionados)
 						} else {
 							errorGetAll = true
 							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
@@ -1386,13 +1293,10 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 								return APIResponseDTO
 							}
 
-							fmt.Println("ITERANDO")
-							fmt.Println(inscripcionOpcionada)
 							if tipoInscripcion, ok := inscripcionOpcionada["TipoInscripcionId"].(map[string]interface{}); ok {
 								id := inscripcionOpcionada["Id"].(float64)
 								infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(2, inscripcionOpcionada, tipoInscripcion)
 
-								fmt.Println(infoInscripcion)
 								if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
 									resultado = append(resultado, resInsc)
 									cuposHabilitadosPrograma = cuposHabilitadosPrograma - 1
@@ -1400,7 +1304,6 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 									errorGetAll = true
 									APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc)
 								}
-								// SE ACTUALIZA UN ASPIRANTE
 							}
 						}
 					}
@@ -1564,18 +1467,31 @@ func RecuperarProgramasPeriodo(idPeriodo float64) ([]map[string]interface{}, err
 		} else {
 			if resultadoCuposInscripcion[0]["Message"] == "Not found resource" {
 				return nil, fmt.Errorf("Not found resource")
-				// errorGetAll = true
-				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
 			} else {
 				return nil, fmt.Errorf("Not found resource")
-				// errorGetAll = true
-				// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, fmt.Errorf("Not found resource"))
 			}
 		}
 	} else {
 		return nil, errCuposInscripcion
-		// errorGetAll = true
-		// APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCuposInscripcion)
+	}
+}
+
+func RecuperarProgramasPeriodoProyecto(idPeriodo float64, idProgramaAcademico float64) ([]map[string]interface{}, error) {
+	var resultadoCuposInscripcion []map[string]interface{}
+
+	errCuposInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"cupo_inscripcion?query=Activo:true,ProgramaAcademicoId:"+fmt.Sprintf("%.f", idProgramaAcademico)+",PeriodoId:"+fmt.Sprintf("%.f", idPeriodo)+"&sortby=Id&order=asc", &resultadoCuposInscripcion)
+	if errCuposInscripcion == nil && fmt.Sprintf("%v", resultadoCuposInscripcion[0]["System"]) != "map[]" {
+		if resultadoCuposInscripcion[0]["Status"] != 404 && resultadoCuposInscripcion[0]["Id"] != nil {
+			return resultadoCuposInscripcion, nil
+		} else {
+			if resultadoCuposInscripcion[0]["Message"] == "Not found resource" {
+				return nil, fmt.Errorf("Not found resource")
+			} else {
+				return nil, fmt.Errorf("Not found resource")
+			}
+		}
+	} else {
+		return nil, errCuposInscripcion
 	}
 }
 
