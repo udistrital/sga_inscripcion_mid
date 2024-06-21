@@ -19,6 +19,66 @@ import (
 	"github.com/udistrital/utils_oas/requestresponse"
 )
 
+func ValidarReciboGet(idStr string) (APIResponseDTO requestresponse.APIResponse) {
+	//First we fetch the data
+	id := idStr
+
+	var idAspirante map[string]interface{}
+	err := request.GetJsonWSO2("http://"+beego.AppConfig.String("liquidacionMatriculasService")+"liquidacion/tercero/"+id, &idAspirante)
+	if err == nil {
+		if idAspirante != nil && fmt.Sprintf("%v", idAspirante) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", idAspirante) != "map[]" {
+			idAspiranteMap, ok := idAspirante["Data"].(map[string]interface{})
+			if !ok {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+			}
+
+			id, ok := idAspiranteMap["_id"].(string)
+			if !ok {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+			}
+
+			var idRecibo map[string]interface{}
+			err := request.GetJsonWSO2("http://"+beego.AppConfig.String("liquidacionMatriculasService")+"liquidacion-recibo/recibo/"+id, &idRecibo)
+			if err == nil {
+				if idRecibo != nil && fmt.Sprintf("%v", idRecibo) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", idRecibo) != "map[]" {
+
+					idReciboMap, ok := idRecibo["Data"].(map[string]interface{})
+					if !ok {
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+					}
+
+					idR, ok := idReciboMap["recibo_id"].(string)
+					if !ok {
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+					}
+
+					var data map[string]interface{}
+					err := request.GetJsonWSO2("http://"+beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+idR, &data)
+					if err == nil {
+						if data != nil && fmt.Sprintf("%v", data) != "map[reciboCollection:map[]]" && fmt.Sprintf("%v", data) != "map[]" {
+							APIResponseDTO = requestresponse.APIResponseDTO(true, 200, data, nil)
+						} else {
+							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboCollection seems empty")
+						}
+					} else {
+						APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+					}
+
+				} else {
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboCollection seems empty")
+				}
+			} else {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+			}
+		} else {
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, "ReciboCollection seems empty")
+		}
+	} else {
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+	return APIResponseDTO
+}
+
 func GenerarReciboPago(dataRecibo []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var data map[string]interface{}
 	//First we fetch the data

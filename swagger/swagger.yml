@@ -1039,6 +1039,24 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /legalizacion/actualizar-info-legalizacion:
+    put:
+      tags:
+      - legalizacion
+      description: Actualiza la información de legalización de matricula de un aspirante
+      operationId: LegalizacionController.PutInfoLegalizacionMatricula
+      parameters:
+      - in: body
+        name: body
+        description: body for Legalizacion content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
   /legalizacion/base:
     post:
       tags:
@@ -1075,6 +1093,26 @@ paths:
           description: '{}'
         "404":
           description: not found resource
+  /liquidacion/:
+    post:
+      tags:
+      - liquidacion
+      description: create Liquidacion
+      operationId: LiquidacionController.Create
+      parameters:
+      - in: body
+        name: body
+        description: body for Liquidacion content
+        required: true
+        schema:
+          $ref: '#/definitions/models.Liquidacion'
+      responses:
+        "201":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Liquidacion'
+        "403":
+          description: body is empty
   /recibos/comprobante-inscripcion:
     post:
       tags:
@@ -1436,6 +1474,23 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/helpers.Transferencia_reingreso'
+  /transferencia/solicitudes/programa/{id}:
+    get:
+      tags:
+      - transferencia
+      description: get solicitudes segun programa
+      operationId: Transferencia_reingresoController.GetSolicitudesInscripcion
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/helpers.Transferencia_reingreso'
 definitions:
   '{}':
     title: '{}'
@@ -1486,6 +1541,9 @@ tags:
 - name: legalizacion
   description: |
     LegalizacionController operations for Legalizacion
+- name: liquidacion
+  description: |
+    LiquidacionController operations for Liquidacion
 - name: cupos
   description: |
     CuposController operations for Cupos
