@@ -297,24 +297,6 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
         beego.ControllerComments{
-            Method: "ActualizarCuposAdmitidosOpcionado",
-            Router: "/actualizar-cupos-admitidos-opcionados",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
-        beego.ControllerComments{
-            Method: "ActualizarEstadoEstudianteMatriculado",
-            Router: "/actualizar-estado-estudiante-matriculado",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
-        beego.ControllerComments{
             Method: "GetEstadoInscripcion",
             Router: "/estado-recibos",
             AllowHTTPMethods: []string{"get"},
@@ -324,18 +306,18 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
         beego.ControllerComments{
-            Method: "PostInfoComplementariaTercero",
+            Method: "ActualizarInfoContacto",
             Router: "/informacion-complementaria/tercero",
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:InscripcionesController"],
         beego.ControllerComments{
-            Method: "ActualizarInfoContacto",
+            Method: "PostInfoComplementariaTercero",
             Router: "/informacion-complementaria/tercero",
-            AllowHTTPMethods: []string{"put"},
+            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -470,15 +452,6 @@ func init() {
         beego.ControllerComments{
             Method: "PutInfoLegalizacionMatricula",
             Router: "/actualizar-info-legalizacion",
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:LegalizacionController"],
-        beego.ControllerComments{
-            Method: "PutInfoSoportesLegalizacionMatricula",
-            Router: "/actualizar-info-soportes-legalizacion",
             AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,

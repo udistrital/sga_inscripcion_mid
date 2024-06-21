@@ -1074,63 +1074,7 @@
                 }
             }
         },
-        "/inscripciones/actualizar-cupos-admitidos-opcionados": {
-            "put": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "Actualiza los cupos, los admitidos y opcionados de un proyecto",
-                "operationId": "InscripcionesController.ActualizarCuposAdmitidosOpcionado",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for actualizar cupos admitidos opcionados content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/inscripciones/actualizar-estado-estudiante-matriculado": {
-            "put": {
-                "tags": [
-                    "inscripciones"
-                ],
-                "description": "Actualiza el estado de inscripción de un aspirante matriuclado",
-                "operationId": "InscripcionesController.ActualizarEstadoEstudianteMatriculado",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for actualizar estado estudiante matriculado content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/inscripciones/estado-recibos": {
+        "/inscripciones/estado_recibos/{persona_id}/{id_periodo}": {
             "get": {
                 "tags": [
                     "inscripciones"
@@ -1548,34 +1492,6 @@
                 ],
                 "description": "Actualiza la información de legalización de matricula de un aspirante",
                 "operationId": "LegalizacionController.PutInfoLegalizacionMatricula",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Legalizacion content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int}"
-                    },
-                    "400": {
-                        "description": "the request contains incorrect syntax"
-                    }
-                }
-            }
-        },
-        "/legalizacion/actualizar-info-soportes-legalizacion": {
-            "put": {
-                "tags": [
-                    "legalizacion"
-                ],
-                "description": "Actualiza la información de soportes de legalización de matricula de un aspirante",
-                "operationId": "LegalizacionController.PutInfoSoportesLegalizacionMatricula",
                 "parameters": [
                     {
                         "in": "body",
@@ -2298,7 +2214,7 @@
                     "transferencia"
                 ],
                 "description": "get solicitudes segun programa",
-                "operationId": "Transferencia_reingresoController.GetSolicitudesInscripcionSegunPrograma",
+                "operationId": "Transferencia_reingresoController.GetSolicitudesInscripcion",
                 "parameters": [
                     {
                         "in": "path",
