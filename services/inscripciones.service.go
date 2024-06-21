@@ -894,10 +894,10 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
 		objTransaccion := map[string]interface{}{
-			"codigo":   SolicitudInscripcion["Id"].(float64),
-			"nombre":   SolicitudInscripcion["Nombre"].(string),
-			"apellido": SolicitudInscripcion["Apellido"].(string),
-			"correo":   SolicitudInscripcion["Correo"].(string),
+			"codigo":              SolicitudInscripcion["Id"].(float64),
+			"nombre":              SolicitudInscripcion["Nombre"].(string),
+			"apellido":            SolicitudInscripcion["Apellido"].(string),
+			"correo":              SolicitudInscripcion["Correo"].(string),
 			"proyecto":            SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64),
 			"tiporecibo":          15, // se define 15 por que es el id definido en el api de recibos para inscripcion
 			"concepto":            "",
@@ -1212,12 +1212,49 @@ func ActualizarEstadoMatriculado(data []byte) (APIResponseDTO requestresponse.AP
 
 func ActualizarInscripcion(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {
 	var resp map[string]interface{}
+
+	cambiaEstado := false
+	nuevoEstado := helpers.GetEstadoInscripcion(infoComp)
+	var estadoActual int
+
+	var resultadoInscripcion map[string]interface{}
+	errorConsulta := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/"+fmt.Sprintf("%.f", id), &resultadoInscripcion)
+	if errorConsulta == nil {
+		estadoActual = helpers.GetEstadoInscripcion(resultadoInscripcion)
+		cambiaEstado = estadoActual != nuevoEstado
+	}
+
 	errPutInfoComp := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/"+fmt.Sprintf("%.f", id), "PUT", &resp, infoComp)
 	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
+		if cambiaEstado {
+			var respCambio map[string]interface{}
+			inscripcionEvolucionEstado := helpers.GenerarInscripcionEvolucionEstado(int(infoComp["Id"].(float64)), estadoActual, nuevoEstado, int(infoComp["PersonaId"].(float64)))
+			fmt.Println(inscripcionEvolucionEstado)
+			errorCambioEstado := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion_evolucion_estado", "POST", &respCambio, inscripcionEvolucionEstado)
+			if errorCambioEstado != nil {
+				return resp, errPutInfoComp
+			}
+		}
 		return resp, nil
 	} else {
 		return resp, errPutInfoComp
 	}
+}
+
+func ActualizarEstadoInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var inscripcion map[string]interface{}
+	if err := json.Unmarshal(data, &inscripcion); err == nil {
+		if resInsc, errInsc := ActualizarInscripcion(inscripcion, inscripcion["Id"].(float64)); errInsc == nil {
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 400, resInsc, nil)
+		} else {
+			logs.Error(errInsc)
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc.Error())
+		}
+	} else {
+		logs.Error(err)
+		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
+	}
+	return APIResponseDTO
 }
 
 func ActualizarCupoInscripcion(infoComp map[string]interface{}, id float64) (map[string]interface{}, error) {

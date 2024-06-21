@@ -8,6 +8,18 @@ import (
 	"github.com/udistrital/utils_oas/request"
 )
 
+type IDStruct struct {
+	Id int `json:"Id"`
+}
+
+type Inscripcion struct {
+	Activo                      bool     `json:"Activo"`
+	EstadoInscripcionIdAnterior IDStruct `json:"EstadoInscripcionIdAnterior"`
+	EstadoInscripcionId         IDStruct `json:"EstadoInscripcionId"`
+	InscripcionId               IDStruct `json:"InscripcionId"`
+	TerceroId                   int      `json:"TerceroId"`
+}
+
 func SetInactivo(url string) (exito bool) {
 	exito = false
 	var payload1 map[string]interface{}
@@ -187,5 +199,20 @@ func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
 		return credencial
 	} else {
 		return 0
+	}
+}
+
+func GetEstadoInscripcion(inscripcion map[string]interface{}) int {
+	estadoInscripcionId := inscripcion["EstadoInscripcionId"].(map[string]interface{})
+	return int(estadoInscripcionId["Id"].(float64))
+}
+
+func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual int, nuevoEstado int, tercero int) Inscripcion {
+	return Inscripcion{
+		Activo:                      true,
+		EstadoInscripcionIdAnterior: IDStruct{Id: estadoActual},
+		EstadoInscripcionId:         IDStruct{Id: nuevoEstado},
+		InscripcionId:               IDStruct{Id: inscripcion},
+		TerceroId:                   tercero,
 	}
 }
