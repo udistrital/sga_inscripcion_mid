@@ -9,15 +9,15 @@ import (
 )
 
 type IDStruct struct {
-	Id int `json:"Id"`
+	Id *int `json:"Id"`
 }
 
 type Inscripcion struct {
-	Activo                      bool     `json:"Activo"`
-	EstadoInscripcionIdAnterior IDStruct `json:"EstadoInscripcionIdAnterior"`
-	EstadoInscripcionId         IDStruct `json:"EstadoInscripcionId"`
-	InscripcionId               IDStruct `json:"InscripcionId"`
-	TerceroId                   int      `json:"TerceroId"`
+	Activo                      bool      `json:"Activo"`
+	EstadoInscripcionIdAnterior *IDStruct `json:"EstadoInscripcionIdAnterior,omitempty"`
+	EstadoInscripcionId         IDStruct  `json:"EstadoInscripcionId"`
+	InscripcionId               IDStruct  `json:"InscripcionId"`
+	TerceroId                   int       `json:"TerceroId"`
 }
 
 func SetInactivo(url string) (exito bool) {
@@ -202,17 +202,27 @@ func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
 	}
 }
 
-func GetEstadoInscripcion(inscripcion map[string]interface{}) int {
-	estadoInscripcionId := inscripcion["EstadoInscripcionId"].(map[string]interface{})
-	return int(estadoInscripcionId["Id"].(float64))
+func GetEstadoInscripcion(inscripcion map[string]interface{}) *int {
+	estadoInscripcionId, ok := inscripcion["EstadoInscripcionId"].(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	id, ok := estadoInscripcionId["Id"].(float64)
+	if !ok {
+		return nil
+	}
+
+	idInt := int(id)
+	return &idInt
 }
 
-func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual int, nuevoEstado int, tercero int) Inscripcion {
+func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual *IDStruct, nuevoEstado IDStruct, tercero int) Inscripcion {
 	return Inscripcion{
 		Activo:                      true,
-		EstadoInscripcionIdAnterior: IDStruct{Id: estadoActual},
-		EstadoInscripcionId:         IDStruct{Id: nuevoEstado},
-		InscripcionId:               IDStruct{Id: inscripcion},
+		EstadoInscripcionIdAnterior: estadoActual,
+		EstadoInscripcionId:         nuevoEstado,
+		InscripcionId:               IDStruct{Id: &inscripcion},
 		TerceroId:                   tercero,
 	}
 }
