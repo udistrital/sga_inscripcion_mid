@@ -12,7 +12,7 @@ type IDStruct struct {
 	Id *int `json:"Id"`
 }
 
-type Inscripcion struct {
+type InscripcionEvolucionEstado struct {
 	Activo                      bool      `json:"Activo"`
 	EstadoInscripcionIdAnterior *IDStruct `json:"EstadoInscripcionIdAnterior,omitempty"`
 	EstadoInscripcionId         IDStruct  `json:"EstadoInscripcionId"`
@@ -217,12 +217,28 @@ func GetEstadoInscripcion(inscripcion map[string]interface{}) *int {
 	return &idInt
 }
 
-func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual *IDStruct, nuevoEstado IDStruct, tercero int) Inscripcion {
-	return Inscripcion{
+func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual *IDStruct, nuevoEstado IDStruct, tercero *int) InscripcionEvolucionEstado {
+	return InscripcionEvolucionEstado{
 		Activo:                      true,
 		EstadoInscripcionIdAnterior: estadoActual,
 		EstadoInscripcionId:         nuevoEstado,
 		InscripcionId:               IDStruct{Id: &inscripcion},
-		TerceroId:                   tercero,
+		TerceroId:                   *tercero,
 	}
+}
+
+func ObtenerTerceroInscripcion(inscripcion map[string]interface{}) (tercero *int) {
+	terceroId, ok := inscripcion["TerceroId"].(float64)
+	if ok {
+		tercero := int(terceroId)
+		return &tercero
+	}
+
+	personaId, ok := inscripcion["PersonaId"].(float64)
+	if ok {
+		tercero := int(personaId)
+		return &tercero
+	}
+
+	return nil
 }

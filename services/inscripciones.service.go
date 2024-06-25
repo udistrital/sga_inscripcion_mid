@@ -999,7 +999,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			if errInscripcion == nil && inscripcionRealizada["Status"] != "400" {
 				var respCambio map[string]interface{}
 				estado := helpers.GetEstadoInscripcion(inscripcionRealizada)
-				inscripcionEvolucionEstado := helpers.GenerarInscripcionEvolucionEstado(int(inscripcionRealizada["Id"].(float64)), nil, helpers.IDStruct{Id: estado}, int(SolicitudInscripcion["PersonaId"].(float64)))
+				inscripcionEvolucionEstado := helpers.GenerarInscripcionEvolucionEstado(int(inscripcionRealizada["Id"].(float64)), nil, helpers.IDStruct{Id: estado}, helpers.ObtenerTerceroInscripcion(SolicitudInscripcion))
 				errorCambioEstado := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion_evolucion_estado", "POST", &respCambio, inscripcionEvolucionEstado)
 
 				errParam := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"parametro_periodo?query=Activo:true,ParametroId.TipoParametroId.Id:2,ParametroId.CodigoAbreviacion:"+TipoParametro+",PeriodoId.Year:"+fmt.Sprintf("%v", objTransaccion["aniopago"])+",PeriodoId.CodigoAbreviacion:VG", &parametro)
@@ -1233,7 +1233,7 @@ func ActualizarInscripcion(infoComp map[string]interface{}, id float64) (map[str
 	if errPutInfoComp == nil && resp["Status"] != "404" && resp["Status"] != "400" {
 		if cambiaEstado {
 			var respCambio map[string]interface{}
-			inscripcionEvolucionEstado := helpers.GenerarInscripcionEvolucionEstado(int(infoComp["Id"].(float64)), &helpers.IDStruct{Id: estadoActual}, helpers.IDStruct{Id: nuevoEstado}, int(infoComp["PersonaId"].(float64)))
+			inscripcionEvolucionEstado := helpers.GenerarInscripcionEvolucionEstado(int(infoComp["Id"].(float64)), &helpers.IDStruct{Id: estadoActual}, helpers.IDStruct{Id: nuevoEstado}, helpers.ObtenerTerceroInscripcion(infoComp))
 			errorCambioEstado := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion_evolucion_estado", "POST", &respCambio, inscripcionEvolucionEstado)
 			if errorCambioEstado != nil {
 				return resp, errPutInfoComp
