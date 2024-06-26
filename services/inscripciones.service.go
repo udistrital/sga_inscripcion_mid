@@ -894,10 +894,10 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 
 	if err := json.Unmarshal(data, &SolicitudInscripcion); err == nil {
 		objTransaccion := map[string]interface{}{
-			"codigo":   SolicitudInscripcion["Id"].(float64),
-			"nombre":   SolicitudInscripcion["Nombre"].(string),
-			"apellido": SolicitudInscripcion["Apellido"].(string),
-			"correo":   SolicitudInscripcion["Correo"].(string),
+			"codigo":              SolicitudInscripcion["Id"].(float64),
+			"nombre":              SolicitudInscripcion["Nombre"].(string),
+			"apellido":            SolicitudInscripcion["Apellido"].(string),
+			"correo":              SolicitudInscripcion["Correo"].(string),
 			"proyecto":            SolicitudInscripcion["ProgramaAcademicoCodigo"].(float64),
 			"tiporecibo":          15, // se define 15 por que es el id definido en el api de recibos para inscripcion
 			"concepto":            "",
@@ -1342,7 +1342,7 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 								// TODO: ACRUALIZAR ESTADO INSCRIPCIÓN DE LAS INSCRIPCIONES QUE ENTRAN ACÁ CON 2
 								if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
 									id := inscripcion["Id"].(float64)
-									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
+									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(12, inscripcion, tipoInscripcion)
 
 									fmt.Println(infoInscripcion)
 
