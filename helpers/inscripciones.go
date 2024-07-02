@@ -8,6 +8,18 @@ import (
 	"github.com/udistrital/utils_oas/request"
 )
 
+type IDStruct struct {
+	Id *int `json:"Id"`
+}
+
+type InscripcionEvolucionEstado struct {
+	Activo                      bool      `json:"Activo"`
+	EstadoInscripcionIdAnterior *IDStruct `json:"EstadoInscripcionIdAnterior,omitempty"`
+	EstadoInscripcionId         IDStruct  `json:"EstadoInscripcionId"`
+	InscripcionId               IDStruct  `json:"InscripcionId"`
+	TerceroId                   int       `json:"TerceroId"`
+}
+
 func SetInactivo(url string) (exito bool) {
 	exito = false
 	var payload1 map[string]interface{}
@@ -188,4 +200,45 @@ func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
 	} else {
 		return 0
 	}
+}
+
+func GetEstadoInscripcion(inscripcion map[string]interface{}) *int {
+	estadoInscripcionId, ok := inscripcion["EstadoInscripcionId"].(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	id, ok := estadoInscripcionId["Id"].(float64)
+	if !ok {
+		return nil
+	}
+
+	idInt := int(id)
+	return &idInt
+}
+
+func GenerarInscripcionEvolucionEstado(inscripcion int, estadoActual *IDStruct, nuevoEstado IDStruct, tercero *int) InscripcionEvolucionEstado {
+	return InscripcionEvolucionEstado{
+		Activo:                      true,
+		EstadoInscripcionIdAnterior: estadoActual,
+		EstadoInscripcionId:         nuevoEstado,
+		InscripcionId:               IDStruct{Id: &inscripcion},
+		TerceroId:                   *tercero,
+	}
+}
+
+func ObtenerTerceroInscripcion(inscripcion map[string]interface{}) (tercero *int) {
+	terceroId, ok := inscripcion["TerceroId"].(float64)
+	if ok {
+		tercero := int(terceroId)
+		return &tercero
+	}
+
+	personaId, ok := inscripcion["PersonaId"].(float64)
+	if ok {
+		tercero := int(personaId)
+		return &tercero
+	}
+
+	return nil
 }
