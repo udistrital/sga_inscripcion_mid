@@ -1320,7 +1320,7 @@ func ActualizarCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 							if idEstadoInscripcion == 2 || idEstadoInscripcion == 8 || idEstadoInscripcion == 10 {
 								if tipoInscripcion, ok := inscripcion["TipoInscripcionId"].(map[string]interface{}); ok {
 									id := inscripcion["Id"].(float64)
-									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(4, inscripcion, tipoInscripcion)
+									infoInscripcion := GenerarCuerpoActualizacionEstadoInscripcion(12, inscripcion, tipoInscripcion)
 
 									if resInsc, errInsc := ActualizarInscripcion(infoInscripcion, id); errInsc == nil {
 										resultado = append(resultado, resInsc)
