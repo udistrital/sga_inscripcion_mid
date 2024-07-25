@@ -296,236 +296,177 @@ func GetInfoEmpresa(idEmpresa string) (APIResponseDTO requestresponse.APIRespons
 }
 
 func GetExperienciaLaboralByPersona(idTercero string) (APIResponseDTO requestresponse.APIResponse) {
+    var empresa []map[string]interface{}
+    var resultado []map[string]interface{}
+    resultado = make([]map[string]interface{}, 0)
+    var empresaTercero map[string]interface{}
+    var errorGetAll bool
+    wge := new(errgroup.Group)
+    var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+    var DataMap []map[string]interface{}
 
-	var empresa []map[string]interface{}
-	var resultado []map[string]interface{}
-	resultado = make([]map[string]interface{}, 0)
-	var empresaTercero map[string]interface{}
-	var errorGetAll bool
-	wge := new(errgroup.Group)
-	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
+    endpoint := "http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero?query=TerceroId__Id:" + fmt.Sprintf("%v", idTercero) + ",InfoComplementariaId__CodigoAbreviacion:EXP_LABORAL,Activo:true&limit=0&sortby=Id&order=asc"
+    fmt.Println(endpoint)
+    errData := request.GetJson(endpoint, &DataMap)
+    if errData != nil {
+        errorGetAll = true
+        APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, errData.Error())
+        return APIResponseDTO
+    }
 
-	var DataMap []map[string]interface{}
+    if DataMap == nil || fmt.Sprintf("%v", DataMap) == "[map[]]" {
+        APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay experiencia laboral registrada")
+        return APIResponseDTO
+    }
 
-	fmt.Println("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero?query=TerceroId__Id:" + fmt.Sprintf("%v", idTercero) + ",InfoComplementariaId__CodigoAbreviacion:EXP_LABORAL,Activo:true&limit=0&sortby=Id&order=asc")
-	errData := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?query=TerceroId__Id:"+fmt.Sprintf("%v", idTercero)+",InfoComplementariaId__CodigoAbreviacion:EXP_LABORAL,Activo:true&limit=0&sortby=Id&order=asc", &DataMap)
-	if errData == nil {
-		if DataMap != nil && fmt.Sprintf("%v", DataMap) != "[map[]]" {
-			wge.SetLimit(-1)
-			for _, Data := range DataMap {
-				Data := Data
-				wge.Go(func() error {
-					var experiencia map[string]interface{}
-					resultadoAux := make(map[string]interface{})
-					if err := json.Unmarshal([]byte(Data["Dato"].(string)), &experiencia); err == nil {
-						resultadoAux["Id"] = Data["Id"]
-						resultadoAux["Actividades"] = experiencia["Actividades"]
-						resultadoAux["Cargo"] = experiencia["Cargo"]
-						resultadoAux["Soporte"] = experiencia["Soporte"]
-						resultadoAux["TipoVinculacion"] = experiencia["TipoVinculacion"]
-						resultadoAux["TipoDedicacion"] = experiencia["TipoDedicacion"]
-						resultadoAux["FechaFinalizacion"] = experiencia["FechaFinalizacion"]
-						resultadoAux["FechaInicio"] = experiencia["FechaInicio"]
-						resultadoAux["Nit"] = experiencia["Nit"]
+    wge.SetLimit(-1)
+    for _, Data := range DataMap {
+        Data := Data
+        wge.Go(func() error {
+            var experiencia map[string]interface{}
+            resultadoAux := make(map[string]interface{})
+            if err := json.Unmarshal([]byte(Data["Dato"].(string)), &experiencia); err != nil {
+                return err
+            }
 
-						if reflect.TypeOf(experiencia["Nit"]).Kind() == reflect.Float64 {
-							experiencia["Nit"] = fmt.Sprintf("%.f", experiencia["Nit"])
-						}
+            // Protegemos la escritura a resultadoAux
+            mutex.Lock()
+            resultadoAux["Id"] = Data["Id"]
+            resultadoAux["Actividades"] = experiencia["Actividades"]
+            resultadoAux["Cargo"] = experiencia["Cargo"]
+            resultadoAux["Soporte"] = experiencia["Soporte"]
+            resultadoAux["TipoVinculacion"] = experiencia["TipoVinculacion"]
+            resultadoAux["TipoDedicacion"] = experiencia["TipoDedicacion"]
+            resultadoAux["FechaFinalizacion"] = experiencia["FechaFinalizacion"]
+            resultadoAux["FechaInicio"] = experiencia["FechaInicio"]
+            resultadoAux["Nit"] = experiencia["Nit"]
+            mutex.Unlock()
 
-						var endpoint string
-						if strings.Contains(fmt.Sprintf("%v", experiencia["Nit"]), "-") {
-							var auxNit = strings.Split(fmt.Sprintf("%v", experiencia["Nit"]), "-")
-							endpoint = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + auxNit[0] + ",DigitoVerificacion:" + auxNit[1]
-						} else {
-							endpoint = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + fmt.Sprintf("%v", experiencia["Nit"])
-						}
+            if reflect.TypeOf(experiencia["Nit"]).Kind() == reflect.Float64 {
+                experiencia["Nit"] = fmt.Sprintf("%.f", experiencia["Nit"])
+            }
 
-						errDatosIdentificacion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+endpoint, &empresa)
-						if errDatosIdentificacion == nil {
-							if empresa != nil && len(empresa[0]) > 0 {
-								idEmpresa := empresa[0]["TerceroId"].(map[string]interface{})["Id"]
+            var endpoint string
+            if strings.Contains(fmt.Sprintf("%v", experiencia["Nit"]), "-") {
+                var auxNit = strings.Split(fmt.Sprintf("%v", experiencia["Nit"]), "-")
+                endpoint = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + auxNit[0] + ",DigitoVerificacion:" + auxNit[1]
+            } else {
+                endpoint = "datos_identificacion?query=TipoDocumentoId__Id:7,Numero:" + fmt.Sprintf("%v", experiencia["Nit"])
+            }
 
-								// GET que trae la información de la empresa
-								errEmpresa := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero/"+fmt.Sprintf("%v", idEmpresa), &empresaTercero)
-								if errEmpresa == nil && fmt.Sprintf("%v", empresaTercero["System"]) != "map[]" && empresaTercero["Id"] != nil {
-									if empresaTercero["Status"] != "400" {
-										mutex.Lock()
-										resultadoAux["NombreEmpresa"] = map[string]interface{}{
-											"Id":             idEmpresa,
-											"NombreCompleto": empresaTercero["NombreCompleto"],
-										}
-										mutex.Unlock()
+            errDatosIdentificacion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+endpoint, &empresa)
+            if errDatosIdentificacion != nil {
+                return errDatosIdentificacion
+            }
 
-										var lugar map[string]interface{}
-										// GET para traer los datos de la ubicación
-										errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+fmt.Sprintf("%v", empresaTercero["LugarOrigen"]), &lugar)
-										if errLugar == nil && fmt.Sprintf("%v", lugar) != "map[]" {
-											if lugar["Status"] != "404" {
-												mutex.Lock()
-												resultadoAux["Ubicacion"] = map[string]interface{}{
-													"Id":     lugar["PAIS"].(map[string]interface{})["Id"],
-													"Nombre": lugar["PAIS"].(map[string]interface{})["Nombre"],
-												}
-												mutex.Unlock()
+            if empresa == nil || len(empresa[0]) == 0 {
+                return errors.New("No empresa data found")
+            }
 
-												// GET para traer la dirección de la empresa (info_complementaria 54)
-												var resultadoDireccion []map[string]interface{}
-												errDireccion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:54,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoDireccion)
-												if errDireccion == nil && fmt.Sprintf("%v", resultadoDireccion[0]["System"]) != "map[]" {
-													if resultadoDireccion[0]["Status"] != "404" && resultadoDireccion[0]["Id"] != nil {
-														var direccionJSON map[string]interface{}
-														if err := json.Unmarshal([]byte(resultadoDireccion[0]["Dato"].(string)), &direccionJSON); err != nil {
-															mutex.Lock()
-															resultadoAux["Direccion"] = nil
-															mutex.Unlock()
-														} else {
-															mutex.Lock()
-															resultadoAux["Direccion"] = direccionJSON["address"]
-															mutex.Unlock()
-														}
-													} else {
-														mutex.Lock()
-														resultadoAux["Direccion"] = nil
-														mutex.Unlock()
-													}
-												} else {
-													return errDireccion
-												}
+            idEmpresa := empresa[0]["TerceroId"].(map[string]interface{})["Id"]
 
-												// GET para traer el telefono de la empresa (info_complementaria 51)
-												var resultadoTelefono []map[string]interface{}
-												errTelefono := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:51,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoTelefono)
-												if errTelefono == nil && fmt.Sprintf("%v", resultadoTelefono[0]["System"]) != "map[]" {
-													if resultadoTelefono[0]["Status"] != "404" && resultadoTelefono[0]["Id"] != nil {
-														var telefonoJSON map[string]interface{}
-														if err := json.Unmarshal([]byte(resultadoTelefono[0]["Dato"].(string)), &telefonoJSON); err != nil {
-															mutex.Lock()
-															resultadoAux["Telefono"] = nil
-															mutex.Unlock()
-														} else {
-															mutex.Lock()
-															resultadoAux["Telefono"] = telefonoJSON["telefono"]
-															mutex.Unlock()
-														}
-													} else {
-														mutex.Lock()
-														resultadoAux["Telefono"] = nil
-														mutex.Unlock()
-													}
-												} else {
-													return errTelefono
-												}
+            // GET que trae la información de la empresa
+            errEmpresa := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero/"+fmt.Sprintf("%v", idEmpresa), &empresaTercero)
+            if errEmpresa != nil || fmt.Sprintf("%v", empresaTercero["System"]) == "map[]" || empresaTercero["Id"] == nil {
+                return errEmpresa
+            }
 
-												// GET para traer el correo de la empresa (info_complementaria 53)
-												var resultadoCorreo []map[string]interface{}
-												errCorreo := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:53,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoCorreo)
-												if errCorreo == nil && fmt.Sprintf("%v", resultadoCorreo[0]["System"]) != "map[]" {
-													if resultadoCorreo[0]["Status"] != "404" && resultadoCorreo[0]["Id"] != nil {
-														var correoJSON map[string]interface{}
-														if err := json.Unmarshal([]byte(resultadoCorreo[0]["Dato"].(string)), &correoJSON); err != nil {
-															mutex.Lock()
-															resultadoAux["Correo"] = nil
-															mutex.Unlock()
-														} else {
-															mutex.Lock()
-															resultadoAux["Correo"] = correoJSON["email"]
-															mutex.Unlock()
-														}
-													} else {
-														mutex.Lock()
-														resultadoAux["Correo"] = nil
-														mutex.Unlock()
-													}
-												} else {
-													return errCorreo
-												}
+            if empresaTercero["Status"] == "400" {
+                return errors.New("Empresa status 400")
+            }
 
-												// GET para traer la organizacion de la empresa (info_complementaria 110)
-												var resultadoOrganizacion []map[string]interface{}
-												errorganizacion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero_tipo_tercero/?limit=1&query=TerceroId__Id:"+fmt.Sprintf("%.f", idEmpresa), &resultadoOrganizacion)
-												if errorganizacion == nil && fmt.Sprintf("%v", resultadoOrganizacion[0]["System"]) != "map[]" {
-													if resultadoOrganizacion[0]["Status"] != "404" && resultadoOrganizacion[0]["Id"] != nil {
-														mutex.Lock()
-														resultadoAux["TipoTerceroId"] = map[string]interface{}{
-															"Id":     resultadoOrganizacion[0]["TipoTerceroId"].(map[string]interface{})["Id"],
-															"Nombre": resultadoOrganizacion[0]["TipoTerceroId"].(map[string]interface{})["Nombre"],
-														}
-														mutex.Unlock()
-													} else {
-														mutex.Lock()
-														resultadoAux["TipoTerceroId"] = nil
-														mutex.Unlock()
-													}
-												} else {
-													return errorganizacion
-												}
+            // Protegemos la escritura a resultadoAux y resultado
+            mutex.Lock()
+            defer mutex.Unlock()
 
-											} else {
-												mutex.Lock()
-												resultadoAux["Ubicacion"] = nil
-												resultadoAux["Direccion"] = nil
-												resultadoAux["Telefono"] = nil
-												resultadoAux["Correo"] = nil
-												resultadoAux["TipoTerceroId"] = nil
-												mutex.Unlock()
-											}
-										} else {
-											return errLugar
-										}
-									} else {
-										mutex.Lock()
-										resultadoAux["NombreCompleto"] = nil
-										resultadoAux["Ubicacion"] = nil
-										resultadoAux["Direccion"] = nil
-										resultadoAux["Telefono"] = nil
-										resultadoAux["Correo"] = nil
-										resultadoAux["TipoTerceroId"] = nil
-										mutex.Unlock()
-									}
-								} else {
-									return errEmpresa
-								}
-							} else {
-								mutex.Lock()
-								resultadoAux["NombreEmpresa"] = nil
-								resultadoAux["Ubicacion"] = nil
-								resultadoAux["Direccion"] = nil
-								resultadoAux["Telefono"] = nil
-								resultadoAux["Correo"] = nil
-								resultadoAux["TipoTerceroId"] = nil
-								mutex.Unlock()
-							}
-						} else {
-							return errDatosIdentificacion
-						}
-						mutex.Lock()
-						resultado = append(resultado, resultadoAux)
-						mutex.Unlock()
-					} else {
-						return errors.New("No data found")
-					}
-					return nil
-				})
-			}
-			if err := wge.Wait(); err != nil {
-				errorGetAll = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, err.Error())
-			}
-		} else {
-			errorGetAll = true
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, "No hay experiencia laboral registrada")
-		}
-	} else {
-		errorGetAll = true
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 404, resultado, "No data found")
-	}
+            resultadoAux["NombreEmpresa"] = map[string]interface{}{
+                "Id":             idEmpresa,
+                "NombreCompleto": empresaTercero["NombreCompleto"],
+            }
 
-	if !errorGetAll {
-		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
-		return APIResponseDTO
-	} else {
-		return APIResponseDTO
-	}
+            var lugar map[string]interface{}
+            errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+fmt.Sprintf("%v", empresaTercero["LugarOrigen"]), &lugar)
+            if errLugar != nil || fmt.Sprintf("%v", lugar) == "map[]" || lugar["Status"] == "404" {
+                resultadoAux["Ubicacion"] = nil
+                resultadoAux["Direccion"] = nil
+                resultadoAux["Telefono"] = nil
+                resultadoAux["Correo"] = nil
+                resultadoAux["TipoTerceroId"] = nil
+                resultado = append(resultado, resultadoAux)
+                return errLugar
+            }
+
+            resultadoAux["Ubicacion"] = map[string]interface{}{
+                "Id":     lugar["PAIS"].(map[string]interface{})["Id"],
+                "Nombre": lugar["PAIS"].(map[string]interface{})["Nombre"],
+            }
+
+            var resultadoDireccion []map[string]interface{}
+            errDireccion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:54,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoDireccion)
+            if errDireccion == nil && fmt.Sprintf("%v", resultadoDireccion[0]["System"]) != "map[]" && resultadoDireccion[0]["Status"] != "404" && resultadoDireccion[0]["Id"] != nil {
+                var direccionJSON map[string]interface{}
+                if err := json.Unmarshal([]byte(resultadoDireccion[0]["Dato"].(string)), &direccionJSON); err == nil {
+                    resultadoAux["Direccion"] = direccionJSON["address"]
+                } else {
+                    resultadoAux["Direccion"] = nil
+                }
+            } else {
+                resultadoAux["Direccion"] = nil
+            }
+
+            var resultadoTelefono []map[string]interface{}
+            errTelefono := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:51,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoTelefono)
+            if errTelefono == nil && fmt.Sprintf("%v", resultadoTelefono[0]["System"]) != "map[]" && resultadoTelefono[0]["Status"] != "404" && resultadoTelefono[0]["Id"] != nil {
+                var telefonoJSON map[string]interface{}
+                if err := json.Unmarshal([]byte(resultadoTelefono[0]["Dato"].(string)), &telefonoJSON); err == nil {
+                    resultadoAux["Telefono"] = telefonoJSON["telefono"]
+                } else {
+                    resultadoAux["Telefono"] = nil
+                }
+            } else {
+                resultadoAux["Telefono"] = nil
+            }
+
+            var resultadoCorreo []map[string]interface{}
+            errCorreo := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero?limit=1&query=Activo:true,InfoComplementariaId__Id:53,TerceroId:"+fmt.Sprintf("%.f", idEmpresa), &resultadoCorreo)
+            if errCorreo == nil && fmt.Sprintf("%v", resultadoCorreo[0]["System"]) != "map[]" && resultadoCorreo[0]["Status"] != "404" && resultadoCorreo[0]["Id"] != nil {
+                var correoJSON map[string]interface{}
+                if err := json.Unmarshal([]byte(resultadoCorreo[0]["Dato"].(string)), &correoJSON); err == nil {
+                    resultadoAux["Correo"] = correoJSON["email"]
+                } else {
+                    resultadoAux["Correo"] = nil
+                }
+            } else {
+                resultadoAux["Correo"] = nil
+            }
+
+            var resultadoOrganizacion []map[string]interface{}
+            errorganizacion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+"tercero_tipo_tercero/?limit=1&query=TerceroId__Id:"+fmt.Sprintf("%.f", idEmpresa), &resultadoOrganizacion)
+            if errorganizacion == nil && fmt.Sprintf("%v", resultadoOrganizacion[0]["System"]) != "map[]" && resultadoOrganizacion[0]["Status"] != "404" && resultadoOrganizacion[0]["Id"] != nil {
+                resultadoAux["TipoTerceroId"] = map[string]interface{}{
+                    "Id":     resultadoOrganizacion[0]["TipoTerceroId"].(map[string]interface{})["Id"],
+                    "Nombre": resultadoOrganizacion[0]["TipoTerceroId"].(map[string]interface{})["Nombre"],
+                }
+            } else {
+                resultadoAux["TipoTerceroId"] = nil
+            }
+
+            resultado = append(resultado, resultadoAux)
+            return nil
+        })
+    }
+
+    if err := wge.Wait(); err != nil {
+        errorGetAll = true
+        APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, err.Error())
+    }
+
+    if !errorGetAll {
+        APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resultado, nil)
+    } else {
+        APIResponseDTO = requestresponse.APIResponseDTO(false, 404, resultado, "No data found")
+    }
+    return APIResponseDTO
 }
 
 func ActualizarExperienciaLaboral(idTercero string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
