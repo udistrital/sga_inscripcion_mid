@@ -131,6 +131,7 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 									"ReciboInscripcion":   Inscripciones[i]["ReciboInscripcion"],
 									"FechaCreacion":       Inscripciones[i]["FechaCreacion"],
 									"Estado":              Estado,
+									"Activo":              Inscripciones[i]["Activo"],
 									"EstadoInscripcion":   Inscripciones[i]["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
 								}
 							} else {
