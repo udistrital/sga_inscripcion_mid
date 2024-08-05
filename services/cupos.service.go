@@ -13,21 +13,24 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-//Funcion para recibir todos los cupos para una inscripcion
+// Funcion para recibir todos los cupos para una inscripcion
 func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 	var cupo []map[string]interface{}
-
+	fmt.Println("GetAlhola cupos")
 	var listado []map[string]interface{}
 	//Definición de el group para las gorutines
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
+	fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"))
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
 	if errCupos == nil {
 		wge.SetLimit(-1)
 		for _, c := range cupo {
 			c := c
-			wge.Go(func () error{
+			wge.Go(func() error {
+				fmt.Println("Cupo: ", c)
+				fmt.Println("--------------------")
 				var cupoContenido = make(map[string]interface{})
 				tipoInscripcionId := c["TipoInscripcionId"].(map[string]interface{})
 				idIns := tipoInscripcionId["Id"].(float64)
@@ -36,37 +39,35 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 				cupoContenido["CuposHabilitados"] = c["CuposHabilitados"]
 				cupoContenido["CuposOpcionados"] = c["CuposOpcionados"]
 				cupoContenido["PeriodoId"] = c["PeriodoId"]
-				cupoContenido["ProgramaAcademicoId"] = c["ProgramaAcademicoId"]
+				cupoContenido["ProyectoAcademicoId"] = c["ProyectoAcademicoId"]
 				cupoContenido["FechaCreacion"] = c["FechaCreacion"]
 				cupoContenido["CupoId"] = c["CupoId"]
 				cupoContenido["Id"] = c["Id"]
 				cupoContenido["TipoInscripcionId"] = idIns
 				cupoContenido["NombreInscripcion"] = nombreIns
 				idcupo := c["CupoId"].(float64)
-	
+
 				var tipocupo map[string]interface{}
 				errtipocupo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"/parametro?query=TipoParametroId__Id:87,Id:"+fmt.Sprintf("%v", idcupo)+"&limit=0", &tipocupo)
-				//fmt.Println(ProyectoV2["Data"])
 				if errtipocupo == nil && tipocupo["Status"] == "200" && fmt.Sprintf("%v", tipocupo["Data"]) != "[map[]]" {
 					cupoContenido["Nombre"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Nombre"]
+					cupoContenido["Descripcion"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Descripcion"]
 				} else {
 				}
 
 				mutex.Lock()
 				listado = append(listado, cupoContenido)
 				mutex.Unlock()
-				
+
 				return errtipocupo
 			})
 		}
 		//Si existe error, se realiza
 		if err := wge.Wait(); err != nil {
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
-		}else{
+		} else {
 			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, listado)
 		}
-
-		
 
 	} else {
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupos.Error())
@@ -90,7 +91,7 @@ func UpdateCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIResp
 			"CuposHabilitados":    cupoActualizado["CuposHabilitados"],
 			"CuposOpcionados":     cupoActualizado["CuposOpcionados"],
 			"PeriodoId":           cupoActualizado["PeriodoId"],
-			"ProgramaAcademicoId": cupoActualizado["ProgramaAcademicoId"],
+			"ProyectoAcademicoId": cupoActualizado["ProyectoAcademicoId"],
 			"CupoId":              cupoActualizado["CupoId"],
 			"TipoInscripcionId":   cupoActualizado["TipoInscripcionId"],
 		}
