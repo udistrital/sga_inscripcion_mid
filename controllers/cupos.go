@@ -30,7 +30,11 @@ func (c *CuposController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *CuposController) Post() {
-
+	data := c.Ctx.Input.RequestBody
+	respuesta := services.PostCuposInscripcion(data)
+	c.Ctx.Output.SetStatus(respuesta.Status)
+	c.Data["json"] = respuesta
+	c.ServeJSON()
 }
 
 // PostDocs ...
