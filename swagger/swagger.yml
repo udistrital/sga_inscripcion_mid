@@ -714,7 +714,61 @@ paths:
           description: '{}'
         "400":
           description: the request contains incorrect syntax
-  /inscripciones/estado_recibos/{persona_id}/{id_periodo}:
+  /inscripciones/actualizar-cupos-admitidos-opcionados:
+    put:
+      tags:
+      - inscripciones
+      description: Actualiza los cupos, los admitidos y opcionados de un proyecto
+      operationId: InscripcionesController.ActualizarCuposAdmitidosOpcionado
+      parameters:
+      - in: body
+        name: body
+        description: body for actualizar cupos admitidos opcionados content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
+  /inscripciones/actualizar-estado-estudiante-matriculado:
+    put:
+      tags:
+      - inscripciones
+      description: Actualiza el estado de inscripción de un aspirante matriuclado
+      operationId: InscripcionesController.ActualizarEstadoEstudianteMatriculado
+      parameters:
+      - in: body
+        name: body
+        description: body for actualizar estado estudiante matriculado content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
+  /inscripciones/actualizar-inscripcion:
+    post:
+      tags:
+      - inscripciones
+      description: Actualiza la inscripcion y coordina registro de historico en cambio de estado
+      operationId: InscripcionesController.ActualizarEstadoInscripcion
+      parameters:
+      - in: body
+        name: body
+        description: body for actualizar inscripcion
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{int}'
+        "400":
+          description: the request contains incorrect syntax
+  /inscripciones/estado-recibos:
     get:
       tags:
       - inscripciones
@@ -1479,7 +1533,7 @@ paths:
       tags:
       - transferencia
       description: get solicitudes segun programa
-      operationId: Transferencia_reingresoController.GetSolicitudesInscripcion
+      operationId: Transferencia_reingresoController.GetSolicitudesInscripcionSegunPrograma
       parameters:
       - in: path
         name: id
