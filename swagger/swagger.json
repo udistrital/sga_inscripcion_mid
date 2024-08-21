@@ -1130,6 +1130,36 @@
                 }
             }
         },
+
+        "/inscripciones/actualizar-inscripcion": {
+            "post": {
+                "tags": [
+                    "inscripciones"
+                ],
+                "description": "Actualiza la inscripcion y coordina registro de historico en cambio de estado",
+                "operationId": "InscripcionesController.ActualizarEstadoInscripcion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for actualizar inscripcion",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+
         "/inscripciones/estado-recibos": {
             "get": {
                 "tags": [

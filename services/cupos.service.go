@@ -13,21 +13,22 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-//Funcion para recibir todos los cupos para una inscripcion
+// Funcion para recibir todos los cupos para una inscripcion
 func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 	var cupo []map[string]interface{}
-
+	fmt.Println("GetAlhola cupos")
 	var listado []map[string]interface{}
 	//Definición de el group para las gorutines
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
+	fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"))
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
 	if errCupos == nil {
 		wge.SetLimit(-1)
 		for _, c := range cupo {
 			c := c
-			wge.Go(func () error{
+			wge.Go(func() error {
 				var cupoContenido = make(map[string]interface{})
 				tipoInscripcionId := c["TipoInscripcionId"].(map[string]interface{})
 				idIns := tipoInscripcionId["Id"].(float64)
@@ -36,37 +37,35 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 				cupoContenido["CuposHabilitados"] = c["CuposHabilitados"]
 				cupoContenido["CuposOpcionados"] = c["CuposOpcionados"]
 				cupoContenido["PeriodoId"] = c["PeriodoId"]
-				cupoContenido["ProgramaAcademicoId"] = c["ProgramaAcademicoId"]
+				cupoContenido["ProyectoAcademicoId"] = c["ProyectoAcademicoId"]
 				cupoContenido["FechaCreacion"] = c["FechaCreacion"]
 				cupoContenido["CupoId"] = c["CupoId"]
 				cupoContenido["Id"] = c["Id"]
 				cupoContenido["TipoInscripcionId"] = idIns
 				cupoContenido["NombreInscripcion"] = nombreIns
 				idcupo := c["CupoId"].(float64)
-	
+
 				var tipocupo map[string]interface{}
 				errtipocupo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"/parametro?query=TipoParametroId__Id:87,Id:"+fmt.Sprintf("%v", idcupo)+"&limit=0", &tipocupo)
-				//fmt.Println(ProyectoV2["Data"])
 				if errtipocupo == nil && tipocupo["Status"] == "200" && fmt.Sprintf("%v", tipocupo["Data"]) != "[map[]]" {
 					cupoContenido["Nombre"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Nombre"]
+					cupoContenido["Descripcion"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Descripcion"]
 				} else {
 				}
 
 				mutex.Lock()
 				listado = append(listado, cupoContenido)
 				mutex.Unlock()
-				
+
 				return errtipocupo
 			})
 		}
 		//Si existe error, se realiza
 		if err := wge.Wait(); err != nil {
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
-		}else{
+		} else {
 			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, listado)
 		}
-
-		
 
 	} else {
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupos.Error())
@@ -90,7 +89,7 @@ func UpdateCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIResp
 			"CuposHabilitados":    cupoActualizado["CuposHabilitados"],
 			"CuposOpcionados":     cupoActualizado["CuposOpcionados"],
 			"PeriodoId":           cupoActualizado["PeriodoId"],
-			"ProgramaAcademicoId": cupoActualizado["ProgramaAcademicoId"],
+			"ProyectoAcademicoId": cupoActualizado["ProyectoAcademicoId"],
 			"CupoId":              cupoActualizado["CupoId"],
 			"TipoInscripcionId":   cupoActualizado["TipoInscripcionId"],
 		}
@@ -190,4 +189,117 @@ func PostDocCupos(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	}
 	APIResponseDTO = requestresponse.APIResponseDTO(true, 500, respuesta, nuevoComentario)
 	return APIResponseDTO
+}
+
+func PostCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var registros interface{}
+	var respuesta map[string]interface{}
+	var errores []string
+
+	if err := json.Unmarshal(data, &registros); err == nil {
+		date := time_bogota.TiempoBogotaFormato()
+
+		switch registros := registros.(type) {
+		case map[string]interface{}:
+			if registros["Id"] != nil {
+				idCupo := registros["Id"].(float64)
+				cupoActualizado := map[string]interface{}{
+					"Activo":              true,
+					"FechaCreacion":       date,
+					"FechaModificacion":   date,
+					"CuposHabilitados":    registros["CuposHabilitados"],
+					"CuposOpcionados":     registros["CuposOpcionados"],
+					"PeriodoId":           registros["PeriodoId"],
+					"ProyectoAcademicoId": registros["ProyectoAcademicoId"],
+					"CupoId":              registros["CupoId"],
+					"TipoInscripcionId": map[string]interface{}{
+						"Id": registros["TipoInscripcionId"],
+					},
+				}
+
+				errActualizarCupo := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"cupo_inscripcion/"+fmt.Sprintf("%.f", idCupo), "PUT", &cupoActualizado, respuesta)
+
+				if errActualizarCupo != nil {
+					errores = append(errores, errActualizarCupo.Error())
+				}
+			}
+		case []interface{}:
+			for _, registro := range registros {
+				if registroMap, ok := registro.(map[string]interface{}); ok {
+					if registroMap["Id"] != nil {
+						idCupo := registroMap["Id"].(float64)
+						cupoActualizado := map[string]interface{}{
+							"Activo":              true,
+							"FechaCreacion":       date,
+							"FechaModificacion":   date,
+							"CuposHabilitados":    registroMap["CuposHabilitados"],
+							"CuposOpcionados":     registroMap["CuposOpcionados"],
+							"PeriodoId":           registroMap["PeriodoId"],
+							"ProyectoAcademicoId": registroMap["ProyectoAcademicoId"],
+							"CupoId":              registroMap["CupoId"],
+							"TipoInscripcionId": map[string]interface{}{
+								"Id": registroMap["TipoInscripcionId"],
+							},
+						}
+						errActualizarCupo := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"/cupo_inscripcion/"+fmt.Sprintf("%.f", idCupo), "PUT", &respuesta, cupoActualizado)
+
+						if errActualizarCupo != nil {
+							errores = append(errores, errActualizarCupo.Error())
+
+						}
+					} else {
+
+						fmt.Println("-----------")
+						fmt.Println(registroMap)
+						fmt.Println("-----------")
+						cupoNuevo := map[string]interface{}{
+
+							"Activo":              true,
+							"FechaCreacion":       date,
+							"FechaModificacion":   date,
+							"CuposHabilitados":    registroMap["CuposHabilitados"],
+							"CuposOpcionados":     registroMap["CuposOpcionados"],
+							"PeriodoId":           registroMap["PeriodoId"],
+							"ProyectoAcademicoId": registroMap["ProyectoAcademicoId"],
+							"CupoId":              registroMap["CupoId"],
+							"TipoInscripcionId": map[string]interface{}{
+								"Id": registroMap["TipoInscripcionId"],
+							},
+						}
+						errActualizarCupo := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"/cupo_inscripcion/", "POST", &respuesta, cupoNuevo)
+						if errActualizarCupo != nil {
+							errores = append(errores, errActualizarCupo.Error())
+						} else {
+
+							dataComentario := map[string]interface{}{
+
+								"Activo":            true,
+								"FechaCreacion":     date,
+								"FechaModificacion": date,
+								"Comentario":        registroMap["Comentario"],
+								"Uid":               registroMap["Enlace"],
+								"CupoInscripcionId": map[string]interface{}{
+									"Id": respuesta["Id"],
+								},
+							}
+							errDocumentoCupo := request.SendJson("http://"+beego.AppConfig.String("InscripcionService")+"/documento_cupo/", "POST", &respuesta, dataComentario)
+							fmt.Println(respuesta)
+							if errDocumentoCupo != nil {
+								errores = append(errores, errDocumentoCupo.Error())
+							}
+						}
+
+					}
+				}
+			}
+			return requestresponse.APIResponseDTO(true, 200, respuesta)
+		default:
+			return requestresponse.APIResponseDTO(false, 400, nil, "Formato de datos no válido")
+		}
+	} else {
+		fmt.Println("Error al decodificar datos JSON:", err)
+		return requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar datos JSON: "+err.Error())
+	}
+
+	return requestresponse.APIResponseDTO(true, 200, respuesta, respuesta)
 }
