@@ -1130,6 +1130,7 @@
                 }
             }
         },
+
         "/inscripciones/actualizar-inscripcion": {
             "post": {
                 "tags": [
@@ -1158,6 +1159,7 @@
                 }
             }
         },
+
         "/inscripciones/estado-recibos": {
             "get": {
                 "tags": [
@@ -1828,7 +1830,7 @@
                 }
             }
         },
-        "/recibos/estudiantes/": {
+        "/recibos/estudiantes/derechos": {
             "post": {
                 "tags": [
                     "recibos"

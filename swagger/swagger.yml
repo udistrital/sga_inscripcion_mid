@@ -750,6 +750,7 @@ paths:
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
+
   /inscripciones/actualizar-inscripcion:
     post:
       tags:
@@ -1203,7 +1204,7 @@ paths:
           description: '{}'
         "400":
           description: body is empty
-  /recibos/estudiantes/:
+  /recibos/estudiantes/derechos:
     post:
       tags:
       - recibos
