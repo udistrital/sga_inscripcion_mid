@@ -550,35 +550,40 @@ func ConsultarEventos(idEvento string) (APIResponseDTO requestresponse.APIRespon
 
 func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var InfoComplementaria map[string]interface{}
-
-	var algoFallo bool = false
-
+	var algoFallo bool
 	var inactivePosts []map[string]interface{}
-
 	var respuestas []interface{}
+	var mutex sync.Mutex
 
 	if err := json.Unmarshal(data, &InfoComplementaria); err == nil {
-
 		var InfoComplementariaTercero = InfoComplementaria["InfoComplementariaTercero"].([]interface{})
 		var date = time_bogota.TiempoBogotaFormato()
+		var wg sync.WaitGroup
 
 		for _, datoInfoComplementaria := range InfoComplementariaTercero {
-			var dato = datoInfoComplementaria.(map[string]interface{})
+			dato := datoInfoComplementaria.(map[string]interface{})
 			dato["FechaCreacion"] = date
 			dato["FechaModificacion"] = date
-			var resultadoInfoComeplementaria map[string]interface{}
-			errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
-			if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Status"] == "400" || resultadoInfoComeplementaria["Message"] != nil {
-				algoFallo = true
-				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInfoComplementaria.Error())
-			} else {
-				respuestas = append(respuestas, resultadoInfoComeplementaria)
-				inactivePosts = append(inactivePosts, resultadoInfoComeplementaria)
-			}
+			wg.Add(1)
+			go func(dato map[string]interface{}) {
+				defer wg.Done()
+				var resultadoInfoComeplementaria map[string]interface{}
+				errInfoComplementaria := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"info_complementaria_tercero", "POST", &resultadoInfoComeplementaria, dato)
+				mutex.Lock()
+				defer mutex.Unlock()
+				if resultadoInfoComeplementaria["Type"] == "error" || errInfoComplementaria != nil || resultadoInfoComeplementaria["Status"] == "404" || resultadoInfoComeplementaria["Status"] == "400" || resultadoInfoComeplementaria["Message"] != nil {
+					algoFallo = true
+					APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInfoComplementaria.Error())
+				} else {
+					respuestas = append(respuestas, resultadoInfoComeplementaria)
+					inactivePosts = append(inactivePosts, resultadoInfoComeplementaria)
+				}
+			}(dato)
 			if algoFallo {
 				break
 			}
 		}
+		wg.Wait()
 	} else {
 		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 	}
@@ -589,7 +594,6 @@ func InfoComplementariaTercero(data []byte) (APIResponseDTO requestresponse.APIR
 		for _, disable := range inactivePosts {
 			helpers.SetInactivo("http://" + beego.AppConfig.String("TercerosService") + "info_complementaria_tercero/" + fmt.Sprintf("%.f", disable["Id"].(float64)))
 		}
-		return APIResponseDTO
 	}
 	return APIResponseDTO
 }
