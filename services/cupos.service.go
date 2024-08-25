@@ -36,6 +36,7 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 				cupoContenido["Activo"] = c["Activo"]
 				cupoContenido["CuposHabilitados"] = c["CuposHabilitados"]
 				cupoContenido["CuposOpcionados"] = c["CuposOpcionados"]
+				cupoContenido["CuposDisponibles"] = c["CuposDisponibles"]
 				cupoContenido["PeriodoId"] = c["PeriodoId"]
 				cupoContenido["ProyectoAcademicoId"] = c["ProyectoAcademicoId"]
 				cupoContenido["FechaCreacion"] = c["FechaCreacion"]
@@ -209,6 +210,7 @@ func PostCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIRespon
 					"FechaModificacion":   date,
 					"CuposHabilitados":    registros["CuposHabilitados"],
 					"CuposOpcionados":     registros["CuposOpcionados"],
+					"CuposDisponibles":    registros["CuposDisponibles"],
 					"PeriodoId":           registros["PeriodoId"],
 					"ProyectoAcademicoId": registros["ProyectoAcademicoId"],
 					"CupoId":              registros["CupoId"],
@@ -234,6 +236,7 @@ func PostCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIRespon
 							"FechaModificacion":   date,
 							"CuposHabilitados":    registroMap["CuposHabilitados"],
 							"CuposOpcionados":     registroMap["CuposOpcionados"],
+							"CuposDisponibles":    registroMap["CuposDisponibles"],
 							"PeriodoId":           registroMap["PeriodoId"],
 							"ProyectoAcademicoId": registroMap["ProyectoAcademicoId"],
 							"CupoId":              registroMap["CupoId"],
@@ -259,6 +262,7 @@ func PostCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIRespon
 							"FechaModificacion":   date,
 							"CuposHabilitados":    registroMap["CuposHabilitados"],
 							"CuposOpcionados":     registroMap["CuposOpcionados"],
+							"CuposDisponibles":    registroMap["CuposDisponibles"],
 							"PeriodoId":           registroMap["PeriodoId"],
 							"ProyectoAcademicoId": registroMap["ProyectoAcademicoId"],
 							"CupoId":              registroMap["CupoId"],
