@@ -1130,7 +1130,6 @@
                 }
             }
         },
-
         "/inscripciones/actualizar-inscripcion": {
             "post": {
                 "tags": [
@@ -1159,7 +1158,6 @@
                 }
             }
         },
-
         "/inscripciones/estado-recibos": {
             "get": {
                 "tags": [
