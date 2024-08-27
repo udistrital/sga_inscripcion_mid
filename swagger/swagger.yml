@@ -750,7 +750,6 @@ paths:
           description: '{int}'
         "400":
           description: the request contains incorrect syntax
-
   /inscripciones/actualizar-inscripcion:
     post:
       tags:

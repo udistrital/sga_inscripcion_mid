@@ -924,6 +924,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			"Activo":              true,
 			"EstadoInscripcionId": map[string]interface{}{"Id": 1},
 			"TipoInscripcionId":   map[string]interface{}{"Id": SolicitudInscripcion["TipoInscripcionId"]},
+			"TipoCupo":            SolicitudInscripcion["TipoCupo"].(float64),
 		}
 
 		if SolicitudInscripcion["Nivel"].(float64) == 1 {
