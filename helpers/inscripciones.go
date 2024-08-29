@@ -182,25 +182,34 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 }
 
 // Generacion credencial inscripciones pregrado
-func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int) {
+func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int, err error) {
 	var parametros []map[string]interface{}
 	periodoIdInt := int(periodoId)
 
-	errParam := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion?limit=1&query=PeriodoId:"+fmt.Sprintf("%d", periodoIdInt)+"&fields=Credencial&sortby=Credencial&order=desc", &parametros)
-	if errParam == nil {
-
-		credencialMaxima := parametros[0]["Credencial"].(float64)
-
-		if credencialMaxima > 100 {
-			credencial = int(credencialMaxima + 1)
-		} else {
-			credencial = 101
-		}
-
-		return credencial
-	} else {
-		return 0
+	// Construir la URL para la solicitud
+	url := fmt.Sprintf("http://%s/inscripcion?limit=1&query=PeriodoId:%d&fields=Credencial&sortby=Credencial&order=desc", 
+		beego.AppConfig.String("InscripcionService"), periodoIdInt)
+	
+	// Realizar la solicitud GET
+	errParam := request.GetJson(url, &parametros)
+	if errParam != nil {
+		// Si hay un error en la solicitud, retornar un panic o un error
+		return 0, fmt.Errorf("error al realizar la solicitud: %v", errParam)
 	}
+
+	// Verificar si el slice `parametros` está vacío o no contiene una credencial válida
+	if len(parametros) == 0 || parametros[0]["Credencial"] == nil {
+		// Si no hay credenciales anteriores, comenzar desde 1
+		return 1, nil
+	}
+
+	// Obtener la credencial máxima actual
+	credencialMaxima := parametros[0]["Credencial"].(float64)
+
+	// Generar la nueva credencial
+	credencial = int(credencialMaxima + 1)
+
+	return credencial, nil
 }
 
 func GetEstadoInscripcion(inscripcion map[string]interface{}) *int {
@@ -242,4 +251,57 @@ func ObtenerTerceroInscripcion(inscripcion map[string]interface{}) (tercero *int
 	}
 
 	return nil
+}
+
+func GetPeriodoPorId(periodoId float64) (periodo map[string]interface{}, err error){
+	var requestPeriodo map[string]interface{}
+	errPeriodo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"periodo/"+fmt.Sprintf("%v", periodoId), &requestPeriodo)
+	if errPeriodo != nil {
+		return nil, fmt.Errorf("error al realizar la solicitud del periodo: %v", errPeriodo)
+	}
+
+	if status, existe := requestPeriodo["Status"]; existe {
+		if status == 404 {
+			return nil, fmt.Errorf("el periodo no existe")
+		}
+	}
+
+	data, existe := requestPeriodo["Data"].(map[string]interface{})
+	if !existe {
+		return nil, fmt.Errorf("datos del periodo no encontrados")
+	}
+	return data, nil
+	
+}
+
+func ValidarPeriodo(periodoId float64, año float64, ciclo float64) (error) {
+	periodoRequest := fmt.Sprintf("%v-%v", int(año), int(ciclo))
+	periodo, errPeriodo := GetPeriodoPorId(periodoId)
+	if errPeriodo != nil {
+		return errPeriodo
+	}
+	
+	cicloResponse, existe := periodo["Ciclo"].(string)
+	if !existe {
+		return fmt.Errorf("el ciclo del periodo no es un string válido")
+	}
+
+	añoResponse, existe := periodo["Year"].(float64)
+	if !existe {
+		return fmt.Errorf("el año del periodo no es un string válido")
+	}
+
+	periodoResponse := fmt.Sprintf("%v-%s", añoResponse, cicloResponse)
+
+	if periodoRequest != periodoResponse {
+		return fmt.Errorf("el periodo no coincide con el año y ciclo")
+	}
+	return nil
+}
+
+func CalcularAñoParaLaConsultaDeDerechosPecuniarios(año float64, ciclo float64) (int) {
+	if ciclo == 1 {
+		return int(año) - 1
+	}
+	return int(año)
 }
