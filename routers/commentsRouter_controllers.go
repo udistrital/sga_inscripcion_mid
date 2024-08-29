@@ -280,7 +280,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:GenerarReciboController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:GenerarReciboController"],
         beego.ControllerComments{
             Method: "PostGenerarEstudianteRecibo",
-            Router: "/estudiantes/",
+            Router: "/estudiantes/derechos",
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

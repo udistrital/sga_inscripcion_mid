@@ -1828,7 +1828,7 @@
                 }
             }
         },
-        "/recibos/estudiantes/": {
+        "/recibos/estudiantes/derechos": {
             "post": {
                 "tags": [
                     "recibos"

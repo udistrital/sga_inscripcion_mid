@@ -1203,7 +1203,7 @@ paths:
           description: '{}'
         "400":
           description: body is empty
-  /recibos/estudiantes/:
+  /recibos/estudiantes/derechos:
     post:
       tags:
       - recibos
