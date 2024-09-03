@@ -1287,6 +1287,7 @@ func GenerarCuerpoActualizarCupoInscripcion(CupoInscripcion map[string]interface
 		"Activo":              CupoInscripcion["Activo"],
 		"CuposHabilitados":    cuposHabilitados,
 		"CuposOpcionados":     CupoInscripcion["CuposOpcionados"],
+		"CuposDisponibles":    CupoInscripcion["CuposDisponibles"],
 		"PeriodoId":           CupoInscripcion["PeriodoId"],
 		"ProgramaAcademicoId": CupoInscripcion["ProgramaAcademicoId"],
 		"TipoInscripcionId":   InfoTipoInscripcionId,
