@@ -924,6 +924,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			"Activo":              true,
 			"EstadoInscripcionId": map[string]interface{}{"Id": 1},
 			"TipoInscripcionId":   map[string]interface{}{"Id": SolicitudInscripcion["TipoInscripcionId"]},
+			"TipoCupo":            SolicitudInscripcion["TipoCupo"].(float64),
 		}
 
 		// EL ciclo es el periodo academico en el que se va a inscribir el estudiante, Ejemplo: 2021-1 ciclo 1, 2021-2 ciclo 2
