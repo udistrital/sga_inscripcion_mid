@@ -135,7 +135,7 @@ func VerificarRecibos(personaId string, periodoId string) (resultadoAuxResponse 
 									}
 								}
 
-								//Estado = "Pago"
+								// Estado = "Pago"
 
 								resultadoAux[i] = map[string]interface{}{
 									"Id":                  Inscripciones[i]["Id"],
@@ -187,9 +187,9 @@ func GenerarCredencialInscripcionPregrado(periodoId float64) (credencial int, er
 	periodoIdInt := int(periodoId)
 
 	// Construir la URL para la solicitud
-	url := fmt.Sprintf("http://%s/inscripcion?limit=1&query=PeriodoId:%d&fields=Credencial&sortby=Credencial&order=desc", 
+	url := fmt.Sprintf("http://%s/inscripcion?limit=1&query=PeriodoId:%d&fields=Credencial&sortby=Credencial&order=desc",
 		beego.AppConfig.String("InscripcionService"), periodoIdInt)
-	
+
 	// Realizar la solicitud GET
 	errParam := request.GetJson(url, &parametros)
 	if errParam != nil {
@@ -253,7 +253,7 @@ func ObtenerTerceroInscripcion(inscripcion map[string]interface{}) (tercero *int
 	return nil
 }
 
-func GetPeriodoPorId(periodoId float64) (periodo map[string]interface{}, err error){
+func GetPeriodoPorId(periodoId float64) (periodo map[string]interface{}, err error) {
 	var requestPeriodo map[string]interface{}
 	errPeriodo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"periodo/"+fmt.Sprintf("%v", periodoId), &requestPeriodo)
 	if errPeriodo != nil {
@@ -271,16 +271,16 @@ func GetPeriodoPorId(periodoId float64) (periodo map[string]interface{}, err err
 		return nil, fmt.Errorf("datos del periodo no encontrados")
 	}
 	return data, nil
-	
+
 }
 
-func ValidarPeriodo(periodoId float64, año float64, ciclo float64) (error) {
+func ValidarPeriodo(periodoId float64, año float64, ciclo float64) error {
 	periodoRequest := fmt.Sprintf("%v-%v", int(año), int(ciclo))
 	periodo, errPeriodo := GetPeriodoPorId(periodoId)
 	if errPeriodo != nil {
 		return errPeriodo
 	}
-	
+
 	cicloResponse, existe := periodo["Ciclo"].(string)
 	if !existe {
 		return fmt.Errorf("el ciclo del periodo no es un string válido")
@@ -299,7 +299,7 @@ func ValidarPeriodo(periodoId float64, año float64, ciclo float64) (error) {
 	return nil
 }
 
-func CalcularAñoParaLaConsultaDeDerechosPecuniarios(año float64, ciclo float64) (int) {
+func CalcularAñoParaLaConsultaDeDerechosPecuniarios(año float64, ciclo float64) int {
 	if ciclo == 1 {
 		return int(año) - 1
 	}
