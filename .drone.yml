@@ -49,7 +49,6 @@ steps:
 
 - name: go_build
   image: golang:1.23
-  platform: linux/amd64
   commands:
     - apt-get update
     - apt-get install libmcrypt-dev -y
