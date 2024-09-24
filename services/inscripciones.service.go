@@ -914,6 +914,11 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			"perpago":             SolicitudInscripcion["Periodo"].(float64),
 		}
 
+		tipoCupo, ok := SolicitudInscripcion["TipoCupo"].(float64)
+		if !ok {
+			tipoCupo = 0
+		}
+
 		inscripcion := map[string]interface{}{
 			"PersonaId":           SolicitudInscripcion["PersonaId"].(float64),
 			"ProgramaAcademicoId": SolicitudInscripcion["ProgramaAcademicoId"].(float64),
@@ -924,6 +929,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 			"Activo":              true,
 			"EstadoInscripcionId": map[string]interface{}{"Id": 1},
 			"TipoInscripcionId":   map[string]interface{}{"Id": SolicitudInscripcion["TipoInscripcionId"]},
+			"TipoCupo":            tipoCupo,
 		}
 
 		// EL ciclo es el periodo academico en el que se va a inscribir el estudiante, Ejemplo: 2021-1 ciclo 1, 2021-2 ciclo 2
@@ -1285,6 +1291,7 @@ func GenerarCuerpoActualizarCupoInscripcion(CupoInscripcion map[string]interface
 		"Activo":              CupoInscripcion["Activo"],
 		"CuposHabilitados":    cuposHabilitados,
 		"CuposOpcionados":     CupoInscripcion["CuposOpcionados"],
+		"CuposDisponibles":    CupoInscripcion["CuposDisponibles"],
 		"PeriodoId":           CupoInscripcion["PeriodoId"],
 		"ProgramaAcademicoId": CupoInscripcion["ProgramaAcademicoId"],
 		"TipoInscripcionId":   InfoTipoInscripcionId,
