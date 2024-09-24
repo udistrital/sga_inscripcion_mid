@@ -49,20 +49,21 @@ steps:
 
 - name: go_build
   image: golang:1.23
+  platform: linux/amd64
   commands:
-  - apt-get update
-  - apt-get install libmcrypt-dev -y
-  - go mod init
-  - go get -t
-  - GOOS=linux GOARCH=amd64 go build -o main
+    - apt-get update
+    - apt-get install libmcrypt-dev -y
+    - go mod init
+    - go get -t
+    - GOOS=linux GOARCH=amd64 go build -o main
   when:
     branch:
-    - develop
-    - release/*
-    - feature/*
-    - master
+      - develop
+      - release/*
+      - feature/*
+      - master
     event:
-    - push
+      - push
 
 # - name: go_run_test
 #   image: golang:1.18
