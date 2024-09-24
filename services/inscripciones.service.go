@@ -1230,7 +1230,7 @@ func ActualizarEstadoInscripcion(data []byte) (APIResponseDTO requestresponse.AP
 	var inscripcion map[string]interface{}
 	if err := json.Unmarshal(data, &inscripcion); err == nil {
 		if resInsc, errInsc := ActualizarInscripcion(inscripcion, inscripcion["Id"].(float64)); errInsc == nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 400, resInsc, nil)
+			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, resInsc, nil)
 		} else {
 			logs.Error(errInsc)
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errInsc.Error())
