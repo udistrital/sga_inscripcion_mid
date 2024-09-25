@@ -1031,7 +1031,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 							if errJson := json.Unmarshal([]byte(Dato.(map[string]interface{})["Valor"].(string)), &Valor); errJson == nil {
 								objTransaccion["valorordinario"] = Valor["Costo"].(float64)
 								objTransaccion["valorextraordinario"] = Valor["Costo"].(float64)
-								objTransaccion["tiporecibo"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["CodigoAbreviacion"].(string)
+								// objTransaccion["tiporecibo"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["CodigoAbreviacion"].(string)
 								objTransaccion["concepto"] = Dato.(map[string]interface{})["ParametroId"].(map[string]interface{})["Nombre"].(string)
 
 								SolicitudRecibo := objTransaccion
@@ -1040,10 +1040,10 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 								reciboSolicitud.Header("Accept", "application/json")
 								reciboSolicitud.Header("Content-Type", "application/json")
 								reciboSolicitud.JSONBody(SolicitudRecibo)
-								errRecibo2 := request.SendJson("http://"+beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, SolicitudRecibo)
-								fmt.Println("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibosPagoProxy")
+								// errRecibo2 := request.SendJson("http://"+beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, SolicitudRecibo)
+								// fmt.Println("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibosPagoProxy")
 
-								if errRecibo := reciboSolicitud.ToJSON(&NuevoRecibo); errRecibo2 == nil {
+								if errRecibo := reciboSolicitud.ToJSON(&NuevoRecibo); errRecibo == nil {
 									inscripcionRealizada["ReciboInscripcion"] = fmt.Sprintf("%v/%v", NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["secuencia"], NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["anio"])
 									var inscripcionUpdate map[string]interface{}
 									errInscripcionUpdate := request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("InscripcionService")+"inscripcion/%.f", inscripcionRealizada["Id"]), "PUT", &inscripcionUpdate, inscripcionRealizada)
