@@ -1095,7 +1095,7 @@ func GenerarInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse
 					APIResponseDTO = requestresponse.APIResponseDTO(false, 409, nil, "Los códigos del proyecto curricular no coinciden, favor comunicarse con el administrador de sistema.")
 				}
 			} else {
-				APIResponseDTO = requestresponse.APIResponseDTO(true, 204, nil, "Recipe already exist")
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 200, nil, "Ya se inscribió y el recibo ya fue generado")
 			}
 
 		} else if err == "400" {

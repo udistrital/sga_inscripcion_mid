@@ -1250,6 +1250,16 @@
                 ],
                 "description": "consultar la información complementaria del tercero",
                 "operationId": "InscripcionesController.GetInfoComplementariaTercero",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "persona_id",
+                        "description": "ID de la persona o tercero",
+                        "schema": {
+                            "$ref": "#/definitions/true"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "{}"
@@ -2376,6 +2386,10 @@
         },
         "models.Time_bog": {
             "title": "Time_bog",
+            "type": "object"
+        },
+        "true": {
+            "title": "true",
             "type": "object"
         },
         "{}": {
