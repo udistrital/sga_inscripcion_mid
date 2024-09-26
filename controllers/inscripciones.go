@@ -255,6 +255,7 @@ func (c *InscripcionesController) PostInfoComplementariaTercero() {
 // GetInfoComplementariaTercero ...
 // @Title GetInfoComplementariaTercero
 // @Description consultar la información complementaria del tercero
+// @Param	persona_id	path	true	"ID de la persona o tercero"
 // @Success 200 {}
 // @Failure 404 not found resource
 // @router  /informacion-complementaria/tercero/:persona_id [get]
