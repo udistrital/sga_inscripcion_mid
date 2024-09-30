@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	//"github.com/agnivade/levenshtein"
+	"github.com/agnivade/levenshtein"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/request"
@@ -100,9 +100,7 @@ func CheckCriteriaData(SolicitudProduccion map[string]interface{}, idTipoProducc
 
 // CheckTitle is ...
 func CheckTitle(ProduccionAcademicaNew map[string]interface{}, ProduccionAcademicaRegister map[string]interface{}) (result int) {
-	//TODO: Ajustar a como debe quedar este metodo
-	//distance := levenshtein.ComputeDistance(fmt.Sprintf("%v", ProduccionAcademicaNew["Titulo"]), fmt.Sprintf("%v", ProduccionAcademicaRegister["Titulo"]))
-	distance := 0
+	distance := levenshtein.ComputeDistance(fmt.Sprintf("%v", ProduccionAcademicaNew["Titulo"]), fmt.Sprintf("%v", ProduccionAcademicaRegister["Titulo"]))
 	return distance
 }
 
