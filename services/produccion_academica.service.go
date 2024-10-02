@@ -287,8 +287,7 @@ func GetIdProduccion(idTercero string) (APIResponseDTO requestresponse.APIRespon
 								APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data founf")
 							}
 						} else {
-							errorGetAll = true
-							APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errAutor.Error())
+							continue
 						}
 					}
 				}
