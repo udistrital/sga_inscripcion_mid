@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "beego Test API",
-        "description": "beego has a very cool tools to autogenerate documents for your API",
+        "description": "beego has a very cool tools to autogenerate documents for your API\n",
         "version": "1.0.0",
         "termsOfService": "http://beego.me/",
         "contact": {
@@ -20,7 +20,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "consultar Descuento Academico por userid",
+                "description": "consultar Descuento Academico por userid\n\u003cbr\u003e",
                 "operationId": "DescuentoController.GetDescuentoAcademico",
                 "parameters": [
                     {
@@ -53,7 +53,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "Agregar Descuento Academico",
+                "description": "Agregar Descuento Academico\n\u003cbr\u003e",
                 "operationId": "DescuentoController.PostDescuentoAcademico",
                 "parameters": [
                     {
@@ -81,7 +81,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "consultar Descuento Academico por userid",
+                "description": "consultar Descuento Academico por userid\n\u003cbr\u003e",
                 "operationId": "DescuentoController.GetDescuentoByPersonaPeriodoDependencia",
                 "parameters": [
                     {
@@ -124,7 +124,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "consultar Descuento Academico por userid",
+                "description": "consultar Descuento Academico por userid\n\u003cbr\u003e",
                 "operationId": "DescuentoController.GetDescuentoAcademicoByPersona",
                 "parameters": [
                     {
@@ -151,7 +151,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "consultar Descuento Academico por DependenciaId",
+                "description": "consultar Descuento Academico por DependenciaId\n\u003cbr\u003e",
                 "operationId": "DescuentoController.GetDescuentoAcademicoByDependenciaID",
                 "parameters": [
                     {
@@ -178,7 +178,7 @@
                 "tags": [
                     "academico/descuento"
                 ],
-                "description": "Modificar Descuento Academico",
+                "description": "Modificar Descuento Academico\n\u003cbr\u003e",
                 "operationId": "DescuentoController.PutDescuentoAcademico",
                 "parameters": [
                     {
@@ -214,7 +214,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "consultar la Formacion Academica por id del tercero",
+                "description": "consultar la Formacion Academica por id del tercero\n\u003cbr\u003e",
                 "operationId": "FormacionController.GetFormacionAcademicaByTercero",
                 "parameters": [
                     {
@@ -239,7 +239,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "Modificar Formacion Academica",
+                "description": "Modificar Formacion Academica\n\u003cbr\u003e",
                 "operationId": "FormacionController.PutFormacionAcademica",
                 "parameters": [
                     {
@@ -273,7 +273,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "Agregar Formacion Academica ud",
+                "description": "Agregar Formacion Academica ud\n\u003cbr\u003e",
                 "operationId": "FormacionController.PostFormacionAcademica",
                 "parameters": [
                     {
@@ -301,7 +301,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "consultar Formacion Academica por id",
+                "description": "consultar Formacion Academica por id\n\u003cbr\u003e",
                 "operationId": "FormacionController.GetFormacionAcademica",
                 "parameters": [
                     {
@@ -328,7 +328,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "Obtener la información de la universidad por el nit",
+                "description": "Obtener la información de la universidad por el nit\n\u003cbr\u003e",
                 "operationId": "FormacionController.GetInfoUniversidad",
                 "parameters": [
                     {
@@ -355,7 +355,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "Obtener la información de la universidad por el nombre",
+                "description": "Obtener la información de la universidad por el nombre\n\u003cbr\u003e",
                 "operationId": "FormacionController.GetInfoUniversidadByNombre",
                 "parameters": [
                     {
@@ -381,7 +381,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "Agregar nuevo tercero",
+                "description": "Agregar nuevo tercero\n\u003cbr\u003e",
                 "operationId": "FormacionController.PostTercero",
                 "parameters": [
                     {
@@ -409,7 +409,7 @@
                 "tags": [
                     "academico/formacion"
                 ],
-                "description": "eliminar Formacion Academica por id de la formacion",
+                "description": "eliminar Formacion Academica por id de la formacion\n\u003cbr\u003e",
                 "operationId": "FormacionController.DeleteFormacionAcademica",
                 "parameters": [
                     {
@@ -436,7 +436,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "consultar todas las Producciones académicas",
+                "description": "consultar todas las Producciones académicas\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.GetAllProduccionAcademica",
                 "responses": {
                     "200": {
@@ -451,7 +451,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "Agregar Producción academica",
+                "description": "Agregar Producción academica\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.PostProduccionAcademica",
                 "parameters": [
                     {
@@ -479,7 +479,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "Modificar Estado de Autor de Producción Academica",
+                "description": "Modificar Estado de Autor de Producción Academica\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.PutEstadoAutorProduccionAcademica",
                 "parameters": [
                     {
@@ -515,7 +515,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "consultar Produccion Academica por tercero",
+                "description": "consultar Produccion Academica por tercero\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
                 "parameters": [
                     {
@@ -542,7 +542,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "consultar Produccion Academica por id",
+                "description": "consultar Produccion Academica por id\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.GetOneProduccionAcademica",
                 "parameters": [
                     {
@@ -567,7 +567,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "Modificar Producción Academica",
+                "description": "Modificar Producción Academica\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.PutProduccionAcademica",
                 "parameters": [
                     {
@@ -601,7 +601,7 @@
                 "tags": [
                     "academico/produccion"
                 ],
-                "description": "eliminar Produccion Academica por id",
+                "description": "eliminar Produccion Academica por id\n\u003cbr\u003e",
                 "operationId": "ProduccionAcademicaController.DeleteProduccionAcademica",
                 "parameters": [
                     {
@@ -628,7 +628,7 @@
                 "tags": [
                     "codigo"
                 ],
-                "description": "Creacion de codigo de barras",
+                "description": "Creacion de codigo de barras\n\u003cbr\u003e",
                 "operationId": "GeneradorCodigoBarrasController.GenerarCodigoBarras",
                 "parameters": [
                     {
@@ -656,7 +656,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "get Cupos",
+                "description": "get Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.GetAll",
                 "parameters": [
                     {
@@ -712,7 +712,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "create Cupos",
+                "description": "create Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.Create",
                 "parameters": [
                     {
@@ -743,7 +743,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "get Cupos",
+                "description": "get Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.GetAllDocs",
                 "parameters": [
                     {
@@ -799,7 +799,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "create Cupos",
+                "description": "create Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.Create",
                 "parameters": [
                     {
@@ -830,7 +830,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "get Cupos by id",
+                "description": "get Cupos by id\n\u003cbr\u003e",
                 "operationId": "CuposController.GetOne",
                 "parameters": [
                     {
@@ -857,7 +857,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "update the Cupos",
+                "description": "update the Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.Put",
                 "parameters": [
                     {
@@ -893,7 +893,7 @@
                 "tags": [
                     "cupos"
                 ],
-                "description": "delete the Cupos",
+                "description": "delete the Cupos\n\u003cbr\u003e",
                 "operationId": "CuposController.Delete",
                 "parameters": [
                     {
@@ -919,7 +919,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "Agregar Formacion Academica ud",
+                "description": "Agregar Formacion Academica ud\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.PostExperienciaLaboral",
                 "parameters": [
                     {
@@ -947,7 +947,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "Obtener la información de la empresa por el nit",
+                "description": "Obtener la información de la empresa por el nit\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.GetInformacionEmpresa",
                 "parameters": [
                     {
@@ -974,7 +974,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "Obtener la información de la empresa por el nit",
+                "description": "Obtener la información de la empresa por el nit\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.GetExperienciaLaboralByTercero",
                 "parameters": [
                     {
@@ -1001,7 +1001,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "consultar Experiencia Laboral por id",
+                "description": "consultar Experiencia Laboral por id\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.GetExperienciaLaboral",
                 "parameters": [
                     {
@@ -1026,7 +1026,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "Modificar Formacion Academica ud",
+                "description": "Modificar Formacion Academica ud\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.PutExperienciaLaboral",
                 "parameters": [
                     {
@@ -1052,7 +1052,7 @@
                 "tags": [
                     "experiencia-laboral"
                 ],
-                "description": "eliminar Experiencia Laboral por id",
+                "description": "eliminar Experiencia Laboral por id\n\u003cbr\u003e",
                 "operationId": "ExperienciaLaboralController.DeleteExperienciaLaboral",
                 "parameters": [
                     {
@@ -1079,7 +1079,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Actualiza los cupos, los admitidos y opcionados de un proyecto",
+                "description": "Actualiza los cupos, los admitidos y opcionados de un proyecto\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.ActualizarCuposAdmitidosOpcionado",
                 "parameters": [
                     {
@@ -1107,7 +1107,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Actualiza el estado de inscripción de un aspirante matriuclado",
+                "description": "Actualiza el estado de inscripción de un aspirante matriuclado\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.ActualizarEstadoEstudianteMatriculado",
                 "parameters": [
                     {
@@ -1135,7 +1135,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Actualiza la inscripcion y coordina registro de historico en cambio de estado",
+                "description": "Actualiza la inscripcion y coordina registro de historico en cambio de estado\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.ActualizarEstadoInscripcion",
                 "parameters": [
                     {
@@ -1163,7 +1163,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "consultar los estados de todos los recibos generados por el tercero",
+                "description": "consultar los estados de todos los recibos generados por el tercero\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.GetEstadoInscripcion",
                 "parameters": [
                     {
@@ -1194,7 +1194,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Actualiza los datos de contacto del tercero",
+                "description": "Actualiza los datos de contacto del tercero\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.ActualizarInfoContacto",
                 "parameters": [
                     {
@@ -1220,7 +1220,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar PostInfoComplementariaTercero",
+                "description": "Agregar PostInfoComplementariaTercero\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostInfoComplementariaTercero",
                 "parameters": [
                     {
@@ -1248,7 +1248,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "consultar la información complementaria del tercero",
+                "description": "consultar la información complementaria del tercero\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.GetInfoComplementariaTercero",
                 "parameters": [
                     {
@@ -1275,7 +1275,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar InfoComplementariaUniversidad",
+                "description": "Agregar InfoComplementariaUniversidad\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostInfoComplementariaUniversidad",
                 "parameters": [
                     {
@@ -1303,7 +1303,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar Información Familiar",
+                "description": "Agregar Información Familiar\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostInformacionFamiliar",
                 "parameters": [
                     {
@@ -1331,7 +1331,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Registra una nueva inscripción con su respectivo recibo de pago",
+                "description": "Registra una nueva inscripción con su respectivo recibo de pago\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostGenerarInscripcion",
                 "parameters": [
                     {
@@ -1359,7 +1359,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar Preinscripcion",
+                "description": "Agregar Preinscripcion\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostPreinscripcion",
                 "parameters": [
                     {
@@ -1387,7 +1387,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "get ConsultarProyectosEventos by id",
+                "description": "get ConsultarProyectosEventos by id\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.ConsultarProyectosEventos",
                 "parameters": [
                     {
@@ -1414,7 +1414,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar InfoIcfesColegio",
+                "description": "Agregar InfoIcfesColegio\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostInfoIcfesColegio",
                 "parameters": [
                     {
@@ -1442,7 +1442,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar InfoIcfesColegio",
+                "description": "Agregar InfoIcfesColegio\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostInfoIcfesColegioNuevo",
                 "parameters": [
                     {
@@ -1470,7 +1470,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar Reintegro",
+                "description": "Agregar Reintegro\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostReintegro",
                 "parameters": [
                     {
@@ -1498,7 +1498,7 @@
                 "tags": [
                     "inscripciones"
                 ],
-                "description": "Agregar Transferencia",
+                "description": "Agregar Transferencia\n\u003cbr\u003e",
                 "operationId": "InscripcionesController.PostTransferencia",
                 "parameters": [
                     {
@@ -1526,7 +1526,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "get Legalizacion",
+                "description": "get Legalizacion\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.GetAll",
                 "parameters": [
                     {
@@ -1584,7 +1584,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "Actualiza la información de legalización de matricula de un aspirante",
+                "description": "Actualiza la información de legalización de matricula de un aspirante\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.PutInfoLegalizacionMatricula",
                 "parameters": [
                     {
@@ -1612,7 +1612,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "create Legalizacion",
+                "description": "create Legalizacion\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.PostBaseLegalizacionMatricula",
                 "parameters": [
                     {
@@ -1640,7 +1640,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "consultar la información complementaria del tercero",
+                "description": "consultar la información complementaria del tercero\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.GetInfoLegalizacionMatricula",
                 "parameters": [
                     {
@@ -1667,7 +1667,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "get Legalizacion by id",
+                "description": "get Legalizacion by id\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.GetOne",
                 "parameters": [
                     {
@@ -1694,7 +1694,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "update the Legalizacion",
+                "description": "update the Legalizacion\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.Put",
                 "parameters": [
                     {
@@ -1730,7 +1730,7 @@
                 "tags": [
                     "legalizacion"
                 ],
-                "description": "delete the Legalizacion",
+                "description": "delete the Legalizacion\n\u003cbr\u003e",
                 "operationId": "LegalizacionController.Delete",
                 "parameters": [
                     {
@@ -1756,7 +1756,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "create Liquidacion",
+                "description": "create Liquidacion\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Create",
                 "parameters": [
                     {
@@ -1787,7 +1787,7 @@
                 "tags": [
                     "recibos"
                 ],
-                "description": "Genera un comprobante de inscripcion",
+                "description": "Genera un comprobante de inscripcion\n\u003cbr\u003e",
                 "operationId": "GenerarReciboController.PostGenerarComprobanteInscripcion",
                 "parameters": [
                     {
@@ -1815,7 +1815,7 @@
                 "tags": [
                     "recibos"
                 ],
-                "description": "Genera un recibo de pago",
+                "description": "Genera un recibo de pago\n\u003cbr\u003e",
                 "operationId": "GenerarReciboController.PostGenerarRecibo",
                 "parameters": [
                     {
@@ -1843,7 +1843,7 @@
                 "tags": [
                     "recibos"
                 ],
-                "description": "Genera un recibo de pago",
+                "description": "Genera un recibo de pago\n\u003cbr\u003e",
                 "operationId": "GenerarReciboController.PostGenerarEstudianteRecibo",
                 "parameters": [
                     {
@@ -1871,7 +1871,7 @@
                 "tags": [
                     "recibov2"
                 ],
-                "description": "create Generar_recibo_v2",
+                "description": "create Generar_recibo_v2\n\u003cbr\u003e",
                 "operationId": "GenerarReciboV2Controller.Create",
                 "parameters": [
                     {
@@ -1902,7 +1902,7 @@
                 "tags": [
                     "solicitud-produccion"
                 ],
-                "description": "Agregar Alerta en Solicitud docente en casos necesarios",
+                "description": "Agregar Alerta en Solicitud docente en casos necesarios\n\u003cbr\u003e",
                 "operationId": "SolicitudProduccionController.PostAlertSolicitudProduccion",
                 "parameters": [
                     {
@@ -1942,7 +1942,7 @@
                 "tags": [
                     "solicitud-produccion"
                 ],
-                "description": "Agregar Alerta en Solicitud docente en casos necesarios",
+                "description": "Agregar Alerta en Solicitud docente en casos necesarios\n\u003cbr\u003e",
                 "operationId": "SolicitudProduccionController.PostSolicitudEvaluacionCoincidencia",
                 "parameters": [
                     {
@@ -1988,7 +1988,7 @@
                 "tags": [
                     "solicitud-produccion"
                 ],
-                "description": "Modificar resultaado solicitud docente",
+                "description": "Modificar resultaado solicitud docente\n\u003cbr\u003e",
                 "operationId": "SolicitudProduccionController.PutResultadoSolicitud",
                 "parameters": [
                     {
@@ -2024,7 +2024,7 @@
                 "tags": [
                     "time_bog"
                 ],
-                "description": "get Time_bog",
+                "description": "get Time_bog\n\u003cbr\u003e",
                 "operationId": "Time_bogController.GetTimeBog",
                 "responses": {
                     "200": {
@@ -2044,7 +2044,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "create Transferencia_reingreso",
+                "description": "create Transferencia_reingreso\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.Create",
                 "parameters": [
                     {
@@ -2075,7 +2075,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "crear la inscripción y actualizar solicitud",
+                "description": "crear la inscripción y actualizar solicitud\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.PutInscripcion",
                 "parameters": [
                     {
@@ -2113,7 +2113,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get información necesaria para crear un solicitud de transferencias",
+                "description": "get información necesaria para crear un solicitud de transferencias\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetConsultarParametros",
                 "parameters": [
                     {
@@ -2144,7 +2144,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get información necesaria para crear un solicitud de transferencias",
+                "description": "get información necesaria para crear un solicitud de transferencias\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetConsultarPeriodo",
                 "responses": {
                     "200": {
@@ -2161,7 +2161,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "consultar los estados de todos los recibos generados por el tercero",
+                "description": "consultar los estados de todos los recibos generados por el tercero\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetEstadoInscripcion",
                 "parameters": [
                     {
@@ -2194,7 +2194,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get Transferencia_reingreso by id",
+                "description": "get Transferencia_reingreso by id\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetEstados",
                 "parameters": [
                     {
@@ -2223,7 +2223,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get Transferencia_reingreso by id",
+                "description": "get Transferencia_reingreso by id\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetInscripcion",
                 "parameters": [
                     {
@@ -2252,7 +2252,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "crear la inscripción y actualizar solicitud",
+                "description": "crear la inscripción y actualizar solicitud\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.PutSolicitud",
                 "parameters": [
                     {
@@ -2290,7 +2290,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get Transferencia_reingreso by id",
+                "description": "get Transferencia_reingreso by id\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetSolicitudesInscripcion",
                 "responses": {
                     "200": {
@@ -2307,7 +2307,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "get solicitudes segun programa",
+                "description": "get solicitudes segun programa\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.GetSolicitudesInscripcionSegunPrograma",
                 "parameters": [
                     {
@@ -2333,7 +2333,7 @@
                 "tags": [
                     "transferencia"
                 ],
-                "description": "create Transferencia_reingreso",
+                "description": "create Transferencia_reingreso\n\u003cbr\u003e",
                 "operationId": "Transferencia_reingresoController.Create",
                 "parameters": [
                     {

@@ -1,7 +1,8 @@
 swagger: "2.0"
 info:
   title: beego Test API
-  description: beego has a very cool tools to autogenerate documents for your API
+  description: |
+    beego has a very cool tools to autogenerate documents for your API
   version: 1.0.0
   termsOfService: http://beego.me/
   contact:
@@ -15,7 +16,9 @@ paths:
     get:
       tags:
       - academico/descuento
-      description: consultar Descuento Academico por userid
+      description: |-
+        consultar Descuento Academico por userid
+        <br>
       operationId: DescuentoController.GetDescuentoAcademico
       parameters:
       - in: query
@@ -38,7 +41,9 @@ paths:
     post:
       tags:
       - academico/descuento
-      description: Agregar Descuento Academico
+      description: |-
+        Agregar Descuento Academico
+        <br>
       operationId: DescuentoController.PostDescuentoAcademico
       parameters:
       - in: body
@@ -56,7 +61,9 @@ paths:
     get:
       tags:
       - academico/descuento
-      description: consultar Descuento Academico por DependenciaId
+      description: |-
+        consultar Descuento Academico por DependenciaId
+        <br>
       operationId: DescuentoController.GetDescuentoAcademicoByDependenciaID
       parameters:
       - in: path
@@ -74,7 +81,9 @@ paths:
     put:
       tags:
       - academico/descuento
-      description: Modificar Descuento Academico
+      description: |-
+        Modificar Descuento Academico
+        <br>
       operationId: DescuentoController.PutDescuentoAcademico
       parameters:
       - in: path
@@ -98,7 +107,9 @@ paths:
     get:
       tags:
       - academico/descuento
-      description: consultar Descuento Academico por userid
+      description: |-
+        consultar Descuento Academico por userid
+        <br>
       operationId: DescuentoController.GetDescuentoByPersonaPeriodoDependencia
       parameters:
       - in: query
@@ -128,7 +139,9 @@ paths:
     get:
       tags:
       - academico/descuento
-      description: consultar Descuento Academico por userid
+      description: |-
+        consultar Descuento Academico por userid
+        <br>
       operationId: DescuentoController.GetDescuentoAcademicoByPersona
       parameters:
       - in: path
@@ -146,7 +159,9 @@ paths:
     get:
       tags:
       - academico/formacion
-      description: consultar la Formacion Academica por id del tercero
+      description: |-
+        consultar la Formacion Academica por id del tercero
+        <br>
       operationId: FormacionController.GetFormacionAcademicaByTercero
       parameters:
       - in: query
@@ -163,7 +178,9 @@ paths:
     put:
       tags:
       - academico/formacion
-      description: Modificar Formacion Academica
+      description: |-
+        Modificar Formacion Academica
+        <br>
       operationId: FormacionController.PutFormacionAcademica
       parameters:
       - in: query
@@ -186,7 +203,9 @@ paths:
     post:
       tags:
       - academico/formacion
-      description: Agregar Formacion Academica ud
+      description: |-
+        Agregar Formacion Academica ud
+        <br>
       operationId: FormacionController.PostFormacionAcademica
       parameters:
       - in: body
@@ -204,7 +223,9 @@ paths:
     delete:
       tags:
       - academico/formacion
-      description: eliminar Formacion Academica por id de la formacion
+      description: |-
+        eliminar Formacion Academica por id de la formacion
+        <br>
       operationId: FormacionController.DeleteFormacionAcademica
       parameters:
       - in: path
@@ -222,7 +243,9 @@ paths:
     get:
       tags:
       - academico/formacion
-      description: consultar Formacion Academica por id
+      description: |-
+        consultar Formacion Academica por id
+        <br>
       operationId: FormacionController.GetFormacionAcademica
       parameters:
       - in: query
@@ -240,7 +263,9 @@ paths:
     get:
       tags:
       - academico/formacion
-      description: Obtener la información de la universidad por el nit
+      description: |-
+        Obtener la información de la universidad por el nit
+        <br>
       operationId: FormacionController.GetInfoUniversidad
       parameters:
       - in: query
@@ -258,7 +283,9 @@ paths:
     get:
       tags:
       - academico/formacion
-      description: Obtener la información de la universidad por el nombre
+      description: |-
+        Obtener la información de la universidad por el nombre
+        <br>
       operationId: FormacionController.GetInfoUniversidadByNombre
       parameters:
       - in: query
@@ -275,7 +302,9 @@ paths:
     post:
       tags:
       - academico/formacion
-      description: Agregar nuevo tercero
+      description: |-
+        Agregar nuevo tercero
+        <br>
       operationId: FormacionController.PostTercero
       parameters:
       - in: body
@@ -293,7 +322,9 @@ paths:
     get:
       tags:
       - academico/produccion
-      description: consultar todas las Producciones académicas
+      description: |-
+        consultar todas las Producciones académicas
+        <br>
       operationId: ProduccionAcademicaController.GetAllProduccionAcademica
       responses:
         "200":
@@ -303,7 +334,9 @@ paths:
     post:
       tags:
       - academico/produccion
-      description: Agregar Producción academica
+      description: |-
+        Agregar Producción academica
+        <br>
       operationId: ProduccionAcademicaController.PostProduccionAcademica
       parameters:
       - in: body
@@ -321,7 +354,9 @@ paths:
     get:
       tags:
       - academico/produccion
-      description: consultar Produccion Academica por id
+      description: |-
+        consultar Produccion Academica por id
+        <br>
       operationId: ProduccionAcademicaController.GetOneProduccionAcademica
       parameters:
       - in: path
@@ -338,7 +373,9 @@ paths:
     put:
       tags:
       - academico/produccion
-      description: Modificar Producción Academica
+      description: |-
+        Modificar Producción Academica
+        <br>
       operationId: ProduccionAcademicaController.PutProduccionAcademica
       parameters:
       - in: path
@@ -361,7 +398,9 @@ paths:
     delete:
       tags:
       - academico/produccion
-      description: eliminar Produccion Academica por id
+      description: |-
+        eliminar Produccion Academica por id
+        <br>
       operationId: ProduccionAcademicaController.DeleteProduccionAcademica
       parameters:
       - in: path
@@ -379,7 +418,9 @@ paths:
     put:
       tags:
       - academico/produccion
-      description: Modificar Estado de Autor de Producción Academica
+      description: |-
+        Modificar Estado de Autor de Producción Academica
+        <br>
       operationId: ProduccionAcademicaController.PutEstadoAutorProduccionAcademica
       parameters:
       - in: path
@@ -403,7 +444,9 @@ paths:
     get:
       tags:
       - academico/produccion
-      description: consultar Produccion Academica por tercero
+      description: |-
+        consultar Produccion Academica por tercero
+        <br>
       operationId: ProduccionAcademicaController.GetProduccionAcademica
       parameters:
       - in: path
@@ -421,7 +464,9 @@ paths:
     post:
       tags:
       - codigo
-      description: Creacion de codigo de barras
+      description: |-
+        Creacion de codigo de barras
+        <br>
       operationId: GeneradorCodigoBarrasController.GenerarCodigoBarras
       parameters:
       - in: body
@@ -439,7 +484,9 @@ paths:
     get:
       tags:
       - cupos
-      description: get Cupos
+      description: |-
+        get Cupos
+        <br>
       operationId: CuposController.GetAll
       parameters:
       - in: query
@@ -456,7 +503,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -476,7 +524,9 @@ paths:
     post:
       tags:
       - cupos
-      description: create Cupos
+      description: |-
+        create Cupos
+        <br>
       operationId: CuposController.Create
       parameters:
       - in: body
@@ -496,7 +546,9 @@ paths:
     get:
       tags:
       - cupos
-      description: get Cupos by id
+      description: |-
+        get Cupos by id
+        <br>
       operationId: CuposController.GetOne
       parameters:
       - in: path
@@ -514,7 +566,9 @@ paths:
     put:
       tags:
       - cupos
-      description: update the Cupos
+      description: |-
+        update the Cupos
+        <br>
       operationId: CuposController.Put
       parameters:
       - in: path
@@ -538,7 +592,9 @@ paths:
     delete:
       tags:
       - cupos
-      description: delete the Cupos
+      description: |-
+        delete the Cupos
+        <br>
       operationId: CuposController.Delete
       parameters:
       - in: path
@@ -555,7 +611,9 @@ paths:
     get:
       tags:
       - cupos
-      description: get Cupos
+      description: |-
+        get Cupos
+        <br>
       operationId: CuposController.GetAllDocs
       parameters:
       - in: query
@@ -572,7 +630,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -592,7 +651,9 @@ paths:
     post:
       tags:
       - cupos
-      description: create Cupos
+      description: |-
+        create Cupos
+        <br>
       operationId: CuposController.Create
       parameters:
       - in: body
@@ -612,7 +673,9 @@ paths:
     post:
       tags:
       - experiencia-laboral
-      description: Agregar Formacion Academica ud
+      description: |-
+        Agregar Formacion Academica ud
+        <br>
       operationId: ExperienciaLaboralController.PostExperienciaLaboral
       parameters:
       - in: body
@@ -630,7 +693,9 @@ paths:
     get:
       tags:
       - experiencia-laboral
-      description: consultar Experiencia Laboral por id
+      description: |-
+        consultar Experiencia Laboral por id
+        <br>
       operationId: ExperienciaLaboralController.GetExperienciaLaboral
       parameters:
       - in: path
@@ -647,7 +712,9 @@ paths:
     put:
       tags:
       - experiencia-laboral
-      description: Modificar Formacion Academica ud
+      description: |-
+        Modificar Formacion Academica ud
+        <br>
       operationId: ExperienciaLaboralController.PutExperienciaLaboral
       parameters:
       - in: body
@@ -664,7 +731,9 @@ paths:
     delete:
       tags:
       - experiencia-laboral
-      description: eliminar Experiencia Laboral por id
+      description: |-
+        eliminar Experiencia Laboral por id
+        <br>
       operationId: ExperienciaLaboralController.DeleteExperienciaLaboral
       parameters:
       - in: path
@@ -682,7 +751,9 @@ paths:
     get:
       tags:
       - experiencia-laboral
-      description: Obtener la información de la empresa por el nit
+      description: |-
+        Obtener la información de la empresa por el nit
+        <br>
       operationId: ExperienciaLaboralController.GetInformacionEmpresa
       parameters:
       - in: query
@@ -700,7 +771,9 @@ paths:
     get:
       tags:
       - experiencia-laboral
-      description: Obtener la información de la empresa por el nit
+      description: |-
+        Obtener la información de la empresa por el nit
+        <br>
       operationId: ExperienciaLaboralController.GetExperienciaLaboralByTercero
       parameters:
       - in: query
@@ -718,7 +791,9 @@ paths:
     put:
       tags:
       - inscripciones
-      description: Actualiza los cupos, los admitidos y opcionados de un proyecto
+      description: |-
+        Actualiza los cupos, los admitidos y opcionados de un proyecto
+        <br>
       operationId: InscripcionesController.ActualizarCuposAdmitidosOpcionado
       parameters:
       - in: body
@@ -736,7 +811,9 @@ paths:
     put:
       tags:
       - inscripciones
-      description: Actualiza el estado de inscripción de un aspirante matriuclado
+      description: |-
+        Actualiza el estado de inscripción de un aspirante matriuclado
+        <br>
       operationId: InscripcionesController.ActualizarEstadoEstudianteMatriculado
       parameters:
       - in: body
@@ -754,7 +831,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Actualiza la inscripcion y coordina registro de historico en cambio de estado
+      description: |-
+        Actualiza la inscripcion y coordina registro de historico en cambio de estado
+        <br>
       operationId: InscripcionesController.ActualizarEstadoInscripcion
       parameters:
       - in: body
@@ -772,7 +851,9 @@ paths:
     get:
       tags:
       - inscripciones
-      description: consultar los estados de todos los recibos generados por el tercero
+      description: |-
+        consultar los estados de todos los recibos generados por el tercero
+        <br>
       operationId: InscripcionesController.GetEstadoInscripcion
       parameters:
       - in: query
@@ -792,7 +873,9 @@ paths:
     put:
       tags:
       - inscripciones
-      description: Actualiza los datos de contacto del tercero
+      description: |-
+        Actualiza los datos de contacto del tercero
+        <br>
       operationId: InscripcionesController.ActualizarInfoContacto
       parameters:
       - in: body
@@ -809,7 +892,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar PostInfoComplementariaTercero
+      description: |-
+        Agregar PostInfoComplementariaTercero
+        <br>
       operationId: InscripcionesController.PostInfoComplementariaTercero
       parameters:
       - in: body
@@ -827,7 +912,9 @@ paths:
     get:
       tags:
       - inscripciones
-      description: consultar la información complementaria del tercero
+      description: |-
+        consultar la información complementaria del tercero
+        <br>
       operationId: InscripcionesController.GetInfoComplementariaTercero
       parameters:
       - in: path
@@ -844,7 +931,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar InfoComplementariaUniversidad
+      description: |-
+        Agregar InfoComplementariaUniversidad
+        <br>
       operationId: InscripcionesController.PostInfoComplementariaUniversidad
       parameters:
       - in: body
@@ -862,7 +951,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar Información Familiar
+      description: |-
+        Agregar Información Familiar
+        <br>
       operationId: InscripcionesController.PostInformacionFamiliar
       parameters:
       - in: body
@@ -880,7 +971,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Registra una nueva inscripción con su respectivo recibo de pago
+      description: |-
+        Registra una nueva inscripción con su respectivo recibo de pago
+        <br>
       operationId: InscripcionesController.PostGenerarInscripcion
       parameters:
       - in: body
@@ -898,7 +991,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar Preinscripcion
+      description: |-
+        Agregar Preinscripcion
+        <br>
       operationId: InscripcionesController.PostPreinscripcion
       parameters:
       - in: body
@@ -916,7 +1011,9 @@ paths:
     get:
       tags:
       - inscripciones
-      description: get ConsultarProyectosEventos by id
+      description: |-
+        get ConsultarProyectosEventos by id
+        <br>
       operationId: InscripcionesController.ConsultarProyectosEventos
       parameters:
       - in: path
@@ -934,7 +1031,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar InfoIcfesColegio
+      description: |-
+        Agregar InfoIcfesColegio
+        <br>
       operationId: InscripcionesController.PostInfoIcfesColegio
       parameters:
       - in: body
@@ -952,7 +1051,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar InfoIcfesColegio
+      description: |-
+        Agregar InfoIcfesColegio
+        <br>
       operationId: InscripcionesController.PostInfoIcfesColegioNuevo
       parameters:
       - in: body
@@ -970,7 +1071,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar Reintegro
+      description: |-
+        Agregar Reintegro
+        <br>
       operationId: InscripcionesController.PostReintegro
       parameters:
       - in: body
@@ -988,7 +1091,9 @@ paths:
     post:
       tags:
       - inscripciones
-      description: Agregar Transferencia
+      description: |-
+        Agregar Transferencia
+        <br>
       operationId: InscripcionesController.PostTransferencia
       parameters:
       - in: body
@@ -1006,7 +1111,9 @@ paths:
     get:
       tags:
       - legalizacion
-      description: get Legalizacion
+      description: |-
+        get Legalizacion
+        <br>
       operationId: LegalizacionController.GetAll
       parameters:
       - in: query
@@ -1023,7 +1130,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1044,7 +1152,9 @@ paths:
     get:
       tags:
       - legalizacion
-      description: get Legalizacion by id
+      description: |-
+        get Legalizacion by id
+        <br>
       operationId: LegalizacionController.GetOne
       parameters:
       - in: path
@@ -1062,7 +1172,9 @@ paths:
     put:
       tags:
       - legalizacion
-      description: update the Legalizacion
+      description: |-
+        update the Legalizacion
+        <br>
       operationId: LegalizacionController.Put
       parameters:
       - in: path
@@ -1086,7 +1198,9 @@ paths:
     delete:
       tags:
       - legalizacion
-      description: delete the Legalizacion
+      description: |-
+        delete the Legalizacion
+        <br>
       operationId: LegalizacionController.Delete
       parameters:
       - in: path
@@ -1103,7 +1217,9 @@ paths:
     put:
       tags:
       - legalizacion
-      description: Actualiza la información de legalización de matricula de un aspirante
+      description: |-
+        Actualiza la información de legalización de matricula de un aspirante
+        <br>
       operationId: LegalizacionController.PutInfoLegalizacionMatricula
       parameters:
       - in: body
@@ -1121,7 +1237,9 @@ paths:
     post:
       tags:
       - legalizacion
-      description: create Legalizacion
+      description: |-
+        create Legalizacion
+        <br>
       operationId: LegalizacionController.PostBaseLegalizacionMatricula
       parameters:
       - in: body
@@ -1139,7 +1257,9 @@ paths:
     get:
       tags:
       - legalizacion
-      description: consultar la información complementaria del tercero
+      description: |-
+        consultar la información complementaria del tercero
+        <br>
       operationId: LegalizacionController.GetInfoLegalizacionMatricula
       parameters:
       - in: path
@@ -1157,7 +1277,9 @@ paths:
     post:
       tags:
       - liquidacion
-      description: create Liquidacion
+      description: |-
+        create Liquidacion
+        <br>
       operationId: LiquidacionController.Create
       parameters:
       - in: body
@@ -1177,7 +1299,9 @@ paths:
     post:
       tags:
       - recibos
-      description: Genera un comprobante de inscripcion
+      description: |-
+        Genera un comprobante de inscripcion
+        <br>
       operationId: GenerarReciboController.PostGenerarComprobanteInscripcion
       parameters:
       - in: body
@@ -1195,7 +1319,9 @@ paths:
     post:
       tags:
       - recibos
-      description: Genera un recibo de pago
+      description: |-
+        Genera un recibo de pago
+        <br>
       operationId: GenerarReciboController.PostGenerarRecibo
       parameters:
       - in: body
@@ -1213,7 +1339,9 @@ paths:
     post:
       tags:
       - recibos
-      description: Genera un recibo de pago
+      description: |-
+        Genera un recibo de pago
+        <br>
       operationId: GenerarReciboController.PostGenerarEstudianteRecibo
       parameters:
       - in: body
@@ -1231,7 +1359,9 @@ paths:
     post:
       tags:
       - recibov2
-      description: create Generar_recibo_v2
+      description: |-
+        create Generar_recibo_v2
+        <br>
       operationId: GenerarReciboV2Controller.Create
       parameters:
       - in: body
@@ -1251,7 +1381,9 @@ paths:
     put:
       tags:
       - solicitud-produccion
-      description: Modificar resultaado solicitud docente
+      description: |-
+        Modificar resultaado solicitud docente
+        <br>
       operationId: SolicitudProduccionController.PutResultadoSolicitud
       parameters:
       - in: path
@@ -1275,7 +1407,9 @@ paths:
     post:
       tags:
       - solicitud-produccion
-      description: Agregar Alerta en Solicitud docente en casos necesarios
+      description: |-
+        Agregar Alerta en Solicitud docente en casos necesarios
+        <br>
       operationId: SolicitudProduccionController.PostAlertSolicitudProduccion
       parameters:
       - in: body
@@ -1301,7 +1435,9 @@ paths:
     post:
       tags:
       - solicitud-produccion
-      description: Agregar Alerta en Solicitud docente en casos necesarios
+      description: |-
+        Agregar Alerta en Solicitud docente en casos necesarios
+        <br>
       operationId: SolicitudProduccionController.PostSolicitudEvaluacionCoincidencia
       parameters:
       - in: body
@@ -1331,7 +1467,9 @@ paths:
     get:
       tags:
       - time_bog
-      description: get Time_bog
+      description: |-
+        get Time_bog
+        <br>
       operationId: Time_bogController.GetTimeBog
       responses:
         "200":
@@ -1344,7 +1482,9 @@ paths:
     post:
       tags:
       - transferencia
-      description: create Transferencia_reingreso
+      description: |-
+        create Transferencia_reingreso
+        <br>
       operationId: Transferencia_reingresoController.Create
       parameters:
       - in: body
@@ -1364,7 +1504,9 @@ paths:
     put:
       tags:
       - transferencia
-      description: create Transferencia_reingreso
+      description: |-
+        create Transferencia_reingreso
+        <br>
       operationId: Transferencia_reingresoController.Create
       parameters:
       - in: body
@@ -1386,7 +1528,9 @@ paths:
     put:
       tags:
       - transferencia
-      description: crear la inscripción y actualizar solicitud
+      description: |-
+        crear la inscripción y actualizar solicitud
+        <br>
       operationId: Transferencia_reingresoController.PutInscripcion
       parameters:
       - in: path
@@ -1411,7 +1555,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get información necesaria para crear un solicitud de transferencias
+      description: |-
+        get información necesaria para crear un solicitud de transferencias
+        <br>
       operationId: Transferencia_reingresoController.GetConsultarParametros
       parameters:
       - in: query
@@ -1431,7 +1577,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get información necesaria para crear un solicitud de transferencias
+      description: |-
+        get información necesaria para crear un solicitud de transferencias
+        <br>
       operationId: Transferencia_reingresoController.GetConsultarPeriodo
       responses:
         "200":
@@ -1442,7 +1590,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: consultar los estados de todos los recibos generados por el tercero
+      description: |-
+        consultar los estados de todos los recibos generados por el tercero
+        <br>
       operationId: Transferencia_reingresoController.GetEstadoInscripcion
       parameters:
       - in: path
@@ -1464,7 +1614,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get Transferencia_reingreso by id
+      description: |-
+        get Transferencia_reingreso by id
+        <br>
       operationId: Transferencia_reingresoController.GetEstados
       parameters:
       - in: path
@@ -1483,7 +1635,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get Transferencia_reingreso by id
+      description: |-
+        get Transferencia_reingreso by id
+        <br>
       operationId: Transferencia_reingresoController.GetInscripcion
       parameters:
       - in: path
@@ -1502,7 +1656,9 @@ paths:
     put:
       tags:
       - transferencia
-      description: crear la inscripción y actualizar solicitud
+      description: |-
+        crear la inscripción y actualizar solicitud
+        <br>
       operationId: Transferencia_reingresoController.PutSolicitud
       parameters:
       - in: path
@@ -1527,7 +1683,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get Transferencia_reingreso by id
+      description: |-
+        get Transferencia_reingreso by id
+        <br>
       operationId: Transferencia_reingresoController.GetSolicitudesInscripcion
       responses:
         "200":
@@ -1538,7 +1696,9 @@ paths:
     get:
       tags:
       - transferencia
-      description: get solicitudes segun programa
+      description: |-
+        get solicitudes segun programa
+        <br>
       operationId: Transferencia_reingresoController.GetSolicitudesInscripcionSegunPrograma
       parameters:
       - in: path
