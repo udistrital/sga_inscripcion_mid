@@ -58,23 +58,60 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 				} else {
 				}
 
-				mutex.Lock()
-				listado = append(listado, cupoContenido)
-				mutex.Unlock()
-
-				return errtipocupo
-			})
-		}
-		//Si existe error, se realiza
-		if err := wge.Wait(); err != nil {
-			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
-		} else {
-			APIResponseDTO = requestresponse.APIResponseDTO(true, 200, listado)
-		}
-
+	if cupo == nil || len(cupo) == 0 || (len(cupo) == 1 && len(cupo[0]) == 0) {
+		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No se encontraron cupos")
+		return
 	} else {
-		APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupos.Error())
+		if errCupos == nil {
+			wge.SetLimit(-1)
+			for _, c := range cupo {
+				c := c
+				wge.Go(func() error {
+					var cupoContenido = make(map[string]interface{})
+					tipoInscripcionId := c["TipoInscripcionId"].(map[string]interface{})
+					idIns := tipoInscripcionId["Id"].(float64)
+					nombreIns := tipoInscripcionId["Nombre"].(string)
+					cupoContenido["Activo"] = c["Activo"]
+					cupoContenido["CuposHabilitados"] = c["CuposHabilitados"]
+					cupoContenido["CuposOpcionados"] = c["CuposOpcionados"]
+					cupoContenido["CuposDisponibles"] = c["CuposDisponibles"]
+					cupoContenido["PeriodoId"] = c["PeriodoId"]
+					cupoContenido["ProyectoAcademicoId"] = c["ProyectoAcademicoId"]
+					cupoContenido["FechaCreacion"] = c["FechaCreacion"]
+					cupoContenido["CupoId"] = c["CupoId"]
+					cupoContenido["Id"] = c["Id"]
+					cupoContenido["TipoInscripcionId"] = idIns
+					cupoContenido["NombreInscripcion"] = nombreIns
+					idcupo := c["CupoId"].(float64)
+
+					var tipocupo map[string]interface{}
+					errtipocupo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"/parametro?query=TipoParametroId__Id:87,Id:"+fmt.Sprintf("%v", idcupo)+"&limit=0", &tipocupo)
+					if errtipocupo == nil && tipocupo["Status"] == "200" && fmt.Sprintf("%v", tipocupo["Data"]) != "[map[]]" {
+						cupoContenido["Nombre"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Nombre"]
+						cupoContenido["Descripcion"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Descripcion"]
+					} else {
+					}
+
+					mutex.Lock()
+					listado = append(listado, cupoContenido)
+					mutex.Unlock()
+
+					return errtipocupo
+				})
+			}
+			//Si existe error, se realiza
+			if err := wge.Wait(); err != nil {
+				APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, err)
+			} else {
+				APIResponseDTO = requestresponse.APIResponseDTO(true, 200, listado)
+			}
+
+		} else {
+			APIResponseDTO = requestresponse.APIResponseDTO(false, 400, nil, errCupos.Error())
+		}
+
 	}
+
 	return APIResponseDTO
 }
 func UpdateCuposInscripcion(data []byte) (APIResponseDTO requestresponse.APIResponse) {
