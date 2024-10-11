@@ -24,6 +24,39 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 
 	fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"))
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
+	if errCupos == nil && cupo != nil {
+		 return requestresponse.APIResponseDTO(false, 400, nil, "Error consultando Cupos")
+
+	}
+	if errCupos == nil {
+		wge.SetLimit(-1)
+		for _, c := range cupo {
+			c := c
+			wge.Go(func() error {
+				var cupoContenido = make(map[string]interface{})
+				tipoInscripcionId := c["TipoInscripcionId"].(map[string]interface{})
+				idIns := tipoInscripcionId["Id"].(float64)
+				nombreIns := tipoInscripcionId["Nombre"].(string)
+				cupoContenido["Activo"] = c["Activo"]
+				cupoContenido["CuposHabilitados"] = c["CuposHabilitados"]
+				cupoContenido["CuposOpcionados"] = c["CuposOpcionados"]
+				cupoContenido["CuposDisponibles"] = c["CuposDisponibles"]
+				cupoContenido["PeriodoId"] = c["PeriodoId"]
+				cupoContenido["ProyectoAcademicoId"] = c["ProyectoAcademicoId"]
+				cupoContenido["FechaCreacion"] = c["FechaCreacion"]
+				cupoContenido["CupoId"] = c["CupoId"]
+				cupoContenido["Id"] = c["Id"]
+				cupoContenido["TipoInscripcionId"] = idIns
+				cupoContenido["NombreInscripcion"] = nombreIns
+				idcupo := c["CupoId"].(float64)
+
+				var tipocupo map[string]interface{}
+				errtipocupo := request.GetJson("http://"+beego.AppConfig.String("ParametroService")+"/parametro?query=TipoParametroId__Id:87,Id:"+fmt.Sprintf("%v", idcupo)+"&limit=0", &tipocupo)
+				if errtipocupo == nil && tipocupo["Status"] == "200" && fmt.Sprintf("%v", tipocupo["Data"]) != "[map[]]" {
+					cupoContenido["Nombre"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Nombre"]
+					cupoContenido["Descripcion"] = tipocupo["Data"].([]interface{})[0].(map[string]interface{})["Descripcion"]
+				} else {
+				}
 
 	if cupo == nil || len(cupo) == 0 || (len(cupo) == 1 && len(cupo[0]) == 0) {
 		APIResponseDTO = requestresponse.APIResponseDTO(true, 200, "No se encontraron cupos")
