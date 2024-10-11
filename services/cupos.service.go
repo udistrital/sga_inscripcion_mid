@@ -24,7 +24,7 @@ func GetAllCuposInscripcion() (APIResponseDTO requestresponse.APIResponse) {
 
 	fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"))
 	errCupos := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("/cupo_inscripcion?query=Activo:true&limit=0"), &cupo)
-	if errCupos == nil && cupo != nil {
+	if errCupos != nil && cupo != nil {
 		 return requestresponse.APIResponseDTO(false, 400, nil, "Error consultando Cupos")
 
 	}
