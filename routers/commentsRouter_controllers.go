@@ -18,15 +18,6 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"],
         beego.ControllerComments{
-            Method: "GetAll",
-            Router: "/",
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"],
-        beego.ControllerComments{
             Method: "GetOne",
             Router: "/:id",
             AllowHTTPMethods: []string{"get"},
@@ -48,6 +39,15 @@ func init() {
             Method: "Delete",
             Router: "/:id",
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"] = append(beego.GlobalControllerRouter["github.com/udistrital/sga_inscripcion_mid/controllers:CuposController"],
+        beego.ControllerComments{
+            Method: "GetAll",
+            Router: "/:periodo/:proyecto/:tipo",
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
